@@ -1,0 +1,12 @@
+{
+  "name": "rhod-west-golf-adventures",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rhod + West Golf Adventures — shared golf logbook, rankings, dream lists and trip planner",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

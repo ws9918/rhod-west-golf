@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#11201a" />
+<title>Rhod + West Golf Adventures</title>
+<link rel="apple-touch-icon" href="crest.jpg" />
+<link rel="icon" href="crest.jpg" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f3f1ea; --card:#ffffff; --ink:#16201a; --muted:#7a8279; --faint:#aeb4aa;
+    --line:#e8e7df; --green:#15643f; --green-2:#1c8b56; --green-d:#0d4a2d; --gold:#b8902f; --gold-soft:#d9b25a;
+    --navy:#243b4f;
+    --bad:#c75f43; --mid:#cf9a35; --good:#3f9a64; --great:#15643f;
+    --shadow:0 6px 22px rgba(20,35,25,.08); --shadow-lg:0 16px 44px rgba(20,35,25,.18);
+    --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
+  #app{max-width:560px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+  main{flex:1;overflow:hidden;position:relative}
+  .view{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;padding-bottom:96px}
+  .view.active{display:block}
+  #view-map{padding-bottom:0;overflow:hidden}
+  #map{position:absolute;inset:0}
+  .serif{font-family:"Fraunces",Georgia,"Times New Roman",serif}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;letter-spacing:-.3px;font-weight:600}
+  /* ---------- FEED ---------- */
+  .hero{position:relative;height:230px;overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block;background:#11201a}
+  .hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,12,.25) 0%,rgba(8,18,12,0) 35%,rgba(8,18,12,.72) 100%)}
+  .hero .crest{position:absolute;top:calc(14px + var(--sat));left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,.5);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+  .hero .ttl{position:absolute;left:20px;right:20px;bottom:18px;color:#fff;text-align:center}
+  .hero .ttl .kick{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;opacity:.85;font-weight:700}
+  .hero .ttl h1{font-size:30px;margin:4px 0 0;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.45)}
+  .hero .ttl p{margin:5px 0 0;font-size:12.5px;opacity:.9;letter-spacing:.2px}
+  .statbar{display:flex;gap:10px;padding:14px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 8px;text-align:center;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:24px;line-height:1;font-family:"Fraunces",serif;font-weight:600}
+  .stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px;display:block;font-weight:700}
+  .section-h{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:800;margin:20px 18px 10px;display:flex;justify-content:space-between;align-items:center}
+  .section-h a{color:var(--green);text-decoration:none;font-weight:700;letter-spacing:.2px;text-transform:none;font-size:13px}
+  .filters{display:flex;gap:8px;overflow-x:auto;padding:2px 14px 2px;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);padding:8px 15px;border-radius:99px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip .dot{width:9px;height:9px;border-radius:50%}
+  /* memory card */
+  .mcard{background:var(--card);border:1px solid var(--line);border-radius:20px;margin:0 14px 16px;overflow:hidden;box-shadow:var(--shadow)}
+  .mcard.t100{border-color:#ecd9a6;box-shadow:0 6px 22px rgba(184,144,47,.14)}
+  .mcard .ph{position:relative;width:100%;aspect-ratio:16/10;background:#e7e6de;overflow:hidden}
+  .mcard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .mcard .ph .pgrad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(8,18,12,.55))}
+  .mcard .ph .cnt{position:absolute;right:11px;top:11px;background:rgba(8,18,12,.6);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:99px;backdrop-filter:blur(4px)}
+  .mcard .ph .av-over{position:absolute;left:12px;bottom:12px}
+  .mcard .body{padding:15px}
+  .mcard .top{display:flex;align-items:center;gap:12px}
+  .mcard .badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px;flex:0 0 auto;font-family:"Fraunces",serif}
+  .mcard .nm{font-family:"Fraunces",serif;font-weight:600;font-size:18px;line-height:1.12;display:flex;align-items:center;gap:7px}
+  .mcard .nm .star{color:var(--gold);font-size:13px}
+  .mcard .dt{color:var(--muted);font-size:12px;margin-top:3px;letter-spacing:.2px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .tag{font-size:12px;font-weight:700;padding:6px 11px;border-radius:10px;background:#f3f4f0;color:#46504a;display:flex;align-items:center}
+  .tag em{font-style:normal;color:var(--faint);font-weight:800;text-transform:uppercase;letter-spacing:.6px;font-size:9.5px;margin-right:6px}
+  .tag.win{background:#eef6f0;color:var(--green-d)}
+  .tag.win em{color:var(--green-2)}
+  .tag.bet{background:#fbf3e0;color:#8a6a18}
+  .tag.bet em{color:var(--gold)}
+  .mcard .note{font-size:13.5px;color:#4b554d;margin-top:13px;line-height:1.5}
+  /* avatars */
+  .avgrp{display:flex;align-items:center}
+  .avgrp .av:not(:first-child){margin-left:-9px}
+  .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;border:2px solid var(--card);box-shadow:0 1px 3px rgba(0,0,0,.18);font-family:"Inter",sans-serif}
+  .av.lg{width:30px;height:30px;font-size:12px}
+  .av.w{background:linear-gradient(150deg,var(--green-2),var(--green))}
+  .av.r{background:linear-gradient(150deg,#34526b,var(--navy))}
+  .av.g{background:linear-gradient(150deg,var(--gold-soft),var(--gold))}
+  .av-over .av{border-color:rgba(255,255,255,.92)}
+  /* list rows */
+  .search{margin:12px 14px 2px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 14px;box-shadow:var(--shadow)}
+  .search input{border:0;outline:0;background:transparent;font-size:15px;width:100%;color:var(--ink);font-family:inherit}
+  .row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 10px;border-radius:16px;padding:11px;box-shadow:var(--shadow)}
+  .rank-no{width:22px;text-align:center;font-weight:700;color:var(--faint);font-size:13px;flex:0 0 auto;font-family:"Fraunces",serif}
+  .badge-sm{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;font-family:"Fraunces",serif}
+  .badge-sm.un{background:#edece5;color:#9aa295;font-size:20px;font-family:"Inter"}
+  .row .meta{flex:1;min-width:0}
+  .row .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16px;line-height:1.18;display:flex;align-items:center;gap:6px}
+  .row .nm .star{color:var(--gold);font-size:12px}
+  .row .sb{color:var(--muted);font-size:12.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thumb{width:46px;height:46px;border-radius:13px;object-fit:cover;flex:0 0 auto}
+  .chev{color:#d2d6cd;font-size:20px;flex:0 0 auto}
+  .row .rt{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+  /* battle */
+  .battle{margin:6px 14px 2px;border-radius:18px;padding:16px 18px;background:linear-gradient(120deg,#0d4a2d,#1c8b56);color:#fff;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
+  .battle .t b{font-size:15px;font-family:"Fraunces",serif;font-weight:600}
+  .battle .t span{display:block;font-size:12px;opacity:.9;margin-top:2px}
+  .battle button{margin-left:auto;background:#fff;color:var(--green-d);border:0;font-weight:800;padding:11px 17px;border-radius:12px;font-size:13px;white-space:nowrap}
+  /* top100 */
+  .cover{margin:14px;border-radius:20px;padding:20px;color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;background:#0d4a2d}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32}
+  .cover .cc{position:relative}
+  .cover .big{font-size:46px;font-weight:600;line-height:1;font-family:"Fraunces",serif}
+  .cover .lbl{opacity:.94;font-size:13px;margin-top:5px}
+  .cover .bar{height:7px;background:rgba(255,255,255,.25);border-radius:99px;margin-top:14px;overflow:hidden}
+  .cover .bar i{display:block;height:100%;background:var(--gold-soft)}
+  /* map */
+  .map-chip{position:absolute;left:12px;top:calc(12px + var(--sat));z-index:500;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;box-shadow:var(--shadow);font-size:12px}
+  .map-chip b{font-size:15px;font-family:"Fraunces",serif}
+  .legend{position:absolute;right:12px;bottom:18px;z-index:500;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;box-shadow:var(--shadow);font-size:11px;line-height:1.7}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  /* nav */
+  nav{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px 4px calc(8px + var(--sab));z-index:600}
+  nav button{flex:1;border:0;background:transparent;color:var(--faint);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;letter-spacing:.3px}
+  nav button svg{width:23px;height:23px}
+  nav button.on{color:var(--green)}
+  nav .add{flex:0 0 auto}
+  nav .add .plus{width:54px;height:54px;border-radius:50%;background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff;display:grid;place-items:center;font-size:28px;box-shadow:0 8px 20px rgba(21,100,63,.42);margin-bottom:3px}
+  /* sheet */
+  .scrim{position:fixed;inset:0;background:rgba(12,22,15,.55);z-index:900;opacity:0;pointer-events:none;transition:opacity .2s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--card);border-radius:26px 26px 0 0;z-index:901;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:94dvh;overflow-y:auto;padding:8px 18px calc(28px + var(--sab));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+  .sheet.show{transform:translateY(0)}
+  .grab{width:40px;height:5px;border-radius:99px;background:#e3e3db;margin:8px auto 8px}
+  .sheet h2{font-size:25px;margin:6px 0 2px;font-weight:600}
+  .loc{color:var(--muted);font-size:13px;margin-bottom:14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;background:#f1f2ee;color:#5a645c;letter-spacing:.3px}
+  .pill.gold{background:#f7eed4;color:#8a6a18}
+  .pill.green{background:#e4f1ea;color:var(--green-d)}
+  .scorehead{display:flex;align-items:center;gap:15px;margin:10px 0 16px}
+  .scorehead .big{width:70px;height:70px;border-radius:18px;display:grid;place-items:center;color:#fff;font-weight:600;font-size:28px;flex:0 0 auto;font-family:"Fraunces",serif}
+  .scorehead .sub{font-size:12.5px;color:var(--muted)}
+  .scorehead .sub b{color:var(--ink)}
+  .gallery{display:flex;gap:9px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+  .gallery::-webkit-scrollbar{display:none}
+  .gallery img{height:104px;width:104px;border-radius:14px;object-fit:cover;flex:0 0 auto}
+  .gallery .add{height:104px;width:104px;border-radius:14px;border:1.5px dashed #d3d6ce;display:grid;place-items:center;color:var(--muted);font-size:26px;flex:0 0 auto;background:var(--bg)}
+  .fb{display:flex;align-items:center;gap:10px;margin:8px 0}
+  .fb .fn{width:122px;font-size:13px;color:var(--muted)}
+  .fb .ft{flex:1;height:7px;background:#edefe9;border-radius:99px;overflow:hidden}
+  .fb .ft i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green-2))}
+  .fb .fv{width:30px;text-align:right;font-weight:800;font-size:13px;font-family:"Fraunces",serif}
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:800;margin-top:12px;font-family:inherit}
+  .btn.primary{background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff}
+  .btn.ghost{background:#eef0ea;color:var(--ink)}
+  .btn.dark{background:var(--ink);color:#fff}
+  .field{margin-top:18px}
+  .field>label{font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:9px}
+  /* who-played big toggles */
+  .who{display:flex;gap:10px}
+  .who button{flex:1;border:1.5px solid var(--line);background:var(--bg);border-radius:14px;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;font-weight:700;font-size:13px;color:var(--ink)}
+  .who button .av{width:34px;height:34px;font-size:14px;border-color:transparent}
+  .who button.on{border-color:var(--green);background:#eef6f0}
+  .slabel{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 3px}
+  .slabel .t{font-weight:700;font-size:15px}
+  .slabel .d{font-size:11.5px;color:var(--muted);max-width:56%;text-align:right}
+  .slabel .v{font-weight:800;color:var(--green);font-size:16px;margin-left:8px;font-family:"Fraunces",serif}
+  input[type=range]{-webkit-appearance:none;width:100%;height:30px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) var(--p,70%),#e7e9e3 var(--p,70%))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--green);margin-top:-9px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  textarea,input.txt{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--ink)}
+  textarea{resize:vertical;min-height:66px}
+  .seg{display:flex;flex-wrap:wrap;gap:8px}
+  .seg button{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px 15px;border-radius:11px;font-size:14px;font-weight:700}
+  .seg button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .twocol{display:flex;gap:10px}.twocol>div{flex:1}
+  .row-pick{max-height:54dvh;overflow-y:auto;margin-top:6px}
+  /* compare */
+  .cmp{position:fixed;inset:0;z-index:950;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(12,22,15,.66)}
+  .cmp.show{display:flex}
+  .cmp-card{background:var(--card);border-radius:24px;padding:26px 24px;width:100%;max-width:430px;text-align:center;box-shadow:var(--shadow-lg)}
+  .cmp-card h3{margin:0 0 2px;font-size:22px}
+  .cmp-card .cmp-sub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+  .deck{position:relative;height:286px;margin:4px 0}
+  .swipe{position:absolute;inset:0;border-radius:20px;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#17402e,#0c241a);color:#fff;box-shadow:var(--shadow-lg);touch-action:none;will-change:transform;overflow:hidden;cursor:grab}
+  .swipe.back{transform:scale(.93) translateY(12px);filter:brightness(.62)}
+  .swipe .sname{font-family:"Fraunces",serif;font-size:27px;font-weight:600;line-height:1.1}
+  .swipe .sloc{opacity:.72;font-size:13px;margin-top:7px}
+  .swipe .svs{margin:16px 0 7px;font-size:10px;letter-spacing:2.5px;opacity:.55}
+  .swipe .sopp{font-size:15px;opacity:.85}
+  .swipe .star{color:var(--gold-soft)}
+  .sw-lbl{position:absolute;top:20px;padding:6px 13px;border-radius:9px;font-weight:800;font-size:17px;border:2.5px solid;opacity:0;letter-spacing:1px}
+  .sw-lbl.yes{right:18px;color:#7fd6a3;border-color:#7fd6a3;transform:rotate(11deg)}
+  .sw-lbl.no{left:18px;color:#e88a73;border-color:#e88a73;transform:rotate(-11deg)}
+  .sw-ctrl{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}
+  .sw-ctrl button{border:1.5px solid var(--line);background:var(--card);border-radius:50%;width:56px;height:56px;font-size:23px;display:grid;place-items:center}
+  .sw-ctrl .no{color:var(--bad)} .sw-ctrl .yes{color:var(--green)}
+  .sw-ctrl .tie{width:auto;height:auto;padding:11px 16px;border-radius:24px;font-size:12.5px;font-weight:800;color:var(--muted)}
+  .sw-hint{font-size:11.5px;color:var(--faint);margin-top:12px}
+  /* recap */
+  #recapWrap{padding:6px 2px 0}
+  .recap{border-radius:22px;overflow:hidden;background:#0c241a;color:#fff;position:relative}
+  .recap .rphoto{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#143226}
+  .recap .rgrad{position:absolute;left:0;right:0;top:0;height:60%;background:linear-gradient(180deg,rgba(0,0,0,.5),transparent)}
+  .recap .rkick{position:absolute;top:16px;left:18px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.92}
+  .recap .rscore{position:absolute;top:14px;right:16px;width:58px;height:58px;border-radius:15px;display:grid;place-items:center;font-weight:600;font-size:23px;color:#0c241a;font-family:"Fraunces",serif}
+  .recap .ravs{position:absolute;left:18px;bottom:14px}
+  .recap .rbody{padding:16px 18px 20px}
+  .recap h3{margin:0;font-size:27px;letter-spacing:-.4px;font-weight:600}
+  .recap .rsub{opacity:.78;font-size:13px;margin-top:4px}
+  .recap .rbars{margin:15px 0 4px}
+  .rbar{display:flex;align-items:center;gap:9px;margin:7px 0}
+  .rbar .rn{width:112px;font-size:11.5px;opacity:.85;text-transform:uppercase;letter-spacing:.5px}
+  .rbar .rt{flex:1;height:6px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
+  .rbar .rt i{display:block;height:100%;background:linear-gradient(90deg,#7fd6a3,#b9e8cd)}
+  .rbar .rv{width:28px;text-align:right;font-weight:700;font-size:12px;font-family:"Fraunces",serif}
+  .recap .rtags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+  .recap .rtag{font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:10px;background:rgba(255,255,255,.1)}
+  .recap .rtag em{font-style:normal;opacity:.6;text-transform:uppercase;letter-spacing:.6px;font-size:9.5px;margin-right:5px}
+  .recap .rtag.win{background:rgba(127,214,163,.2);color:#c4f0d6}
+  .recap .rfoot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:10.5px;opacity:.72;text-transform:uppercase;letter-spacing:1px}
+  .empty{text-align:center;color:var(--muted);padding:10px 26px 30px;font-size:14px;line-height:1.5}
+  .empty .emimg{width:100%;height:150px;object-fit:cover;border-radius:18px;margin-bottom:16px}
+  .empty .em{font-size:30px;margin-bottom:8px}
+  .toast{position:fixed;left:50%;bottom:calc(104px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .leaflet-div-icon{background:transparent;border:0}
+  .pin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 6px rgba(0,0,0,.35);display:grid;place-items:center;border:2px solid #fff}
+  .pin span{transform:rotate(45deg);color:#fff;font-weight:800;font-size:11px}
+  .pin.star span{font-size:13px}
+  .pin.dream{background:#fff!important;border:2px solid var(--gold)}
+  .pin.dream span{color:var(--gold);font-size:13px}
+  .pin.trip{background:var(--ink)!important;border-color:#fff}
+  .marker-cluster{background:rgba(21,100,63,.22)}
+  .marker-cluster div{background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff;font-family:"Inter";font-weight:800;width:34px;height:34px;margin-top:3px;margin-left:3px;border:2px solid #fff;box-shadow:0 3px 10px rgba(20,35,25,.3)}
+  .marker-cluster span{line-height:30px}
+  .marker-cluster-dream{background:rgba(184,144,47,.24)}
+  .marker-cluster-dream div{background:linear-gradient(150deg,var(--gold-soft),var(--gold))}
+  /* map controls */
+  .map-fade{position:absolute;left:0;right:0;top:0;height:130px;z-index:450;pointer-events:none;background:linear-gradient(180deg,rgba(245,246,243,.85),rgba(245,246,243,0))}
+  .map-ui{position:absolute;left:12px;top:calc(12px + var(--sat));z-index:500;display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+  .map-seg{display:flex;background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:13px;padding:4px;box-shadow:0 6px 22px rgba(20,35,25,.16)}
+  .map-seg button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:9px}
+  .map-seg button.on{background:var(--ink);color:#fff}
+  .map-layers{display:flex;gap:7px}
+  .map-layers button{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 4px 14px rgba(20,35,25,.12);display:flex;align-items:center;gap:7px;opacity:.62}
+  .map-layers button.on{opacity:1;color:var(--ink)}
+  .map-layers .dot{width:9px;height:9px;border-radius:50%}
+  .map-trip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(20px + var(--sab));z-index:501;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:13px 22px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(15,30,20,.32);display:flex;align-items:center;gap:8px}
+  .map-trip .ic{font-size:15px}
+  .trip-bar{position:absolute;left:12px;right:12px;bottom:calc(16px + var(--sab));z-index:501;background:var(--ink);color:#fff;border-radius:16px;padding:13px 16px;box-shadow:0 12px 34px rgba(15,30,20,.34);display:flex;align-items:center;gap:12px}
+  .trip-bar .tb-info{flex:1;min-width:0}
+  .trip-bar b{font-family:"Fraunces",serif;font-size:15px;display:block}
+  .trip-bar span{font-size:12px;opacity:.8}
+  .trip-bar button{background:var(--green-2);color:#fff;border:0;border-radius:11px;padding:9px 15px;font-weight:800;font-size:13px}
+  /* leaflet chrome */
+  .leaflet-control-attribution{display:none}
+  .leaflet-bar{border:0!important;box-shadow:0 4px 14px rgba(20,35,25,.16)!important;border-radius:11px!important;overflow:hidden}
+  .leaflet-bar a{background:rgba(255,255,255,.92)!important;color:var(--ink)!important;width:34px!important;height:34px!important;line-height:34px!important;font-size:18px!important;border-bottom:1px solid var(--line)!important}
+  .leaflet-bar a:hover{background:#fff!important}
+  .leaflet-touch .leaflet-bar a:last-child{border-bottom:0!important}
+  /* dream */
+  .dream-hero{position:relative;height:120px;overflow:hidden;border-radius:0 0 22px 22px}
+  .dream-hero img{width:100%;height:100%;object-fit:cover;background:#11201a}
+  .dream-hero .dh-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,12,.2),rgba(8,18,12,.72))}
+  .dream-hero .dh-ttl{position:absolute;left:18px;bottom:14px;color:#fff}
+  .dream-hero .kick{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;opacity:.85;font-weight:700}
+  .dream-hero h1{margin:3px 0 0;font-size:24px}
+  .prog{margin:6px 14px 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .prog .pt{display:flex;justify-content:space-between;align-items:baseline}
+  .prog .pn{font-family:"Fraunces",serif;font-weight:600;font-size:17px}
+  .prog .pc{font-size:13px;color:var(--muted)}
+  .prog .pc b{color:var(--green);font-size:20px;font-family:"Fraunces",serif}
+  .prog .pbar{height:9px;background:#edefe9;border-radius:99px;margin-top:11px;overflow:hidden}
+  .prog .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-soft))}
+  .drow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 9px;border-radius:15px;padding:11px 12px;box-shadow:var(--shadow)}
+  .drow .dr-rank{width:30px;text-align:center;font-family:"Fraunces",serif;font-weight:600;font-size:17px;color:var(--gold);flex:0 0 auto}
+  .drow.done .dr-rank{color:var(--green)}
+  .drow .meta{flex:1;min-width:0}
+  .drow .nm{font-family:"Fraunces",serif;font-weight:600;font-size:15.5px;line-height:1.15}
+  .drow .sb{color:var(--muted);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .drow .tick{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:15px;font-weight:800;border:1.5px solid var(--line);color:var(--faint);background:var(--bg)}
+  .drow.done .tick{background:var(--green);border-color:var(--green);color:#fff}
+  .drow .addtrip{flex:0 0 auto;background:var(--bg);border:1px solid var(--line);border-radius:9px;width:34px;height:34px;font-size:17px;color:var(--green);font-weight:800}
+  .wish-add{display:flex;gap:9px;margin:4px 14px 14px}
+  .wish-add input{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;background:var(--card);font-family:inherit}
+  .wish-add button{background:var(--green);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:800}
+  /* trip sheet */
+  .tstop{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;margin-bottom:8px}
+  .tstop .tn{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+  .tstop .meta{flex:1;min-width:0}
+  .tstop .leg{font-size:11.5px;color:var(--gold);font-weight:700;margin-top:2px}
+  .tstop .x{border:0;background:transparent;color:var(--faint);font-size:20px}
+  .trip-row{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
+  .trip-row .meta{flex:1}.trip-row .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16px}
+  .trip-row .sb{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .gem{display:flex;align-items:center;gap:10px;background:#fbf6ea;border:1px solid #ecddb6;border-radius:13px;padding:10px 11px;margin-bottom:8px}
+  .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:#977a2f;margin-top:2px}
+  .gem button{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12.5px}
+</style>
+</head>
+<body>
+<div id="app">
+  <main>
+    <!-- FEED -->
+    <section class="view active" id="view-feed">
+      <div class="hero">
+        <img src="hero.jpg" alt="" id="heroImg" />
+        <div class="ov"></div>
+        <img src="crest.jpg" alt="" class="crest" id="crestImg" onerror="this.style.display='none'" />
+        <div class="ttl">
+          <div class="kick">Established on the first tee</div>
+          <h1>Rhod &amp; West</h1>
+          <p>A shared logbook of the great courses</p>
+        </div>
+      </div>
+      <div class="statbar">
+        <div class="stat"><b id="s-played">0</b><span>Courses</span></div>
+        <div class="stat"><b id="s-rounds">0</b><span>Rounds</span></div>
+        <div class="stat"><b id="s-top100">0</b><span>Top 100</span></div>
+      </div>
+      <div class="battle" id="battleBanner" style="display:none">
+        <div class="t"><b>Settle a debate</b><span>Head-to-head — which course wins?</span></div>
+        <button id="battleBtn">Battle</button>
+      </div>
+      <div class="section-h" style="margin-bottom:8px">Memories <a id="feed-all" href="#">All courses ›</a></div>
+      <div class="filters" id="feed-filters">
+        <button class="chip on" data-w="all">Everyone</button>
+        <button class="chip" data-w="both"><span class="dot" style="background:var(--green)"></span>Together</button>
+        <button class="chip" data-w="west"><span class="dot" style="background:var(--green-2)"></span>West</button>
+        <button class="chip" data-w="rhod"><span class="dot" style="background:var(--navy)"></span>Rhod</button>
+      </div>
+      <div id="feed" style="margin-top:12px"></div>
+    </section>
+
+    <!-- MAP -->
+    <section class="view" id="view-map">
+      <div id="map"></div>
+      <div class="map-fade"></div>
+      <div class="map-ui">
+        <div class="map-seg" id="basemaps">
+          <button data-b="clean" class="on">Clean</button>
+          <button data-b="terrain">Terrain</button>
+          <button data-b="sat">Satellite</button>
+        </div>
+        <div class="map-layers" id="mapLayers">
+          <button data-l="played" class="on"><span class="dot" style="background:#15a05a"></span>Played</button>
+          <button data-l="dream"><span class="dot" style="background:#b8902f"></span>Dream</button>
+        </div>
+      </div>
+      <button class="map-trip" id="openTrip"><span class="ic">🗺️</span> Plan a trip</button>
+      <div class="trip-bar" id="tripBar" style="display:none">
+        <div class="tb-info"><b id="tb-name">Trip</b><span id="tb-meta"></span></div>
+        <button id="tb-manage">Manage</button>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section class="view" id="view-rank">
+      <div class="search"><span>🔎</span><input id="q" placeholder="Search courses…"/></div>
+      <div class="filters" id="rank-filters" style="padding-top:10px">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="rated">Rated</button>
+        <button class="chip" data-f="unrated">To play</button>
+        <button class="chip" data-f="top100">Top 100</button>
+      </div>
+      <div id="rank-list" style="margin-top:10px"></div>
+    </section>
+
+    <!-- DREAM -->
+    <section class="view" id="view-dream">
+      <div class="dream-hero">
+        <img src="bar.jpg" alt="" onerror="this.style.display='none'" />
+        <div class="dh-ov"></div>
+        <div class="dh-ttl"><div class="kick">The bucket list</div><h1>Dream Courses</h1></div>
+      </div>
+      <div class="filters" id="dream-seg" style="margin-top:14px">
+        <button class="chip on" data-d="world">🌍 World</button>
+        <button class="chip" data-d="usa">🇺🇸 USA</button>
+        <button class="chip" data-d="europe">🇪🇺 Europe</button>
+        <button class="chip" data-d="wish">⭐ Wishlist</button>
+      </div>
+      <div id="dream-body"></div>
+    </section>
+  </main>
+
+  <nav>
+    <button class="on" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Feed</button>
+    <button data-v="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>Map</button>
+    <button class="add" id="navAdd"><span class="plus">＋</span><span style="font-size:10px;font-weight:700;color:var(--green)">Log</span></button>
+    <button data-v="rank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 16l3-8 4 5 3-9 4 12"/></svg>Courses</button>
+    <button data-v="dream"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg>Dream</button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+
+<div class="cmp" id="cmp"></div>
+
+<input type="file" id="fileIn" accept="image/*" multiple style="display:none" />
+<div class="toast" id="toast"></div>
+
+<script src="courses.js"></script>
+<script src="dream.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var FACTORS=[
+    {k:"design",t:"Course Design",d:"Routing, shaping, strategy"},
+    {k:"scenery",t:"Scenery & Setting",d:"Views, drama, natural beauty"},
+    {k:"cond",t:"Conditioning",d:"Turf, greens and bunkers"},
+    {k:"memory",t:"Memorability",d:"Signature holes you'll retell"},
+    {k:"play",t:"Playability",d:"Fun to play your game"},
+    {k:"fun",t:"Fun",d:"Would you race back?"},
+    {k:"club",t:"Club Experience",d:"Service, clubhouse, vibe"},
+    {k:"excl",t:"Exclusivity",d:"Access, prestige, rarity"}
+  ];
+  var KEY="rwGolf.v2"; // keep prior data
+  var PRINCIPALS=["West","Rhod"];
+  var COURSES=window.COURSES||[];
+  var byName={}; COURSES.forEach(function(c){byName[c.n]=c;});
+
+  /* ---------- shared backend ---------- */
+  var CODE=localStorage.getItem("rwCode")||"";
+  function hdr(){ var h={"Content-Type":"application/json"}; if(CODE)h["x-rw-code"]=CODE; return h; }
+  function promptCode(){ var c=prompt("Enter the shared access code for Rhod + West Golf:"); if(c!=null){ CODE=c.trim(); localStorage.setItem("rwCode",CODE); location.reload(); } }
+  // photos live on the server, keyed by client id
+  function putPhoto(id,dataUrl){ return fetch("/api/photo/"+id,{method:"PUT",headers:hdr(),body:JSON.stringify({data:dataUrl})}).catch(function(){}); }
+  function delPhoto(id){ return fetch("/api/photo/"+id,{method:"DELETE",headers:hdr()}).catch(function(){}); }
+  var photoCache={};
+  function loadPhoto(id,imgEl){ if(photoCache[id]){imgEl.src=photoCache[id];return;} imgEl.src="/api/photo/"+encodeURIComponent(id); }
+  function downscale(file){ return new Promise(function(res){ var img=new Image(),url=URL.createObjectURL(file);
+    img.onload=function(){ var max=1280,w=img.width,h=img.height;
+      if(w>h&&w>max){h=h*max/w;w=max;}else if(h>=w&&h>max){w=w*max/h;h=max;}
+      var cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);res(cv.toDataURL("image/jpeg",0.82)); };
+    img.onerror=function(){URL.revokeObjectURL(url);res(null);}; img.src=url; }); }
+
+  /* ---------- shared state ---------- */
+  var S=defaultState();
+  function defaultState(){ return {ratings:{},order:[],t100:{},players:["Rhod","West"],trips:[],wishlist:[],dreamDone:{},activeTripId:null}; }
+  function normalizeState(r){ r=r||{}; if(!r.ratings)r.ratings={}; if(!r.order)r.order=[]; if(!r.t100)r.t100={};
+    if(!r.players||!r.players.length)r.players=["Rhod","West"]; if(!r.trips)r.trips=[]; if(!r.wishlist)r.wishlist=[]; if(!r.dreamDone)r.dreamDone={}; return r; }
+  function loadState(){ return fetch("/api/state",{headers:hdr()}).then(function(r){ if(r.status===401){promptCode();throw 0;} return r.json(); })
+    .then(function(d){ for(var k in S)delete S[k]; var n=normalizeState(d); for(var j in n)S[j]=n[j]; }); }
+  var saveT=null,saving=false,saveAgain=false;
+  function save(){ clearTimeout(saveT); saveT=setTimeout(function(){saveT=null;pushState();},500); }
+  function pushState(){ if(saving){saveAgain=true;return;} saving=true;
+    fetch("/api/state",{method:"PUT",headers:hdr(),body:JSON.stringify(S)})
+      .then(function(r){ if(r.status===401)promptCode(); }).catch(function(){})
+      .then(function(){ saving=false; if(saveAgain){saveAgain=false;pushState();} }); }
+  function refreshState(){ if(saveT||saving)return; var sc=document.getElementById("scrim"); if(sc&&sc.classList.contains("show"))return;
+    fetch("/api/state",{headers:hdr()}).then(function(r){return r.ok?r.json():null;}).then(function(d){ if(!d)return;
+      var n=normalizeState(d); for(var j in n)S[j]=n[j]; activeTripId=S.activeTripId||null;
+      buildDreamMarkers(); COURSES.forEach(refreshMarker); renderAll(); drawTrip(); updateTripBar(); }).catch(function(){}); }
+  function pollUpdates(){ setInterval(refreshState,20000); document.addEventListener("visibilitychange",function(){ if(!document.hidden)refreshState(); }); }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+  function isT100(c){ var o=S.t100[c.n]; return o===undefined?!!c.t100:!!o; }
+  function rounds(name){ var r=S.ratings[name]; return (r&&r.rounds)||[]; }
+  function isRated(name){ return rounds(name).length>0; }
+  function allRounds(){ var out=[]; for(var n in S.ratings){ rounds(n).forEach(function(rd){out.push({course:n,rd:rd});}); }
+    out.sort(function(a,b){return (a.rd.date<b.rd.date?1:a.rd.date>b.rd.date?-1:0);}); return out; }
+  function roundScore(rd){ var s=0,n=0; FACTORS.forEach(function(f){ if(typeof rd[f.k]==="number"){s+=rd[f.k];n++;} }); return n?s/n:0; }
+  function factorScore(name){ var rs=rounds(name); if(!rs.length)return null; var t=0;
+    rs.forEach(function(r){t+=roundScore(r);}); return t/rs.length; }
+  function beliScore(name){ var fs=factorScore(name); if(fs===null)return null; var N=S.order.length,idx=S.order.indexOf(name);
+    if(N<2||idx<0)return Math.round(fs*10)/10; var rk=10*(N-1-idx)/(N-1); return Math.round((0.55*fs+0.45*rk)*10)/10; }
+  function scoreColor(v){ if(v==null)return"#cdd2c9"; if(v>=8.5)return"#15643f"; if(v>=7)return"#3f9a64"; if(v>=5.5)return"#cf9a35"; return"#c75f43"; }
+  function fmt(v){ return (Math.round(v*10)/10).toFixed(1); }
+  function dateLabel(d){ try{return new Date(d+"T00:00:00").toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}catch(e){return d;} }
+
+  /* who played */
+  function whoTag(players){ players=players||[]; var w=players.indexOf("West")>=0,r=players.indexOf("Rhod")>=0;
+    if(w&&r)return"both"; if(w)return"west"; if(r)return"rhod"; return"guest"; }
+  function avClass(name){ if(name==="West")return"w"; if(name==="Rhod")return"r"; return"g"; }
+  function avatarsFor(players,lg){ players=players||[]; var grp=h("div",{class:"avgrp"});
+    var ordered=[]; if(players.indexOf("West")>=0)ordered.push("West"); if(players.indexOf("Rhod")>=0)ordered.push("Rhod");
+    players.forEach(function(p){ if(PRINCIPALS.indexOf(p)<0)ordered.push(p); });
+    ordered.slice(0,3).forEach(function(p){ grp.appendChild(h("div",{class:"av "+avClass(p)+(lg?" lg":""),title:p},p[0].toUpperCase())); });
+    if(ordered.length>3) grp.appendChild(h("div",{class:"av g"+(lg?" lg":"")},"+"+(ordered.length-3)));
+    return grp; }
+  function coursePlayers(name){ var set={}; rounds(name).forEach(function(r){(r.players||[]).forEach(function(p){set[p]=1;});}); return Object.keys(set); }
+
+  /* ---------- dream data + matching ---------- */
+  var DREAM=window.DREAM||{world:[],usa:[],europe:[]};
+  function normKey(s){ return (s||"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g," ")
+    .split(/\s+/).filter(function(w){return w&&["the","golf","club","course","gc","cc","links","national","country","at","resort"].indexOf(w)<0;}).sort().join(" "); }
+  var playedKeys={}; COURSES.forEach(function(c){ playedKeys[normKey(c.n)]=c; });
+  function dreamPlayed(d){ if(S.dreamDone[d.n])return true; if(d.pl)return true; var k=normKey(d.n);
+    var dt=k.split(" "); if(dt.length<2)return false;
+    if(playedKeys[k])return true;
+    for(var pk in playedKeys){ var pt=pk.split(" "); if(dt.every(function(x){return pt.indexOf(x)>=0;}))return true; } return false; }
+  var dreamAll=[]; (function(){ var seen={}; ["world","usa","europe"].forEach(function(k){ (DREAM[k]||[]).forEach(function(d){ var key=normKey(d.n); if(!seen[key]){seen[key]=1;dreamAll.push(d);} }); }); })();
+
+  /* ---------- map ---------- */
+  var map,markers={},dreamMarkers={},baseLayers={},curBase,playedCluster,dreamCluster,tripLayer;
+  function initMap(){ map=L.map("map",{zoomControl:false,attributionControl:false,scrollWheelZoom:true}).setView([39.5,-98.5],4);
+    L.control.zoom({position:"topright"}).addTo(map);
+    baseLayers.clean=L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:20});
+    baseLayers.terrain=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19});
+    baseLayers.sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19});
+    curBase=baseLayers.clean; curBase.addTo(map);
+    playedCluster=L.markerClusterGroup({maxClusterRadius:46,showCoverageOnHover:false,iconCreateFunction:clusterIcon("")});
+    dreamCluster=L.markerClusterGroup({maxClusterRadius:46,showCoverageOnHover:false,iconCreateFunction:clusterIcon(" marker-cluster-dream")});
+    tripLayer=L.layerGroup();
+    COURSES.forEach(function(c){ var m=L.marker([c.lat,c.lng],{icon:pinFor(c)}); m.on("click",function(){openCourse(c);}); markers[c.n]=m; playedCluster.addLayer(m); });
+    buildDreamMarkers();
+    map.addLayer(playedCluster); tripLayer.addTo(map); wireMapControls(); }
+  function clusterIcon(suffix){ return function(cl){ return L.divIcon({html:'<div><span>'+cl.getChildCount()+'</span></div>',className:'marker-cluster'+suffix,iconSize:[40,40]}); }; }
+  function buildDreamMarkers(){ dreamCluster.clearLayers(); dreamMarkers={};
+    dreamAll.forEach(function(d){ if(dreamPlayed(d))return; var m=L.marker([d.lat,d.lng],{icon:dreamPin()}); m.on("click",function(){openDreamCourse(d);}); dreamMarkers[d.n]=m; dreamCluster.addLayer(m); }); }
+  function pinFor(c){ var rated=isRated(c.n),sc=beliScore(c.n),t=isT100(c);
+    var bg=t?"#b8902f":(rated?scoreColor(sc):"#b9bfb2"); var inner=t?"★":(rated?fmt(sc):"");
+    return L.divIcon({className:"",iconSize:[30,30],iconAnchor:[15,30],html:'<div class="pin'+(t?" star":"")+'" style="background:'+bg+'"><span>'+inner+'</span></div>'}); }
+  function dreamPin(){ return L.divIcon({className:"",iconSize:[30,30],iconAnchor:[15,30],html:'<div class="pin dream"><span>★</span></div>'}); }
+  function tripPin(n){ return L.divIcon({className:"",iconSize:[30,30],iconAnchor:[15,30],html:'<div class="pin trip"><span>'+n+'</span></div>'}); }
+  function refreshMarker(c){ if(markers[c.n])markers[c.n].setIcon(pinFor(c)); }
+  function wireMapControls(){
+    document.querySelectorAll("#basemaps button").forEach(function(b){ b.onclick=function(){
+      document.querySelectorAll("#basemaps button").forEach(function(x){x.classList.remove("on");}); b.classList.add("on");
+      map.removeLayer(curBase); curBase=baseLayers[b.dataset.b]; curBase.addTo(map); if(curBase.bringToBack)curBase.bringToBack(); }; });
+    document.querySelectorAll("#mapLayers button").forEach(function(b){ b.onclick=function(){ b.classList.toggle("on");
+      var grp=b.dataset.l==="played"?playedCluster:dreamCluster; if(b.classList.contains("on"))map.addLayer(grp); else map.removeLayer(grp); }; });
+    document.getElementById("openTrip").onclick=openTrips;
+    document.getElementById("tb-manage").onclick=function(){ if(activeTripId)openTripDetail(activeTripId); };
+  }
+
+  /* ---------- helpers ---------- */
+  function h(tag,attrs,kids){ var e=document.createElement(tag);
+    if(attrs)for(var k in attrs){ if(k==="class")e.className=attrs[k]; else if(k==="html")e.innerHTML=attrs[k]; else e.setAttribute(k,attrs[k]); }
+    if(kids!=null){(Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });}
+    return e; }
+  function tag(label,val,cls){ return h("span",{class:"tag "+(cls||"")},[h("em",{},label),val]); }
+  function showScrim(s){ document.getElementById("scrim").classList.add("show"); requestAnimationFrame(function(){s.classList.add("show");}); }
+  function closeSheet(){ document.getElementById("sheet").classList.remove("show"); document.getElementById("scrim").classList.remove("show"); }
+  document.getElementById("scrim").onclick=closeSheet;
+  var toastT; function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove("show");},2100); }
+
+  /* ---------- FEED ---------- */
+  var feedFilter="all";
+  function renderFeed(){
+    document.getElementById("s-played").textContent=COURSES.length;
+    document.getElementById("s-rounds").textContent=allRounds().length;
+    document.getElementById("s-top100").textContent=COURSES.filter(isT100).length;
+    document.getElementById("battleBanner").style.display=S.order.filter(isRated).length>=2?"flex":"none";
+    var feed=document.getElementById("feed"); feed.innerHTML="";
+    var ar=allRounds().filter(function(it){ if(feedFilter==="all")return true; return whoTag(it.rd.players)===feedFilter; });
+    if(!ar.length){ feed.appendChild(h("div",{class:"empty"},[
+      h("img",{class:"emimg",src:"bar.jpg",onerror:"this.style.display='none'"}),
+      h("div",{},feedFilter==="all"?"No memories yet. Tap Log after your next round to add photos, scores and the story.":"No rounds logged for this filter yet.")
+    ])); return; }
+    ar.slice(0,40).forEach(function(it){ feed.appendChild(memCard(it.course,it.rd)); });
+  }
+  function memCard(courseName,rd){
+    var c=byName[courseName]; var t100=c&&isT100(c);
+    var card=h("div",{class:"mcard"+(t100?" t100":"")});
+    if(rd.photos&&rd.photos.length){ var ph=h("div",{class:"ph"}); var img=h("img",{alt:""}); loadPhoto(rd.photos[0],img);
+      ph.appendChild(img); ph.appendChild(h("div",{class:"pgrad"}));
+      if(rd.photos.length>1)ph.appendChild(h("div",{class:"cnt"},rd.photos.length+" photos"));
+      ph.appendChild(h("div",{class:"av-over"},avatarsFor(rd.players,true)));
+      card.appendChild(ph); }
+    var body=h("div",{class:"body"});
+    var nm=h("div",{class:"nm"},c?c.n:courseName); if(t100)nm.appendChild(h("span",{class:"star"},"★"));
+    var topRight = (rd.photos&&rd.photos.length)?null:avatarsFor(rd.players);
+    var topRow=h("div",{class:"top"},[
+      h("div",{class:"badge",style:"background:"+scoreColor(roundScore(rd))},fmt(roundScore(rd))),
+      h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},dateLabel(rd.date)+(c?" · "+c.s:""))]),
+      topRight
+    ]);
+    body.appendChild(topRow);
+    if(rd.notes)body.appendChild(h("div",{class:"note"},rd.notes));
+    card.appendChild(body);
+    card.onclick=function(){ openCourse(c||{n:courseName,s:"",lat:0,lng:0}); };
+    return card;
+  }
+
+  /* ---------- COURSES ---------- */
+  var rankFilter="all",query="";
+  function renderRank(){ var host=document.getElementById("rank-list"); host.innerHTML="";
+    var rated=S.order.filter(isRated);
+    var unrated=COURSES.map(function(c){return c.n;}).filter(function(n){return !isRated(n);});
+    function match(n){ var c=byName[n]; if(!c)return false;
+      if(query&&(c.n+" "+c.s).toLowerCase().indexOf(query)<0)return false;
+      if(rankFilter==="rated")return isRated(n); if(rankFilter==="unrated")return !isRated(n);
+      if(rankFilter==="top100")return isT100(c); return true; }
+    if(rankFilter!=="unrated"){ var rr=rated.filter(match);
+      if(rr.length){ host.appendChild(h("div",{class:"section-h"},"Ranked")); rr.forEach(function(n,i){host.appendChild(rowFor(byName[n],i+1));}); } }
+    if(rankFilter!=="rated"){ var uu=unrated.filter(match).sort(function(a,b){return a<b?-1:1;});
+      if(uu.length){ host.appendChild(h("div",{class:"section-h"},rankFilter==="unrated"?"Courses to play":"Not yet rated ("+uu.length+")")); uu.forEach(function(n){host.appendChild(rowFor(byName[n],null));}); } }
+    if(!host.children.length)host.appendChild(h("div",{class:"empty"},"No courses match.")); }
+  function rowFor(c,rankNo){ var sc=beliScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
+    for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
+    var lead; if(firstPhoto){lead=h("img",{class:"thumb",alt:""});loadPhoto(firstPhoto,lead);}
+      else lead=rated?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
+    var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
+    var sub=rated?(fmt(sc)+" · "+rs.length+" round"+(rs.length>1?"s":"")+" · "+c.s):c.s;
+    var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},"#"+rankNo));
+    kids.push(lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
+    var rt=h("div",{class:"rt"}); if(rated)rt.appendChild(avatarsFor(coursePlayers(c.n))); rt.appendChild(h("div",{class:"chev"},"›"));
+    kids.push(rt);
+    var row=h("div",{class:"row"},kids); row.onclick=function(){openCourse(c);}; return row; }
+
+  /* ---------- TOP 100 ---------- */
+  /* ---------- DREAM TAB ---------- */
+  var dreamSeg="world";
+  var SEGLBL={world:"World Top 100",usa:"USA Top 100",europe:"Europe Top 100"};
+  function renderDream(){
+    var host=document.getElementById("dream-body"); host.innerHTML="";
+    if(dreamSeg==="wish"){ renderWishlist(host); return; }
+    var list=DREAM[dreamSeg]||[]; var done=list.filter(dreamPlayed).length, total=list.length;
+    var prog=h("div",{class:"prog"});
+    prog.appendChild(h("div",{class:"pt"},[ h("div",{class:"pn"},SEGLBL[dreamSeg]),
+      h("div",{class:"pc"},[h("b",{},""+done)," of "+total+" played"]) ]));
+    prog.appendChild(h("div",{class:"pbar"},h("i",{style:"width:"+(total?done/total*100:0)+"%"})));
+    host.appendChild(prog);
+    list.forEach(function(d){ host.appendChild(dreamRow(d)); });
+  }
+  function dreamRow(d){
+    var done=dreamPlayed(d);
+    var row=h("div",{class:"drow"+(done?" done":"")});
+    row.appendChild(h("div",{class:"dr-rank"},"#"+d.r));
+    row.appendChild(h("div",{class:"meta"},[h("div",{class:"nm"},d.n),h("div",{class:"sb"},d.s)]));
+    if(!done){ var add=h("button",{class:"addtrip"},"＋"); add.onclick=function(e){e.stopPropagation();addToTrip({n:d.n,s:d.s,lat:d.lat,lng:d.lng});}; row.appendChild(add); }
+    row.appendChild(h("div",{class:"tick"},done?"✓":""));
+    row.onclick=function(){ openDreamCourse(d); };
+    return row;
+  }
+  function inWishlist(n){ return S.wishlist.some(function(w){return w.n===n;}); }
+  function renderWishlist(host){
+    var add=h("div",{class:"wish-add"}); var inp=h("input",{placeholder:"Add a course you want to play…"});
+    var btn=h("button",{},"Add"); btn.onclick=function(){ var v=inp.value.trim(); if(!v)return; if(!inWishlist(v)){S.wishlist.push({n:v,s:"Custom"});save();} inp.value=""; renderDream(); };
+    add.appendChild(inp); add.appendChild(btn); host.appendChild(add);
+    if(!S.wishlist.length){ host.appendChild(h("div",{class:"empty"},[h("div",{class:"em"},"⭐"),h("div",{},"No wishlist courses yet. Add any course here, or tap ⭐ on a dream course.")])); return; }
+    S.wishlist.forEach(function(w){
+      var row=h("div",{class:"drow"});
+      row.appendChild(h("div",{class:"dr-rank"},"★"));
+      row.appendChild(h("div",{class:"meta"},[h("div",{class:"nm"},w.n),h("div",{class:"sb"},w.s||"")]));
+      if(w.lat){ var a=h("button",{class:"addtrip"},"＋"); a.onclick=function(e){e.stopPropagation();addToTrip(w);}; row.appendChild(a); }
+      var x=h("div",{class:"tick"},"✕"); x.onclick=function(e){e.stopPropagation(); S.wishlist=S.wishlist.filter(function(q){return q.n!==w.n;}); save(); renderDream(); };
+      row.appendChild(x); host.appendChild(row);
+    });
+  }
+  function openDreamCourse(d){
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},d.n));
+    var loc=h("div",{class:"loc"},[h("span",{},"📍 "+d.s)]);
+    ["world","usa","europe"].forEach(function(k){ var e=(DREAM[k]||[]).filter(function(x){return x.n===d.n;})[0]; if(e)loc.appendChild(h("span",{class:"pill gold"},(k==="usa"?"USA":k==="europe"?"EUROPE":"WORLD")+" #"+e.r)); });
+    if(dreamPlayed(d))loc.appendChild(h("span",{class:"pill green"},"✓ PLAYED"));
+    sheet.appendChild(loc);
+    sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 14px"},[h("div",{class:"em"},"⛳"),h("div",{},dreamPlayed(d)?"One of the greats, in the books.":"A bucket-list course. Add it to a trip or your wishlist.")]));
+    var trip=h("button",{class:"btn primary"},"Add to a road trip"); trip.onclick=function(){ addToTrip({n:d.n,s:d.s,lat:d.lat,lng:d.lng}); }; sheet.appendChild(trip);
+    var wish=h("button",{class:"btn ghost"},inWishlist(d.n)?"★ Remove from wishlist":"☆ Add to wishlist");
+    wish.onclick=function(){ if(inWishlist(d.n))S.wishlist=S.wishlist.filter(function(q){return q.n!==d.n;}); else S.wishlist.push({n:d.n,s:d.s,lat:d.lat,lng:d.lng}); save(); openDreamCourse(d); renderDream(); };
+    sheet.appendChild(wish);
+    var pl=h("button",{class:"btn ghost"},dreamPlayed(d)&&S.dreamDone[d.n]?"Unmark as played":(dreamPlayed(d)?"Played ✓":"Mark as played"));
+    pl.onclick=function(){ if(S.dreamDone[d.n])delete S.dreamDone[d.n]; else S.dreamDone[d.n]=true; save(); buildDreamMarkers(); renderDream(); openDreamCourse(d); };
+    if(!dreamPlayed(d)||S.dreamDone[d.n]) sheet.appendChild(pl);
+    showScrim(sheet);
+  }
+  function renderMapStats(){ var a=document.getElementById("m-played"),b=document.getElementById("m-rated");
+    if(a)a.textContent=COURSES.length; if(b)b.textContent=COURSES.filter(function(c){return isRated(c.n);}).length; }
+  function renderAll(){ renderFeed(); renderRank(); renderDream(); renderMapStats(); }
+
+  /* ---------- COURSE SHEET ---------- */
+  function openCourse(c){ var sc=beliScore(c.n),fs=factorScore(c.n),rated=isRated(c.n),rs=rounds(c.n);
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},c.n));
+    var loc=h("div",{class:"loc"},[h("span",{},"📍 "+(c.s||""))]);
+    if(isT100(c))loc.appendChild(h("span",{class:"pill gold"},"★ TOP 100"));
+    var idx=S.order.indexOf(c.n); if(rated&&idx>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(idx+1)+" OF "+S.order.length));
+    sheet.appendChild(loc);
+    if(rated){
+      var headRight=h("div",{},[ h("div",{class:"sub"},[h("b",{},"Overall "+fmt(sc))," · factors + head-to-head"]),
+        h("div",{class:"sub",style:"margin-top:3px"},[h("b",{},"Factor avg "+fmt(fs))," · "+rs.length+" round"+(rs.length>1?"s":"")]) ]);
+      var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), headRight ]);
+      sheet.appendChild(hr);
+      var cp=coursePlayers(c.n); if(cp.length){ var pl=h("div",{style:"display:flex;align-items:center;gap:8px;margin:-6px 0 12px"},[avatarsFor(cp),h("span",{style:"font-size:12.5px;color:var(--muted)"},"Played by "+cp.join(" & "))]); sheet.appendChild(pl); }
+      var allPhotos=[]; rs.forEach(function(r){(r.photos||[]).forEach(function(p){allPhotos.push(p);});});
+      if(allPhotos.length){ var g=h("div",{class:"gallery"}); allPhotos.forEach(function(p){ var im=h("img",{alt:""}); loadPhoto(p,im); im.onclick=function(){viewPhoto(p);}; g.appendChild(im); }); sheet.appendChild(g); }
+      var fb=h("div",{style:"margin:6px 0 2px"});
+      FACTORS.forEach(function(f){ var tot=0,n=0; rs.forEach(function(r){if(typeof r[f.k]==="number"){tot+=r[f.k];n++;}}); if(!n)return; var v=tot/n;
+        fb.appendChild(h("div",{class:"fb"},[h("div",{class:"fn"},f.t),h("div",{class:"ft"},h("i",{style:"width:"+(v*10)+"%"})),h("div",{class:"fv"},fmt(v))])); });
+      sheet.appendChild(fb);
+      sheet.appendChild(h("div",{class:"section-h",style:"margin:18px 0 8px"},"Rounds"));
+      rs.slice().reverse().forEach(function(r){
+        var line=h("div",{class:"row",style:"margin:0 0 9px"},[
+          h("div",{class:"badge-sm",style:"background:"+scoreColor(roundScore(r))},fmt(roundScore(r))),
+          h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},dateLabel(r.date)),h("div",{class:"sb"},[(r.players||[]).join(" & ")+(r.photos&&r.photos.length?" · "+r.photos.length+" photos":"")])]),
+          h("div",{class:"rt"},[avatarsFor(r.players),h("div",{class:"chev"},"›")])
+        ]);
+        line.onclick=function(){openRecap(c,r);}; sheet.appendChild(line);
+      });
+    } else { sheet.appendChild(h("div",{class:"empty",style:"padding:14px 0 18px"},[h("div",{class:"em"},"⛳"),h("div",{},"You've played here. Log the round to add photos, scores and a rating.")])); }
+    var rate=h("button",{class:"btn primary"},rated?"Log another round":"Log a round");
+    rate.onclick=function(){closeSheet();setTimeout(function(){openLog(c);},180);}; sheet.appendChild(rate);
+    if(rated){ var re=h("button",{class:"btn ghost"},"Re-rank (head-to-head)"); re.onclick=function(){closeSheet();setTimeout(function(){reRank(c);},120);}; sheet.appendChild(re); }
+    var tp=h("button",{class:"btn ghost"},"Add to a road trip");
+    tp.onclick=function(){ addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng}); }; sheet.appendChild(tp);
+    var tg=h("button",{class:"btn ghost"},isT100(c)?"Remove Top-100 flag":"Flag as Top 100");
+    tg.onclick=function(){S.t100[c.n]=!isT100(c);save();refreshMarker(c);renderAll();openCourse(c);}; sheet.appendChild(tg);
+    showScrim(sheet);
+  }
+  function viewPhoto(id){ var wrap=h("div",{style:"position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:970;display:grid;place-items:center"});
+    var im=h("img",{style:"max-width:96%;max-height:88%;border-radius:12px"}); loadPhoto(id,im);
+    var x=h("button",{style:"position:absolute;top:calc(16px + env(safe-area-inset-top));right:18px;background:rgba(255,255,255,.2);color:#fff;border:0;width:40px;height:40px;border-radius:50%;font-size:22px"},"✕");
+    var del=h("button",{style:"position:absolute;bottom:calc(28px + env(safe-area-inset-bottom));background:rgba(199,95,67,.94);color:#fff;border:0;padding:12px 20px;border-radius:12px;font-weight:800"},"Delete photo");
+    wrap.appendChild(im);wrap.appendChild(x);wrap.appendChild(del); document.body.appendChild(wrap);
+    function close(){document.body.removeChild(wrap);} x.onclick=close; wrap.onclick=function(e){if(e.target===wrap)close();};
+    del.onclick=function(){removePhotoEverywhere(id);delPhoto(id);close();renderAll();toast("Photo deleted");}; }
+  function removePhotoEverywhere(id){ for(var n in S.ratings){rounds(n).forEach(function(r){if(r.photos){var i=r.photos.indexOf(id);if(i>=0)r.photos.splice(i,1);}});} save(); }
+
+  /* ---------- LOG ---------- */
+  var pendingPhotos=[];
+  function openLog(c){ pendingPhotos=[]; var vals={};FACTORS.forEach(function(f){vals[f.k]=7;});
+    var chosen=["West","Rhod"]; var guests=[];
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},"Log a round"));
+    sheet.appendChild(h("div",{class:"loc"},[h("span",{},"📍 "+c.n),c.s?h("span",{class:"pill"},c.s):null]));
+
+    var dField=h("div",{class:"field"}); dField.appendChild(h("label",{},"Date"));
+    var dInp=h("input",{class:"txt",type:"date"}); dInp.value=new Date().toISOString().slice(0,10); dField.appendChild(dInp); sheet.appendChild(dField);
+
+    // WHO PLAYED — big toggles
+    var wField=h("div",{class:"field"}); wField.appendChild(h("label",{},"Who played"));
+    var who=h("div",{class:"who"});
+    var bW=h("button",{},[h("div",{class:"av w"},"W"),h("span",{},"West")]);
+    var bR=h("button",{},[h("div",{class:"av r"},"R"),h("span",{},"Rhod")]);
+    function syncWho(){ bW.classList.toggle("on",chosen.indexOf("West")>=0); bR.classList.toggle("on",chosen.indexOf("Rhod")>=0); }
+    bW.onclick=function(){ var i=chosen.indexOf("West"); if(i>=0)chosen.splice(i,1); else chosen.unshift("West"); syncWho(); };
+    bR.onclick=function(){ var i=chosen.indexOf("Rhod"); if(i>=0)chosen.splice(i,1); else chosen.push("Rhod"); syncWho(); };
+    who.appendChild(bW); who.appendChild(bR); wField.appendChild(who);
+    var gWrap=h("div",{class:"seg",style:"margin-top:10px"}); wField.appendChild(gWrap); sheet.appendChild(wField);
+    function buildGuests(){ gWrap.innerHTML="";
+      guests.forEach(function(g){ var b=h("button",{class:"on"},g+" ✕"); b.onclick=function(){ guests.splice(guests.indexOf(g),1); var i=chosen.indexOf(g);if(i>=0)chosen.splice(i,1); buildGuests(); }; gWrap.appendChild(b); });
+      var add=h("button",{style:"border-style:dashed"},"+ Guest"); add.onclick=function(){ var nm=prompt("Guest name"); if(nm){nm=nm.trim(); if(nm){guests.push(nm);chosen.push(nm);buildGuests();}} }; gWrap.appendChild(add); }
+    buildGuests();
+
+    var pField=h("div",{class:"field"}); pField.appendChild(h("label",{},"Photos")); var gal=h("div",{class:"gallery"}); var addBtn=h("div",{class:"add"},"＋"); addBtn.onclick=function(){stageFiles(gal,addBtn);}; gal.appendChild(addBtn); pField.appendChild(gal); sheet.appendChild(pField);
+
+    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"Rate the course"));
+    FACTORS.forEach(function(f){ var lab=h("div",{class:"slabel"},[h("div",{class:"t"},f.t),h("div",{class:"d"},f.d),h("div",{class:"v"},"7")]);
+      var rng=document.createElement("input");rng.type="range";rng.min=0;rng.max=10;rng.step=0.5;rng.value=7;rng.style.setProperty("--p","70%");
+      rng.oninput=function(){vals[f.k]=parseFloat(rng.value);lab.querySelector(".v").textContent=(+rng.value).toFixed(1).replace(/\.0$/,"");rng.style.setProperty("--p",(rng.value*10)+"%");};
+      sheet.appendChild(lab);sheet.appendChild(rng); });
+
+    var nField=h("div",{class:"field"}); nField.appendChild(h("label",{},"The story")); var notes=h("textarea",{placeholder:"Best shot, the choke, conditions, signature hole…"}); nField.appendChild(notes); sheet.appendChild(nField);
+
+    var go=h("button",{class:"btn primary"},"Save round");
+    go.onclick=function(){ if(!chosen.length){toast("Pick who played");return;}
+      var rec={id:uid(),date:dInp.value||new Date().toISOString().slice(0,10),players:chosen.slice(),notes:notes.value.trim(),photos:[]};
+      FACTORS.forEach(function(f){rec[f.k]=vals[f.k];});
+      Promise.all(pendingPhotos.map(function(p){rec.photos.push(p.id);return putPhoto(p.id,p.data);})).then(function(){
+        if(!S.ratings[c.n])S.ratings[c.n]={rounds:[]}; S.ratings[c.n].rounds.push(rec); save();
+        if(S.order.indexOf(c.n)<0)insertByCompare(c,function(){afterLog(c,rec);}); else afterLog(c,rec); });
+    };
+    sheet.appendChild(go); syncWho(); showScrim(sheet);
+  }
+  function stageFiles(gal,addBtn){ var inp=document.getElementById("fileIn"); inp.value="";
+    inp.onchange=function(){ Array.prototype.slice.call(inp.files).forEach(function(f){ downscale(f).then(function(data){ if(!data)return; var id=uid();
+      pendingPhotos.push({id:id,data:data}); photoCache[id]=data; var im=h("img",{alt:"",src:data}); im.onclick=function(){var i=pendingPhotos.findIndex(function(x){return x.id===id;});if(i>=0)pendingPhotos.splice(i,1);gal.removeChild(im);}; gal.insertBefore(im,addBtn); }); }); };
+    inp.click(); }
+  function afterLog(c,rec){ refreshMarker(c); renderAll(); closeSheet(); toast("Round saved · "+c.n); setTimeout(function(){openRecap(c,rec);},260); }
+
+  /* ---------- RECAP ---------- */
+  function openRecap(c,rd){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Round recap")); sheet.appendChild(h("div",{class:"loc"},dateLabel(rd.date)+" · "+(c.s||"")));
+    var wrap=h("div",{id:"recapWrap"}); var card=h("div",{class:"recap",id:"recapCard"}); var rsc=roundScore(rd);
+    if(rd.photos&&rd.photos.length){ var im=h("img",{class:"rphoto",alt:"",crossorigin:"anonymous"}); loadPhoto(rd.photos[0],im); card.appendChild(im); }
+    else card.appendChild(h("div",{class:"rphoto",style:"display:grid;place-items:center;font-size:46px"},"⛳"));
+    card.appendChild(h("div",{class:"rgrad"}));
+    card.appendChild(h("div",{class:"rkick"},"RHOD + WEST · GOLF ADVENTURES"));
+    card.appendChild(h("div",{class:"rscore",style:"background:"+scoreColor(rsc)},fmt(rsc)));
+    card.appendChild(h("div",{class:"ravs"},avatarsFor(rd.players,true)));
+    var body=h("div",{class:"rbody"});
+    body.appendChild(h("h3",{},c.n+(isT100(c)?"  ★":"")));
+    body.appendChild(h("div",{class:"rsub"},dateLabel(rd.date)+(c.s?" · "+c.s:"")));
+    var bars=h("div",{class:"rbars"}); FACTORS.forEach(function(f){ if(typeof rd[f.k]!=="number")return; bars.appendChild(h("div",{class:"rbar"},[h("div",{class:"rn"},f.t),h("div",{class:"rt"},h("i",{style:"width:"+(rd[f.k]*10)+"%"})),h("div",{class:"rv"},fmt(rd[f.k]))])); }); body.appendChild(bars);
+    var tags=h("div",{class:"rtags"});
+    tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Played"),(rd.players||[]).join(" & ")])); body.appendChild(tags);
+    if(rd.notes)body.appendChild(h("div",{style:"font-size:13px;opacity:.85;margin-top:14px;line-height:1.5"},rd.notes));
+    body.appendChild(h("div",{class:"rfoot"},[h("span",{},"Overall "+fmt(beliScore(c.n))),h("span",{},"#"+(S.order.indexOf(c.n)+1)+" of "+S.order.length)]));
+    card.appendChild(body); wrap.appendChild(card); sheet.appendChild(wrap);
+    var share=h("button",{class:"btn dark"},"Save / share recap image"); share.onclick=function(){shareRecap(card,c);}; sheet.appendChild(share);
+    var addP=h("button",{class:"btn ghost"},"Add more photos to this round"); addP.onclick=function(){addPhotosTo(c,rd);}; sheet.appendChild(addP);
+    showScrim(sheet); }
+  function addPhotosTo(c,rd){ var inp=document.getElementById("fileIn"); inp.value="";
+    inp.onchange=function(){ Promise.all(Array.prototype.slice.call(inp.files).map(function(f){return downscale(f).then(function(data){if(!data)return null;var id=uid();photoCache[id]=data;return putPhoto(id,data).then(function(){return id;});});}))
+      .then(function(ids){ ids.filter(Boolean).forEach(function(id){rd.photos=rd.photos||[];rd.photos.push(id);}); save(); renderAll(); toast("Photos added"); openRecap(c,rd); }); };
+    inp.click(); }
+  function shareRecap(card,c){ if(typeof html2canvas!=="function"){toast("Screenshot this card to share");return;} toast("Rendering image…");
+    html2canvas(card,{backgroundColor:null,scale:2,useCORS:true}).then(function(canvas){ canvas.toBlob(function(blob){ if(!blob){toast("Couldn't render. Try a screenshot.");return;}
+      var file=new File([blob],(c.n.replace(/[^a-z0-9]+/gi,"-")+"-recap.png"),{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:c.n,text:"Round at "+c.n}).catch(function(){});
+      else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},4000);toast("Saved recap image");} },"image/png");
+    }).catch(function(){toast("Couldn't render. Try a screenshot of the card.");}); }
+
+  /* ---------- head-to-head ---------- */
+  function insertByCompare(c,done){ var list=S.order.filter(function(n){return n!==c.n&&isRated(n);});
+    if(!list.length){S.order.unshift(c.n);save();return done();}
+    var lo=0,hi=list.length;
+    (function step(){ if(lo>=hi){var ref=lo<list.length?list[lo]:null;var pos=ref?S.order.indexOf(ref):S.order.length;if(pos<0)pos=S.order.length;S.order.splice(pos,0,c.n);save();return done();}
+      var mid=(lo+hi)>>1; compare(c.n,list[mid],"Which was better?",function(res){if(res==="a")hi=mid;else if(res==="b")lo=mid+1;else hi=mid;step();}); })(); }
+  function reRank(c){ var i=S.order.indexOf(c.n);if(i>=0)S.order.splice(i,1); insertByCompare(c,function(){refreshMarker(c);renderAll();toast("Re-ranked · "+c.n);setTimeout(function(){openCourse(c);},200);}); }
+  function compare(aName,bName,title,cb){
+    var cmp=document.getElementById("cmp"); cmp.innerHTML="";
+    var ca=byName[aName],cbb=byName[bName];
+    var card=h("div",{class:"cmp-card"});
+    card.appendChild(h("h3",{},title||"Which was better?"));
+    card.appendChild(h("div",{class:"cmp-sub"},"Swipe right if "+aName+" is the better course"));
+    var deck=h("div",{class:"deck"});
+    var back=h("div",{class:"swipe back"},[h("div",{class:"sname"},bName),h("div",{class:"sloc"},cbb?cbb.s:"")]);
+    var front=h("div",{class:"swipe front"});
+    var lblY=h("div",{class:"sw-lbl yes"},"BETTER"),lblN=h("div",{class:"sw-lbl no"},"WORSE");
+    front.appendChild(lblY); front.appendChild(lblN);
+    front.appendChild(h("div",{class:"sname",html:aName+(ca&&isT100(ca)?' <span class="star">★</span>':"")}));
+    front.appendChild(h("div",{class:"sloc"},ca?ca.s:""));
+    front.appendChild(h("div",{class:"svs"},"VERSUS"));
+    front.appendChild(h("div",{class:"sopp",html:bName+(cbb&&isT100(cbb)?' <span class="star">★</span>':"")+(S.order.indexOf(bName)>=0?"  ·  currently #"+(S.order.indexOf(bName)+1):"")}));
+    deck.appendChild(back); deck.appendChild(front); card.appendChild(deck);
+    var ctrl=h("div",{class:"sw-ctrl"});
+    var bNo=h("button",{class:"no"},"✕"),bTie=h("button",{class:"tie"},"Too close"),bYes=h("button",{class:"yes"},"✓");
+    ctrl.appendChild(bNo);ctrl.appendChild(bTie);ctrl.appendChild(bYes); card.appendChild(ctrl);
+    card.appendChild(h("div",{class:"sw-hint"},"Swipe → better  ·  ← worse  ·  ↑ too close"));
+    cmp.appendChild(card); cmp.classList.add("show");
+    var sx=0,sy=0,drag=false,done=false;
+    front.addEventListener("pointerdown",function(e){drag=true;sx=e.clientX;sy=e.clientY;front.style.transition="none";try{front.setPointerCapture(e.pointerId);}catch(_){}});
+    front.addEventListener("pointermove",function(e){ if(!drag)return; var dx=e.clientX-sx,dy=e.clientY-sy;
+      front.style.transform="translate("+dx+"px,"+dy+"px) rotate("+(dx/20)+"deg)";
+      lblY.style.opacity=Math.max(0,Math.min(1,dx/100)); lblN.style.opacity=Math.max(0,Math.min(1,-dx/100)); });
+    function end(e){ if(!drag)return; drag=false; var dx=e.clientX-sx,dy=e.clientY-sy; front.style.transition="transform .3s ease";
+      if(dx>95)fly(1,"a"); else if(dx<-95)fly(-1,"b"); else if(dy<-100)resolve("tie");
+      else{front.style.transform="";lblY.style.opacity=0;lblN.style.opacity=0;} }
+    front.addEventListener("pointerup",end); front.addEventListener("pointercancel",end);
+    function fly(dir,res){ front.style.transition="transform .26s ease"; front.style.transform="translate("+(dir*640)+"px,-50px) rotate("+(dir*32)+"deg)"; setTimeout(function(){resolve(res);},240); }
+    function resolve(res){ if(done)return; done=true; cmp.classList.remove("show"); setTimeout(function(){cb(res);},150); }
+    bNo.onclick=function(){fly(-1,"b");}; bYes.onclick=function(){fly(1,"a");}; bTie.onclick=function(){resolve("tie");};
+  }
+  function battle(){ var rated=S.order.filter(isRated); if(rated.length<2){toast("Rate two courses first");return;}
+    var i=Math.floor(Math.random()*rated.length),j; do{j=Math.floor(Math.random()*rated.length);}while(j===i);
+    var A=rated[i],B=rated[j];
+    compare(A,B,"Settle it — which wins?",function(res){ if(res==="tie"){toast("Called a tie");return;}
+      var winner=res==="a"?A:B,loser=res==="a"?B:A,wi=S.order.indexOf(winner),li=S.order.indexOf(loser);
+      if(wi>li){S.order.splice(wi,1);S.order.splice(S.order.indexOf(loser),0,winner);save();}
+      refreshMarker(byName[winner]);refreshMarker(byName[loser]);renderAll(); toast(winner+" stays ahead of "+loser); }); }
+  document.getElementById("battleBtn").onclick=battle;
+
+  /* ---------- picker ---------- */
+  function openPicker(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Log a round")); sheet.appendChild(h("div",{class:"loc"},"Pick the course you played"));
+    var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]); var inp=h("input",{placeholder:"Search courses…"}); s.appendChild(inp); sheet.appendChild(s);
+    var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
+    function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
+      COURSES.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,80).forEach(function(c){ var sc=beliScore(c.n);
+        var lead=isRated(c.n)?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
+        var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
+        var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},c.s)]),h("div",{class:"chev"},"›")]);
+        row.onclick=function(){closeSheet();setTimeout(function(){openLog(c);},200);}; lw.appendChild(row); });
+      if(!lw.children.length)lw.appendChild(h("div",{class:"empty"},"No matches.")); }
+    inp.oninput=draw; draw(); showScrim(sheet); setTimeout(function(){inp.focus();},350); }
+  document.getElementById("navAdd").onclick=openPicker;
+
+  /* ---------- ROAD TRIPS ---------- */
+  var activeTripId=S.activeTripId||null;
+  function tripById(id){ return S.trips.filter(function(t){return t.id===id;})[0]; }
+  function haversine(a,b){ var R=3958.8,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180,la1=a.lat*Math.PI/180,la2=b.lat*Math.PI/180;
+    var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.sin(dLng/2)*Math.sin(dLng/2)*Math.cos(la1)*Math.cos(la2); return 2*R*Math.asin(Math.sqrt(x)); }
+  function tripDistance(st){ var t=0; for(var i=1;i<st.length;i++)t+=haversine(st[i-1],st[i]); return t; }
+  function optimize(st){ if(st.length<3)return st.slice(); var rem=st.slice(),route=[rem.shift()];
+    while(rem.length){ var last=route[route.length-1],bi=0,bd=Infinity; rem.forEach(function(s,i){var d=haversine(last,s);if(d<bd){bd=d;bi=i;}}); route.push(rem.splice(bi,1)[0]); } return route; }
+  function setActiveTrip(id){ activeTripId=id; S.activeTripId=id; save(); drawTrip(); updateTripBar(); }
+  function addToTrip(stop){ var t=activeTripId?tripById(activeTripId):null;
+    if(!t){ t={id:uid(),name:"Road Trip",stops:[]}; S.trips.push(t); activeTripId=t.id; S.activeTripId=t.id; }
+    if(t.stops.some(function(s){return s.n===stop.n;})){toast(stop.n+" is already in "+t.name);return;}
+    t.stops.push({n:stop.n,s:stop.s||"",lat:stop.lat,lng:stop.lng}); save(); drawTrip(); updateTripBar(); toast("Added "+stop.n+" to "+t.name); }
+  function drawTrip(){ if(!tripLayer)return; tripLayer.clearLayers(); var t=activeTripId?tripById(activeTripId):null; if(!t||!t.stops.length)return;
+    var ord=optimize(t.stops),ll=[]; ord.forEach(function(s,i){ ll.push([s.lat,s.lng]); var m=L.marker([s.lat,s.lng],{icon:tripPin(i+1)}); m.on("click",function(){openTripDetail(t.id);}); tripLayer.addLayer(m); });
+    if(ll.length>1)tripLayer.addLayer(L.polyline(ll,{color:"#0c6e3c",weight:3,opacity:.85,dashArray:"3,9"})); }
+  function updateTripBar(){ var bar=document.getElementById("tripBar"),btn=document.getElementById("openTrip"); var t=activeTripId?tripById(activeTripId):null;
+    if(!t||!t.stops.length){bar.style.display="none"; if(btn)btn.style.display="flex"; return;}
+    bar.style.display="flex"; if(btn)btn.style.display="none";
+    document.getElementById("tb-name").textContent=t.name;
+    document.getElementById("tb-meta").textContent=t.stops.length+" stops · ~"+Math.round(tripDistance(optimize(t.stops)))+" mi · "+Math.max(1,Math.ceil(t.stops.length/2))+" days"; }
+  function openTrips(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Road trips")); sheet.appendChild(h("div",{class:"loc"},"Plan your next golf adventure"));
+    if(!S.trips.length)sheet.appendChild(h("div",{class:"empty",style:"padding:10px 0 16px"},[h("div",{class:"em"},"🗺️"),h("div",{},"No trips yet. Start one, then add courses from the map, dream lists, or search.")]));
+    S.trips.forEach(function(t){ var d=tripDistance(optimize(t.stops));
+      var row=h("div",{class:"trip-row"},[ h("div",{class:"meta"},[h("div",{class:"nm"},t.name),h("div",{class:"sb"},t.stops.length+" stops · ~"+Math.round(d)+" mi"+(t.id===activeTripId?" · active":""))]), h("div",{class:"chev"},"›") ]);
+      row.onclick=function(){ setActiveTrip(t.id); openTripDetail(t.id); }; sheet.appendChild(row); });
+    var nw=h("button",{class:"btn primary"},"＋ New trip"); nw.onclick=function(){ var nm=prompt("Trip name","Road Trip"); if(nm===null)return; var t={id:uid(),name:nm.trim()||"Road Trip",stops:[]}; S.trips.push(t); setActiveTrip(t.id); openTripDetail(t.id); }; sheet.appendChild(nw);
+    showScrim(sheet); }
+  function openTripDetail(id){ var t=tripById(id); if(!t){openTrips();return;} setActiveTrip(id);
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},t.name));
+    var ord=optimize(t.stops);
+    sheet.appendChild(h("div",{class:"loc"},[h("span",{class:"pill green"},t.stops.length+" STOPS"),h("span",{class:"pill"},"~"+Math.round(tripDistance(ord))+" MI"),h("span",{class:"pill"},Math.max(1,Math.ceil(t.stops.length/2))+" DAYS")]));
+    if(!t.stops.length)sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 12px"},"No stops yet. Add courses below."));
+    ord.forEach(function(s,i){ var leg=i>0?"~"+Math.round(haversine(ord[i-1],s))+" mi from "+ord[i-1].n:"Start";
+      var st=h("div",{class:"tstop"},[ h("div",{class:"tn"},""+(i+1)), h("div",{class:"meta"},[h("div",{class:"nm",style:"font-family:Fraunces,serif;font-weight:600;font-size:15px"},s.n),h("div",{class:"leg"},leg)]) ]);
+      var x=h("button",{class:"x"},"✕"); x.onclick=function(){ t.stops=t.stops.filter(function(q){return q.n!==s.n;}); save(); drawTrip(); updateTripBar(); openTripDetail(id); }; st.appendChild(x);
+      sheet.appendChild(st); });
+    // nearby gems
+    var gems=nearbyGems(t); if(gems.length){ sheet.appendChild(h("div",{class:"section-h",style:"margin:16px 0 8px"},"Nearby bucket-list gems"));
+      gems.forEach(function(g){ var row=h("div",{class:"gem"},[ h("div",{class:"meta"},[h("div",{class:"nm"},g.d.n),h("div",{class:"sb"},g.d.s+" · ~"+Math.round(g.dist)+" mi away")]) ]);
+        var ad=h("button",{},"Add"); ad.onclick=function(){ addToTrip({n:g.d.n,s:g.d.s,lat:g.d.lat,lng:g.d.lng}); openTripDetail(id); }; row.appendChild(ad); sheet.appendChild(row); }); }
+    var addc=h("button",{class:"btn primary"},"＋ Add a course"); addc.onclick=function(){ tripPicker(id); }; sheet.appendChild(addc);
+    var rn=h("button",{class:"btn ghost"},"Rename trip"); rn.onclick=function(){ var nm=prompt("Trip name",t.name); if(nm!==null){t.name=nm.trim()||t.name;save();updateTripBar();openTripDetail(id);} }; sheet.appendChild(rn);
+    var del=h("button",{class:"btn ghost"},"Delete trip"); del.onclick=function(){ if(confirm("Delete "+t.name+"?")){ S.trips=S.trips.filter(function(q){return q.id!==id;}); if(activeTripId===id){activeTripId=null;S.activeTripId=null;} save(); drawTrip(); updateTripBar(); closeSheet(); } }; sheet.appendChild(del);
+    showScrim(sheet); }
+  function nearbyGems(t){ if(!t.stops.length)return []; var out=[];
+    dreamAll.forEach(function(d){ if(dreamPlayed(d))return; if(t.stops.some(function(s){return s.n===d.n;}))return;
+      var md=Infinity; t.stops.forEach(function(s){ var dd=haversine(s,d); if(dd<md)md=dd; }); if(md<=80)out.push({d:d,dist:md}); });
+    out.sort(function(a,b){return a.dist-b.dist;}); return out.slice(0,10); }
+  function tripPicker(id){ var t=tripById(id); var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Add a course")); sheet.appendChild(h("div",{class:"loc"},"Played courses, dream courses and your wishlist"));
+    var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]); var inp=h("input",{placeholder:"Search…"}); s.appendChild(inp); sheet.appendChild(s);
+    var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
+    var cand=[]; var seen={};
+    COURSES.forEach(function(c){ var k=normKey(c.n); if(!seen[k]){seen[k]=1;cand.push({n:c.n,s:c.s,lat:c.lat,lng:c.lng,kind:"played"});} });
+    dreamAll.forEach(function(d){ var k=normKey(d.n); if(!seen[k]){seen[k]=1;cand.push({n:d.n,s:d.s,lat:d.lat,lng:d.lng,kind:"dream"});} });
+    S.wishlist.forEach(function(w){ if(w.lat){var k=normKey(w.n); if(!seen[k]){seen[k]=1;cand.push({n:w.n,s:w.s,lat:w.lat,lng:w.lng,kind:"wish"});}} });
+    function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
+      cand.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,60).forEach(function(c){
+        var inTrip=t.stops.some(function(s){return s.n===c.n;});
+        var tagcol=c.kind==="dream"?"var(--gold)":c.kind==="wish"?"var(--gold-soft)":"var(--green)";
+        var lead=h("div",{class:"badge-sm",style:"background:"+tagcol+";font-size:18px"},c.kind==="played"?"⛳":"★");
+        var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[h("div",{class:"nm"},c.n),h("div",{class:"sb"},c.s)]),h("div",{class:"chev"},inTrip?"✓":"＋")]);
+        row.onclick=function(){ if(inTrip){toast("Already added");return;} addToTrip(c); draw(); }; lw.appendChild(row); });
+      if(!lw.children.length)lw.appendChild(h("div",{class:"empty"},"No matches.")); }
+    var back=h("button",{class:"btn ghost"},"Done");
+    inp.oninput=draw; draw(); sheet.appendChild(back); back.onclick=function(){openTripDetail(id);};
+    showScrim(sheet); setTimeout(function(){inp.focus();},350); }
+
+  /* ---------- nav / filters ---------- */
+  function switchView(v){ ["feed","map","rank","dream"].forEach(function(x){document.getElementById("view-"+x).classList.toggle("active",x===v);});
+    document.querySelectorAll("nav button[data-v]").forEach(function(b){b.classList.toggle("on",b.dataset.v===v);});
+    if(v==="map"&&map)setTimeout(function(){map.invalidateSize();drawTrip();},120); }
+  document.querySelectorAll("nav button[data-v]").forEach(function(b){b.onclick=function(){switchView(b.dataset.v);};});
+  document.getElementById("feed-all").onclick=function(e){e.preventDefault();switchView("rank");};
+  document.querySelectorAll("#feed-filters .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#feed-filters .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); feedFilter=ch.dataset.w; renderFeed(); }; });
+  document.querySelectorAll("#rank-filters .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#rank-filters .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); rankFilter=ch.dataset.f; renderRank(); }; });
+  document.querySelectorAll("#dream-seg .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#dream-seg .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); dreamSeg=ch.dataset.d; renderDream(); }; });
+  document.getElementById("q").oninput=function(e){query=e.target.value.trim().toLowerCase();renderRank();};
+
+  function boot(){ activeTripId=S.activeTripId||null; initMap(); renderAll(); drawTrip(); updateTripBar(); pollUpdates(); }
+  loadState().then(boot).catch(function(){ boot(); });
+})();
+</script>
+</body>
+</html>
