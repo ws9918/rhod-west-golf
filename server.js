@@ -13,7 +13,7 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
+const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(__dirname, "data"));
 const PHOTO_DIR = path.join(DATA_DIR, "photos");
 const STATE_FILE = path.join(DATA_DIR, "state.json");
 const CODE = (process.env.ACCESS_CODE || "").trim();
@@ -44,11 +44,10 @@ function safeId(s) { return String(s || "").replace(/[^a-z0-9_-]/gi, "").slice(0
 /* One-time reset (Sept 2026): the rating system was rebuilt around Totality,
    and the old scores must not seed the new rankings. On boot, if the stored
    state still has any pre-Totality round (no `tot` score), archive the whole
-   state to state-backup-<timestamp>.json on the volume, then wipe ratings,
-   the old head-to-head order, and snub flags. Keeps t100 flags, trips,
-   wishlist and dream progress; photo files stay on disk (the backup still
-   references them). Once wiped there are no legacy rounds left, so this
-   never fires again. */
+   state to state-backup-<timestamp>.json on the volume, then remove ONLY
+   those legacy rounds (new Totality ratings are kept) along with the old
+   head-to-head order. Keeps t100 flags, trips, wishlist and dream progress;
+   photo files stay on disk (the backup still references them). */
 try {
   const st = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
   const hasLegacy = st && st.ratings && Object.keys(st.ratings).some(function (n) {
@@ -57,9 +56,14 @@ try {
   if (hasLegacy) {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     fs.writeFileSync(path.join(DATA_DIR, "state-backup-" + stamp + ".json"), JSON.stringify(st));
-    st.ratings = {}; st.order = []; st.snub = {};
+    let kept = 0;
+    Object.keys(st.ratings).forEach(function (n) {
+      const rs = ((st.ratings[n] && st.ratings[n].rounds) || []).filter(function (r) { return r && typeof r.tot === "number"; });
+      if (rs.length) { st.ratings[n].rounds = rs; kept += rs.length; } else delete st.ratings[n];
+    });
+    st.order = []; if (!kept) st.snub = {};
     fs.writeFileSync(STATE_FILE, JSON.stringify(st));
-    console.log("One-time reset: wiped pre-Totality ratings (backup: state-backup-" + stamp + ".json)");
+    console.log("One-time reset: removed pre-Totality ratings, kept " + kept + " Totality rating(s) (backup: state-backup-" + stamp + ".json)");
   }
 } catch (e) { /* no state yet, or unreadable — nothing to migrate */ }
 
@@ -105,9 +109,9 @@ const server = http.createServer(async (req, res) => {
   // ---------- static ----------
   let rel = u === "/" ? "/index.html" : u;
   const full = path.normalize(path.join(ROOT, rel));
-  if (!full.startsWith(ROOT)) return send(res, 403, "forbidden");
+  if (!(full === ROOT || full.startsWith(ROOT + path.sep))) return send(res, 403, "forbidden");
   // never serve the data dir (state, backups, photos) as static files
-  if (full.startsWith(path.normalize(DATA_DIR + path.sep))) return send(res, 403, "forbidden");
+  if (full.startsWith(DATA_DIR + path.sep)) return send(res, 403, "forbidden");
   fs.readFile(full, (err, buf) => {
     if (err) { // SPA-ish fallback to index
       return fs.readFile(path.join(ROOT, "index.html"), (e2, idx) =>
