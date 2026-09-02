@@ -96,11 +96,6 @@
   .thumb{width:46px;height:46px;border-radius:13px;object-fit:cover;flex:0 0 auto}
   .chev{color:#d2d6cd;font-size:20px;flex:0 0 auto}
   .row .rt{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-  /* battle */
-  .battle{margin:6px 14px 2px;border-radius:18px;padding:16px 18px;background:linear-gradient(120deg,#0d4a2d,#1c8b56);color:#fff;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
-  .battle .t b{font-size:15px;font-family:"Fraunces",serif;font-weight:600}
-  .battle .t span{display:block;font-size:12px;opacity:.9;margin-top:2px}
-  .battle button{margin-left:auto;background:#fff;color:var(--green-d);border:0;font-weight:800;padding:11px 17px;border-radius:12px;font-size:13px;white-space:nowrap}
   /* top100 */
   .cover{margin:14px;border-radius:20px;padding:20px;color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;background:#0d4a2d}
   .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32}
@@ -149,7 +144,7 @@
   .fb .fn{width:122px;font-size:13px;color:var(--muted)}
   .fb .ft{flex:1;height:7px;background:#edefe9;border-radius:99px;overflow:hidden}
   .fb .ft i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green-2))}
-  .fb .fv{width:30px;text-align:right;font-weight:800;font-size:13px;font-family:"Fraunces",serif}
+  .fb .fv{width:44px;text-align:right;font-weight:800;font-size:13px;font-family:"Fraunces",serif;white-space:nowrap}
   .btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:800;margin-top:12px;font-family:inherit}
   .btn.primary{background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff}
   .btn.ghost{background:#eef0ea;color:var(--ink)}
@@ -164,7 +159,7 @@
   .slabel{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 3px}
   .slabel .t{font-weight:700;font-size:15px}
   .slabel .d{font-size:11.5px;color:var(--muted);max-width:56%;text-align:right}
-  .slabel .v{font-weight:800;color:var(--green);font-size:16px;margin-left:8px;font-family:"Fraunces",serif}
+  .slabel .v{font-weight:800;color:var(--green);font-size:16px;margin-left:8px;font-family:"Fraunces",serif;white-space:nowrap}
   input[type=range]{-webkit-appearance:none;width:100%;height:30px;background:transparent}
   input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) var(--p,70%),#e7e9e3 var(--p,70%))}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--green);margin-top:-9px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
@@ -175,32 +170,6 @@
   .seg button.on{background:var(--green);color:#fff;border-color:var(--green)}
   .twocol{display:flex;gap:10px}.twocol>div{flex:1}
   .row-pick{max-height:54dvh;overflow-y:auto;margin-top:6px}
-  /* compare */
-  .cmp{position:fixed;inset:0;z-index:950;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(12,22,15,.66)}
-  .cmp.show{display:flex}
-  .cmp-card{background:var(--card);border-radius:24px;padding:26px 24px;width:100%;max-width:430px;text-align:center;box-shadow:var(--shadow-lg)}
-  .cmp-card h3{margin:0 0 2px;font-size:22px}
-  .cmp-card .cmp-sub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
-  .deck{position:relative;height:286px;margin:4px 0}
-  .swipe{position:absolute;inset:0;border-radius:20px;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#17402e,#0c241a);color:#fff;box-shadow:var(--shadow-lg);touch-action:none;will-change:transform;overflow:hidden;cursor:grab}
-  .swipe.back{transform:scale(.93) translateY(12px);filter:brightness(.62)}
-  .swipe .sname{font-family:"Fraunces",serif;font-size:27px;font-weight:600;line-height:1.1}
-  .swipe .sloc{opacity:.72;font-size:13px;margin-top:7px}
-  .swipe .svs{margin:16px 0 7px;font-size:10px;letter-spacing:2.5px;opacity:.55}
-  .swipe .sopp{font-size:15px;opacity:.85}
-  .swipe .star{color:var(--gold-soft)}
-  .sw-lbl{position:absolute;top:20px;padding:6px 13px;border-radius:9px;font-weight:800;font-size:17px;border:2.5px solid;opacity:0;letter-spacing:1px}
-  .sw-lbl.yes{right:18px;color:#7fd6a3;border-color:#7fd6a3;transform:rotate(11deg)}
-  .sw-lbl.no{left:18px;color:#e88a73;border-color:#e88a73;transform:rotate(-11deg)}
-  .sw-ctrl{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}
-  .sw-ctrl button{border:1.5px solid var(--line);background:var(--card);border-radius:50%;width:56px;height:56px;font-size:23px;display:grid;place-items:center}
-  .sw-ctrl .no{color:var(--bad)} .sw-ctrl .yes{color:var(--green)}
-  .sw-ctrl .tie{width:auto;height:auto;padding:11px 16px;border-radius:24px;font-size:12.5px;font-weight:800;color:var(--muted)}
-  .sw-hint{font-size:11.5px;color:var(--faint);margin-top:12px}
-  .sw-pick{display:flex;flex-direction:column;gap:9px;margin-top:16px}
-  .pickbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:14px;padding:15px;font-size:16px;font-weight:800;font-family:"Fraunces",serif;color:var(--ink)}
-  .pickbtn.a{border-color:var(--green);background:#eef6f0;color:var(--green-d)}
-  .tie-link{display:block;margin:12px auto 0;background:transparent;border:0;color:var(--muted);font-size:13px;font-weight:700;text-decoration:underline}
   /* recap */
   #recapWrap{padding:6px 2px 0}
   .recap{border-radius:22px;overflow:hidden;background:#0c241a;color:#fff;position:relative}
@@ -209,7 +178,7 @@
   .recap .rkick{position:absolute;top:16px;left:18px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.92}
   .recap .rscore{position:absolute;top:14px;right:16px;width:58px;height:58px;border-radius:15px;display:grid;place-items:center;font-weight:600;font-size:23px;color:#0c241a;font-family:"Fraunces",serif}
   .recap .ravs{position:absolute;left:18px;bottom:14px}
-  .recap .rbody{padding:16px 18px 20px}
+  .recap .rbody{padding:16px 18px 52px}
   .recap h3{margin:0;font-size:27px;letter-spacing:-.4px;font-weight:600}
   .recap .rsub{opacity:.78;font-size:13px;margin-top:4px}
   .recap .rbars{margin:15px 0 4px}
@@ -217,12 +186,11 @@
   .rbar .rn{width:112px;font-size:11.5px;opacity:.85;text-transform:uppercase;letter-spacing:.5px}
   .rbar .rt{flex:1;height:6px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
   .rbar .rt i{display:block;height:100%;background:linear-gradient(90deg,#7fd6a3,#b9e8cd)}
-  .rbar .rv{width:28px;text-align:right;font-weight:700;font-size:12px;font-family:"Fraunces",serif}
+  .rbar .rv{width:40px;text-align:right;font-weight:700;font-size:12px;font-family:"Fraunces",serif;white-space:nowrap}
   .recap .rtags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
   .recap .rtag{font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:10px;background:rgba(255,255,255,.1)}
   .recap .rtag em{font-style:normal;opacity:.6;text-transform:uppercase;letter-spacing:.6px;font-size:9.5px;margin-right:5px}
   .recap .rtag.win{background:rgba(127,214,163,.2);color:#c4f0d6}
-  .recap .rfoot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:10.5px;opacity:.72;text-transform:uppercase;letter-spacing:1px}
   .empty{text-align:center;color:var(--muted);padding:10px 26px 30px;font-size:14px;line-height:1.5}
   .empty .emimg{width:100%;height:150px;object-fit:cover;border-radius:18px;margin-bottom:16px}
   .empty .em{font-size:30px;margin-bottom:8px}
@@ -319,10 +287,6 @@
         <div class="stat"><b id="s-rounds">0</b><span>Rounds</span></div>
         <div class="stat"><b id="s-top100">0</b><span>Top 100</span></div>
       </div>
-      <div class="battle" id="battleBanner" style="display:none">
-        <div class="t"><b>Settle a debate</b><span>Head-to-head — which course wins?</span></div>
-        <button id="battleBtn">Battle</button>
-      </div>
       <div class="section-h" style="margin-bottom:8px">Memories <a id="feed-all" href="#">All courses ›</a></div>
       <div class="filters" id="feed-filters">
         <button class="chip on" data-w="all">Everyone</button>
@@ -363,6 +327,7 @@
         <button class="chip" data-f="rated">Rated</button>
         <button class="chip" data-f="unrated">To play</button>
         <button class="chip" data-f="top100">Top 100</button>
+        <button class="chip" data-f="snub">Should be Top 100</button>
       </div>
       <div id="rank-list" style="margin-top:10px"></div>
     </section>
@@ -396,8 +361,6 @@
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
 
-<div class="cmp" id="cmp"></div>
-
 <input type="file" id="fileIn" accept="image/*" multiple style="display:none" />
 <div class="toast" id="toast"></div>
 
@@ -408,16 +371,30 @@
 <script>
 (function(){
   "use strict";
-  var FACTORS=[
-    {k:"design",t:"Course Design",d:"Routing, shaping, strategy"},
-    {k:"scenery",t:"Scenery & Setting",d:"Views, drama, natural beauty"},
-    {k:"cond",t:"Conditioning",d:"Turf, greens and bunkers"},
-    {k:"memory",t:"Memorability",d:"Signature holes you'll retell"},
-    {k:"play",t:"Playability",d:"Fun to play your game"},
-    {k:"fun",t:"Fun",d:"Would you race back?"},
-    {k:"club",t:"Club Experience",d:"Service, clubhouse, vibe"},
-    {k:"excl",t:"Exclusivity",d:"Access, prestige, rarity"}
+  /* The Rhod + West rating system.
+     Six categories, then Totality — a separate gut-call score that drives the rankings. */
+  var CATS=[
+    {k:"design",t:"Design",d:"Overall design — routing, boldness, how interesting",max:10,step:0.5,def:7},
+    {k:"holes",t:"Memorable Holes",d:"Of the 18, how many can you actually remember?",max:18,step:1,def:0,count:true},
+    {k:"cond",t:"Condition",d:"Turf, greens and bunkers",max:10,step:0.5,def:7},
+    {k:"enjoy",t:"Enjoyment",d:"Played alone, would you have enjoyed it? Ignore your score and the company",max:10,step:0.5,def:7},
+    {k:"exp",t:"Experience",d:"Everything that doesn't touch a club — clubhouse, turn house, comfort stations, how they treat you",max:10,step:0.5,def:7},
+    {k:"diff",t:"Difficulty",d:"Self-explanatory",max:10,step:0.5,def:7}
   ];
+  var TOT={k:"tot",t:"Totality",d:"The whole thing, gut call — if it adds up to a 10, it's a 10. This is what ranks the course",max:10,step:0.5,def:7};
+  var RECOS=[
+    {k:"travel",t:"✈️ Travel for it",s:"Worth a trip on its own"},
+    {k:"trip",t:"🧳 Trip-worthy",s:"Build it into a golf trip"},
+    {k:"nearby",t:"📍 If nearby",s:"Play it when you're close"},
+    {k:"skip",t:"➖ Skip it",s:"Don't go out of your way"}
+  ];
+  function recoLabel(k){ for(var i=0;i<RECOS.length;i++)if(RECOS[i].k===k)return RECOS[i].t; return null; }
+  // older rounds were scored on a previous factor set; read the nearest equivalent
+  function catVal(rd,k){ if(typeof rd[k]==="number")return rd[k];
+    if(k==="exp"&&typeof rd.club==="number")return rd.club;
+    if(k==="enjoy"&&typeof rd.fun==="number")return rd.fun;
+    return null; }
+  var LEGACY=["design","scenery","cond","memory","play","fun","club","excl"];
   var KEY="rwGolf.v2"; // keep prior data
   var PRINCIPALS=["West","Rhod"];
   var COURSES=window.COURSES||[];
@@ -456,8 +433,8 @@
 
   /* ---------- shared state ---------- */
   var S=defaultState();
-  function defaultState(){ return {ratings:{},order:[],t100:{},players:["Rhod","West"],trips:[],wishlist:[],dreamDone:{},activeTripId:null}; }
-  function normalizeState(r){ r=r||{}; if(!r.ratings)r.ratings={}; if(!r.order)r.order=[]; if(!r.t100)r.t100={};
+  function defaultState(){ return {ratings:{},order:[],t100:{},snub:{},players:["Rhod","West"],trips:[],wishlist:[],dreamDone:{},activeTripId:null}; }
+  function normalizeState(r){ r=r||{}; if(!r.ratings)r.ratings={}; if(!r.order)r.order=[]; if(!r.t100)r.t100={}; if(!r.snub)r.snub={};
     if(!r.players||!r.players.length)r.players=["Rhod","West"]; if(!r.trips)r.trips=[]; if(!r.wishlist)r.wishlist=[]; if(!r.dreamDone)r.dreamDone={}; return r; }
   function loadState(){ return fetch("/api/state",{headers:hdr()}).then(function(r){ if(r.status===401){promptCode();throw 0;} return r.json(); })
     .then(function(d){ for(var k in S)delete S[k]; var n=normalizeState(d); for(var j in n)S[j]=n[j]; }); }
@@ -479,14 +456,21 @@
   function isRated(name){ return rounds(name).length>0; }
   function allRounds(){ var out=[]; for(var n in S.ratings){ rounds(n).forEach(function(rd){out.push({course:n,rd:rd});}); }
     out.sort(function(a,b){return (a.rd.date<b.rd.date?1:a.rd.date>b.rd.date?-1:0);}); return out; }
-  function roundScore(rd){ var s=0,n=0; FACTORS.forEach(function(f){ if(typeof rd[f.k]==="number"){s+=rd[f.k];n++;} }); return n?s/n:0; }
-  function factorScore(name){ var rs=rounds(name); if(!rs.length)return null; var t=0;
-    rs.forEach(function(r){t+=roundScore(r);}); return t/rs.length; }
-  function beliScore(name){ var fs=factorScore(name); if(fs===null)return null; var N=S.order.length,idx=S.order.indexOf(name);
-    if(N<2||idx<0)return Math.round(fs*10)/10; var rk=10*(N-1-idx)/(N-1); return Math.round((0.55*fs+0.45*rk)*10)/10; }
+  // A round's score is its Totality; rounds from the old system fall back to their old factor average
+  function roundScore(rd){ if(typeof rd.tot==="number")return rd.tot;
+    var s=0,n=0; LEGACY.forEach(function(k){ if(typeof rd[k]==="number"){s+=rd[k];n++;} }); return n?s/n:0; }
+  function hasTot(name){ return rounds(name).some(function(r){return typeof r.tot==="number";}); }
+  function courseScore(name){ var rs=rounds(name); if(!rs.length)return null; var t=0;
+    rs.forEach(function(r){t+=roundScore(r);}); return Math.round(t/rs.length*10)/10; }
+  function catAvg(name,k){ var t=0,n=0; rounds(name).forEach(function(r){ var v=catVal(r,k); if(v!=null){t+=v;n++;} }); return n?t/n:null; }
+  function rankedNames(){ return COURSES.map(function(c){return c.n;}).filter(isRated)
+    .sort(function(a,b){ var d=(courseScore(b)||0)-(courseScore(a)||0); if(d)return d;
+      d=rounds(b).length-rounds(a).length; if(d)return d; return a<b?-1:1; }); }
+  function rankOf(name){ return rankedNames().indexOf(name); }
+  function isSnub(c){ return !!S.snub[c.n]; }
   function scoreColor(v){ if(v==null)return"#cdd2c9"; if(v>=8.5)return"#15643f"; if(v>=7)return"#3f9a64"; if(v>=5.5)return"#cf9a35"; return"#c75f43"; }
   function fmt(v){ return (Math.round(v*10)/10).toFixed(1); }
-  function dateLabel(d){ try{return new Date(d+"T00:00:00").toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}catch(e){return d;} }
+  function payLabel(v){ return "$"+(Math.round(v)===v?v:v.toFixed(2)); }
 
   /* who played */
   function whoTag(players){ players=players||[]; var w=players.indexOf("West")>=0,r=players.indexOf("Rhod")>=0;
@@ -523,7 +507,7 @@
     COURSES.forEach(function(c){ var m=L.circleMarker([c.lat,c.lng],circleStyle(c)); m.on("click",function(){openCourse(c);}); markers[c.n]=m; playedLayer.addLayer(m); });
     buildDreamMarkers();
     map.addLayer(playedLayer); tripLayer.addTo(map); wireMapControls(); }
-  function circleStyle(c){ var rated=isRated(c.n),sc=beliScore(c.n),t=isT100(c);
+  function circleStyle(c){ var rated=isRated(c.n),sc=courseScore(c.n),t=isT100(c);
     var fill=t?"#b8902f":(rated?scoreColor(sc):"#aeb6ab");
     return {radius:t?7:6,fillColor:fill,color:"#fff",weight:2,opacity:1,fillOpacity:(t||rated)?1:.85}; }
   function dreamCircleStyle(){ return {radius:6,fillColor:"#ffffff",color:"#b8902f",weight:2.5,opacity:1,fillOpacity:1}; }
@@ -567,7 +551,6 @@
     document.getElementById("s-played").textContent=COURSES.length;
     document.getElementById("s-rounds").textContent=allRounds().length;
     document.getElementById("s-top100").textContent=COURSES.filter(isT100).length;
-    document.getElementById("battleBanner").style.display=S.order.filter(isRated).length>=2?"flex":"none";
     var feed=document.getElementById("feed"); feed.innerHTML="";
     var ar=allRounds().filter(function(it){ if(feedFilter==="all")return true; return whoTag(it.rd.players)===feedFilter; });
     if(!ar.length){ feed.appendChild(h("div",{class:"empty"},[
@@ -602,22 +585,23 @@
   /* ---------- COURSES ---------- */
   var rankFilter="all",query="";
   function renderRank(){ var host=document.getElementById("rank-list"); host.innerHTML="";
-    var rated=S.order.filter(isRated);
+    var rated=rankedNames();
     var unrated=COURSES.map(function(c){return c.n;}).filter(function(n){return !isRated(n);});
     function match(n){ var c=byName[n]; if(!c)return false;
       if(query&&(c.n+" "+c.s).toLowerCase().indexOf(query)<0)return false;
       if(rankFilter==="rated")return isRated(n); if(rankFilter==="unrated")return !isRated(n);
-      if(rankFilter==="top100")return isT100(c); return true; }
+      if(rankFilter==="top100")return isT100(c); if(rankFilter==="snub")return isSnub(c); return true; }
     if(rankFilter!=="unrated"){ var rr=rated.filter(match);
       if(rr.length){ host.appendChild(h("div",{class:"section-h"},"Ranked")); rr.forEach(function(n,i){host.appendChild(rowFor(byName[n],i+1));}); } }
     if(rankFilter!=="rated"){ var uu=unrated.filter(match).sort(function(a,b){return a<b?-1:1;});
       if(uu.length){ host.appendChild(h("div",{class:"section-h"},rankFilter==="unrated"?"Courses to play":"Not yet rated ("+uu.length+")")); uu.forEach(function(n){host.appendChild(rowFor(byName[n],null));}); } }
     if(!host.children.length)host.appendChild(h("div",{class:"empty"},"No courses match.")); }
-  function rowFor(c,rankNo){ var sc=beliScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
+  function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
     var lead; if(firstPhoto){lead=h("img",{class:"thumb",alt:""});loadPhoto(firstPhoto,lead);}
       else lead=rated?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
     var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
+    if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
     var sub=rated?(fmt(sc)+" · "+rs.length+" round"+(rs.length>1?"s":"")+" · "+c.s):c.s;
     var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},"#"+rankNo));
     kids.push(lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
@@ -688,33 +672,45 @@
   function renderAll(){ renderFeed(); renderRank(); renderDream(); renderMapStats(); }
 
   /* ---------- COURSE SHEET ---------- */
-  function openCourse(c){ var sc=beliScore(c.n),fs=factorScore(c.n),rated=isRated(c.n),rs=rounds(c.n);
+  function openCourse(c){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n);
     var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"}));
     sheet.appendChild(h("h2",{},c.n));
     var loc=h("div",{class:"loc"},[h("span",{},"📍 "+(c.s||""))]);
     if(isT100(c))loc.appendChild(h("span",{class:"pill gold"},"★ TOP 100"));
-    var idx=S.order.indexOf(c.n); if(rated&&idx>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(idx+1)+" OF "+S.order.length));
+    else if(isSnub(c))loc.appendChild(h("span",{class:"pill gold"},"↑ SHOULD BE TOP 100"));
+    var rk=rankOf(c.n); if(rated&&rk>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(rk+1)+" OF "+rankedNames().length));
     sheet.appendChild(loc);
     var anyPhoto=false; rs.forEach(function(r){ if(r.photos&&r.photos.length)anyPhoto=true; });
     if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"hero.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},"Add your own photos when you log a round")); sheet.appendChild(ban); }
     if(rated){
-      var headRight=h("div",{},[ h("div",{class:"sub"},[h("b",{},"Overall "+fmt(sc))," · factors + head-to-head"]),
-        h("div",{class:"sub",style:"margin-top:3px"},[h("b",{},"Factor avg "+fmt(fs))," · "+rs.length+" round"+(rs.length>1?"s":"")]) ]);
-      var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), headRight ]);
+      var pays=rs.map(function(r){return r.pay;}).filter(function(v){return typeof v==="number";});
+      var subs=[ h("div",{class:"sub"},[h("b",{},"Totality "+fmt(sc))," · "+rs.length+" round"+(rs.length>1?"s":"")]) ];
+      if(pays.length){ var lo=Math.min.apply(null,pays),hi=Math.max.apply(null,pays);
+        subs.push(h("div",{class:"sub",style:"margin-top:3px"},[h("b",{},"Would pay "+payLabel(lo)+(hi>lo?"–"+payLabel(hi):""))])); }
+      if(!hasTot(c.n))subs.push(h("div",{class:"sub",style:"margin-top:3px"},"Old scoring — edit a round to add Totality"));
+      var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), h("div",{},subs) ]);
       sheet.appendChild(hr);
       var cp=coursePlayers(c.n); if(cp.length){ var pl=h("div",{style:"display:flex;align-items:center;gap:8px;margin:-6px 0 12px"},[avatarsFor(cp),h("span",{style:"font-size:12.5px;color:var(--muted)"},"Played by "+cp.join(" & "))]); sheet.appendChild(pl); }
       var allPhotos=[]; rs.forEach(function(r){(r.photos||[]).forEach(function(p){allPhotos.push(p);});});
       if(allPhotos.length){ var g=h("div",{class:"gallery"}); allPhotos.forEach(function(p){ var im=h("img",{alt:""}); loadPhoto(p,im); im.onclick=function(){viewPhoto(p);}; g.appendChild(im); }); sheet.appendChild(g); }
       var fb=h("div",{style:"margin:6px 0 2px"});
-      FACTORS.forEach(function(f){ var tot=0,n=0; rs.forEach(function(r){if(typeof r[f.k]==="number"){tot+=r[f.k];n++;}}); if(!n)return; var v=tot/n;
-        fb.appendChild(h("div",{class:"fb"},[h("div",{class:"fn"},f.t),h("div",{class:"ft"},h("i",{style:"width:"+(v*10)+"%"})),h("div",{class:"fv"},fmt(v))])); });
+      CATS.forEach(function(f){ var v=catAvg(c.n,f.k); if(v==null)return;
+        fb.appendChild(h("div",{class:"fb"},[h("div",{class:"fn"},f.t),h("div",{class:"ft"},h("i",{style:"width:"+(v/f.max*100)+"%"})),h("div",{class:"fv"},f.count?Math.round(v)+"":fmt(v))])); });
       sheet.appendChild(fb);
+      var recoTags=h("div",{class:"tags"}); rs.forEach(function(r){ var rl=recoLabel(r.reco); if(!rl)return;
+        recoTags.appendChild(tag((r.players&&r.players.length?r.players.join(" & "):"Verdict"),rl,"win")); });
+      if(recoTags.children.length)sheet.appendChild(recoTags);
       sheet.appendChild(h("div",{class:"section-h",style:"margin:18px 0 8px"},"Rounds"));
       rs.slice().reverse().forEach(function(r){
+        var bits=[]; if(typeof r.tot==="number")bits.push("Totality "+fmt(r.tot));
+        if(typeof r.pay==="number")bits.push(payLabel(r.pay));
+        var rl=recoLabel(r.reco); if(rl)bits.push(rl.replace(/^\S+\s/,""));
+        if(r.photos&&r.photos.length)bits.push(r.photos.length+" photos");
+        if(!bits.length)bits.push("Tap to view or edit");
         var line=h("div",{class:"row",style:"margin:0 0 9px"},[
           h("div",{class:"badge-sm",style:"background:"+scoreColor(roundScore(r))},fmt(roundScore(r))),
-          h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},(r.players&&r.players.length?r.players.join(" & "):"Round")),h("div",{class:"sb"},[(r.photos&&r.photos.length?r.photos.length+" photos · ":"")+"Tap to view recap"])]),
+          h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},(r.players&&r.players.length?r.players.join(" & "):"Round")),h("div",{class:"sb"},bits.join(" · "))]),
           h("div",{class:"rt"},[avatarsFor(r.players),h("div",{class:"chev"},"›")])
         ]);
         line.onclick=function(){openRecap(c,r);}; sheet.appendChild(line);
@@ -722,11 +718,12 @@
     } else { sheet.appendChild(h("div",{class:"empty",style:"padding:14px 0 18px"},[h("div",{class:"em"},"⛳"),h("div",{},"You've played here. Log the round to add photos, scores and a rating.")])); }
     var rate=h("button",{class:"btn primary"},rated?"Log another round":"Log a round");
     rate.onclick=function(){closeSheet();setTimeout(function(){openLog(c);},180);}; sheet.appendChild(rate);
-    if(rated){ var re=h("button",{class:"btn ghost"},"Re-rank (head-to-head)"); re.onclick=function(){closeSheet();setTimeout(function(){reRank(c);},120);}; sheet.appendChild(re); }
     var tp=h("button",{class:"btn ghost"},"Add to a road trip");
     tp.onclick=function(){ addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng}); }; sheet.appendChild(tp);
     var tg=h("button",{class:"btn ghost"},isT100(c)?"Remove Top-100 flag":"Flag as Top 100");
     tg.onclick=function(){S.t100[c.n]=!isT100(c);save();refreshMarker(c);renderAll();openCourse(c);}; sheet.appendChild(tg);
+    if(!isT100(c)){ var sn=h("button",{class:"btn ghost"},isSnub(c)?"Remove “Should be Top 100”":"↑ Should be Top 100");
+      sn.onclick=function(){ if(isSnub(c))delete S.snub[c.n]; else S.snub[c.n]=true; save();renderAll();openCourse(c); }; sheet.appendChild(sn); }
     showScrim(sheet);
   }
   function viewPhoto(id){ var wrap=h("div",{style:"position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:970;display:grid;place-items:center"});
@@ -738,13 +735,17 @@
     del.onclick=function(){removePhotoEverywhere(id);delPhoto(id);close();renderAll();toast("Photo deleted");}; }
   function removePhotoEverywhere(id){ for(var n in S.ratings){rounds(n).forEach(function(r){if(r.photos){var i=r.photos.indexOf(id);if(i>=0)r.photos.splice(i,1);}});} save(); }
 
-  /* ---------- LOG ---------- */
+  /* ---------- LOG / EDIT ---------- */
   var pendingPhotos=[];
-  function openLog(c){ pendingPhotos=[]; var vals={};FACTORS.forEach(function(f){vals[f.k]=7;});
-    var chosen=["West","Rhod"]; var guests=[];
+  function openLog(c,editRd){ pendingPhotos=[]; var editing=!!editRd;
+    var vals={}; CATS.forEach(function(f){ var v=editing?catVal(editRd,f.k):null; vals[f.k]=(v==null?f.def:v); });
+    vals.tot=editing&&typeof editRd.tot==="number"?editRd.tot:TOT.def;
+    var reco=editing?(editRd.reco||null):null;
+    var chosen=editing?(editRd.players||[]).slice():["West","Rhod"];
+    var guests=chosen.filter(function(p){return PRINCIPALS.indexOf(p)<0;});
     var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"}));
-    sheet.appendChild(h("h2",{},"Log a round"));
+    sheet.appendChild(h("h2",{},editing?"Edit round":"Log a round"));
     sheet.appendChild(h("div",{class:"loc"},[h("span",{},"📍 "+c.n),c.s?h("span",{class:"pill"},c.s):null]));
 
 
@@ -764,30 +765,53 @@
     buildGuests();
 
     var pField=h("div",{class:"field"}); pField.appendChild(h("label",{},"Photos")); var gal=h("div",{class:"gallery"}); var addBtn=h("div",{class:"add"},"＋"); addBtn.onclick=function(){stageFiles(gal,addBtn);}; gal.appendChild(addBtn); pField.appendChild(gal); sheet.appendChild(pField);
+    if(editing&&editRd.photos&&editRd.photos.length){ editRd.photos.forEach(function(pid){ var im=h("img",{alt:""}); loadPhoto(pid,im); gal.insertBefore(im,addBtn); }); }
+
+    function slider(f,initial,onset){ var lab=h("div",{class:"slabel"},[h("div",{class:"t"},f.t),h("div",{class:"d"},f.d),h("div",{class:"v"},"")]);
+      var rng=document.createElement("input");rng.type="range";rng.min=0;rng.max=f.max;rng.step=f.step;rng.value=initial;
+      function paint(){ var v=parseFloat(rng.value); rng.style.setProperty("--p",(v/f.max*100)+"%");
+        lab.querySelector(".v").textContent=f.count?(Math.round(v)+" / "+f.max):v.toFixed(1).replace(/\.0$/,""); }
+      rng.oninput=function(){ onset(parseFloat(rng.value)); paint(); }; paint();
+      sheet.appendChild(lab); sheet.appendChild(rng); }
 
     sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"Rate the course"));
-    FACTORS.forEach(function(f){ var lab=h("div",{class:"slabel"},[h("div",{class:"t"},f.t),h("div",{class:"d"},f.d),h("div",{class:"v"},"7")]);
-      var rng=document.createElement("input");rng.type="range";rng.min=0;rng.max=10;rng.step=0.5;rng.value=7;rng.style.setProperty("--p","70%");
-      rng.oninput=function(){vals[f.k]=parseFloat(rng.value);lab.querySelector(".v").textContent=(+rng.value).toFixed(1).replace(/\.0$/,"");rng.style.setProperty("--p",(rng.value*10)+"%");};
-      sheet.appendChild(lab);sheet.appendChild(rng); });
+    CATS.forEach(function(f){ slider(f,vals[f.k],function(v){vals[f.k]=v;}); });
 
-    var nField=h("div",{class:"field"}); nField.appendChild(h("label",{},"The story")); var notes=h("textarea",{placeholder:"Best shot, the choke, conditions, signature hole…"}); nField.appendChild(notes); sheet.appendChild(nField);
+    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"The verdict"));
+    slider(TOT,vals.tot,function(v){vals.tot=v;});
+    var rField=h("div",{class:"field"}); rField.appendChild(h("label",{},"Would you send someone?"));
+    var seg=h("div",{class:"seg"});
+    RECOS.forEach(function(r){ var b=h("button",{title:r.s},r.t); b.dataset.k=r.k;
+      b.onclick=function(){ reco=(reco===r.k?null:r.k); syncReco(); }; seg.appendChild(b); });
+    function syncReco(){ seg.querySelectorAll("button").forEach(function(b){b.classList.toggle("on",b.dataset.k===reco);}); }
+    rField.appendChild(seg);
+    rField.appendChild(h("div",{style:"font-size:11.5px;color:var(--muted);margin-top:8px"},"Travel = worth a trip on its own. Trip-worthy = worth building into a golf trip."));
+    sheet.appendChild(rField);
+    var payField=h("div",{class:"field"}); payField.appendChild(h("label",{},"What would you pay?"));
+    var pay=h("input",{class:"txt",type:"number",inputmode:"decimal",min:"0",placeholder:"Not what they charge — what it's worth to you, in $"});
+    if(editing&&typeof editRd.pay==="number")pay.value=editRd.pay;
+    payField.appendChild(pay); sheet.appendChild(payField);
 
-    var go=h("button",{class:"btn primary"},"Save round");
+    var nField=h("div",{class:"field"}); nField.appendChild(h("label",{},"The story")); var notes=h("textarea",{placeholder:"Best shot, the choke, conditions, signature hole…"}); if(editing&&editRd.notes)notes.value=editRd.notes; nField.appendChild(notes); sheet.appendChild(nField);
+
+    var go=h("button",{class:"btn primary"},editing?"Save changes":"Save round");
     go.onclick=function(){ if(!chosen.length){toast("Pick who played");return;}
-      var rec={id:uid(),date:new Date().toISOString().slice(0,10),players:chosen.slice(),notes:notes.value.trim(),photos:[]};
-      FACTORS.forEach(function(f){rec[f.k]=vals[f.k];});
+      var rec=editing?editRd:{id:uid(),date:new Date().toISOString().slice(0,10),photos:[]};
+      rec.photos=rec.photos||[]; rec.players=chosen.slice(); rec.notes=notes.value.trim();
+      CATS.forEach(function(f){rec[f.k]=vals[f.k];}); rec.tot=vals.tot;
+      if(reco)rec.reco=reco; else delete rec.reco;
+      var pv=parseFloat(pay.value); if(pay.value!==""&&isFinite(pv))rec.pay=Math.max(0,pv); else delete rec.pay;
       Promise.all(pendingPhotos.map(function(p){rec.photos.push(p.id);return putPhoto(p.id,p.data);})).then(function(){
-        if(!S.ratings[c.n])S.ratings[c.n]={rounds:[]}; S.ratings[c.n].rounds.push(rec); save();
-        if(S.order.indexOf(c.n)<0)insertByCompare(c,function(){afterLog(c,rec);}); else afterLog(c,rec); });
+        if(!editing){ if(!S.ratings[c.n])S.ratings[c.n]={rounds:[]}; S.ratings[c.n].rounds.push(rec); }
+        save(); afterLog(c,editing); });
     };
-    sheet.appendChild(go); syncWho(); showScrim(sheet);
+    sheet.appendChild(go); syncWho(); syncReco(); showScrim(sheet);
   }
   function stageFiles(gal,addBtn){ var inp=document.getElementById("fileIn"); inp.value="";
     inp.onchange=function(){ Array.prototype.slice.call(inp.files).forEach(function(f){ downscale(f).then(function(data){ if(!data)return; var id=uid();
       pendingPhotos.push({id:id,data:data}); photoCache[id]=data; var im=h("img",{alt:"",src:data}); im.onclick=function(){var i=pendingPhotos.findIndex(function(x){return x.id===id;});if(i>=0)pendingPhotos.splice(i,1);gal.removeChild(im);}; gal.insertBefore(im,addBtn); }); }); };
     inp.click(); }
-  function afterLog(c,rec){ refreshMarker(c); renderAll(); closeSheet(); toast("Round saved · "+c.n); setTimeout(function(){openRecap(c,rec);},260); }
+  function afterLog(c,edited){ refreshMarker(c); renderAll(); closeSheet(); toast((edited?"Round updated · ":"Round saved · ")+c.n); }
 
   /* ---------- RECAP ---------- */
   function openRecap(c,rd){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
@@ -802,14 +826,25 @@
     var body=h("div",{class:"rbody"});
     body.appendChild(h("h3",{},c.n+(isT100(c)?"  ★":"")));
     body.appendChild(h("div",{class:"rsub"},(c.s||"Rhod + West Golf Adventures")));
-    var bars=h("div",{class:"rbars"}); FACTORS.forEach(function(f){ if(typeof rd[f.k]!=="number")return; bars.appendChild(h("div",{class:"rbar"},[h("div",{class:"rn"},f.t),h("div",{class:"rt"},h("i",{style:"width:"+(rd[f.k]*10)+"%"})),h("div",{class:"rv"},fmt(rd[f.k]))])); }); body.appendChild(bars);
+    var bars=h("div",{class:"rbars"}); CATS.forEach(function(f){ var v=catVal(rd,f.k); if(v==null)return;
+      bars.appendChild(h("div",{class:"rbar"},[h("div",{class:"rn"},f.t),h("div",{class:"rt"},h("i",{style:"width:"+(v/f.max*100)+"%"})),h("div",{class:"rv"},f.count?Math.round(v)+"/"+f.max:fmt(v))])); }); body.appendChild(bars);
     var tags=h("div",{class:"rtags"});
-    tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Played"),(rd.players||[]).join(" & ")])); body.appendChild(tags);
+    tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Played"),(rd.players||[]).join(" & ")]));
+    if(typeof rd.pay==="number")tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Would pay"),payLabel(rd.pay)]));
+    var rl=recoLabel(rd.reco); if(rl)tags.appendChild(h("span",{class:"rtag win"},rl));
+    body.appendChild(tags);
     if(rd.notes)body.appendChild(h("div",{style:"font-size:13px;opacity:.85;margin-top:14px;line-height:1.5"},rd.notes));
-    body.appendChild(h("div",{class:"rfoot"},[h("span",{},"Overall "+fmt(beliScore(c.n))),h("span",{},"#"+(S.order.indexOf(c.n)+1)+" of "+S.order.length)]));
     card.appendChild(body); wrap.appendChild(card); sheet.appendChild(wrap);
+    var ed=h("button",{class:"btn primary"},"Edit this round"); ed.onclick=function(){closeSheet();setTimeout(function(){openLog(c,rd);},180);}; sheet.appendChild(ed);
     var share=h("button",{class:"btn dark"},"Save / share recap image"); share.onclick=function(){shareRecap(card,c);}; sheet.appendChild(share);
     var addP=h("button",{class:"btn ghost"},"Add more photos to this round"); addP.onclick=function(){addPhotosTo(c,rd);}; sheet.appendChild(addP);
+    var del=h("button",{class:"btn ghost",style:"color:var(--bad)"},"Delete this round");
+    del.onclick=function(){ if(!confirm("Delete this round at "+c.n+"? This can't be undone."))return;
+      (rd.photos||[]).forEach(function(pid){delPhoto(pid);});
+      var arr=rounds(c.n),i=arr.indexOf(rd); if(i>=0)arr.splice(i,1);
+      if(!arr.length){ delete S.ratings[c.n]; var oi=S.order.indexOf(c.n); if(oi>=0)S.order.splice(oi,1); }
+      save(); refreshMarker(c); renderAll(); closeSheet(); toast("Round deleted"); };
+    sheet.appendChild(del);
     showScrim(sheet); }
   function addPhotosTo(c,rd){ var inp=document.getElementById("fileIn"); inp.value="";
     inp.onchange=function(){ Promise.all(Array.prototype.slice.call(inp.files).map(function(f){return downscale(f).then(function(data){if(!data)return null;var id=uid();photoCache[id]=data;return putPhoto(id,data).then(function(){return id;});});}))
@@ -822,57 +857,6 @@
       else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},4000);toast("Saved recap image");} },"image/png");
     }).catch(function(){toast("Couldn't render. Try a screenshot of the card.");}); }
 
-  /* ---------- head-to-head ---------- */
-  function insertByCompare(c,done){ var list=S.order.filter(function(n){return n!==c.n&&isRated(n);});
-    if(!list.length){S.order.unshift(c.n);save();return done();}
-    var lo=0,hi=list.length;
-    (function step(){ if(lo>=hi){var ref=lo<list.length?list[lo]:null;var pos=ref?S.order.indexOf(ref):S.order.length;if(pos<0)pos=S.order.length;S.order.splice(pos,0,c.n);save();return done();}
-      var mid=(lo+hi)>>1; compare(c.n,list[mid],"Where does "+c.n+" rank?",function(res){if(res==="a")hi=mid;else if(res==="b")lo=mid+1;else hi=mid;step();}); })(); }
-  function reRank(c){ var i=S.order.indexOf(c.n);if(i>=0)S.order.splice(i,1); insertByCompare(c,function(){refreshMarker(c);renderAll();toast("Re-ranked · "+c.n);setTimeout(function(){openCourse(c);},200);}); }
-  function compare(aName,bName,title,cb){
-    var cmp=document.getElementById("cmp"); cmp.innerHTML="";
-    var ca=byName[aName],cbb=byName[bName];
-    var card=h("div",{class:"cmp-card"});
-    card.appendChild(h("h3",{},title||"Where does it rank?"));
-    card.appendChild(h("div",{class:"cmp-sub"},"Tap the course you’d rather play again"));
-    var deck=h("div",{class:"deck"});
-    var back=h("div",{class:"swipe back"},[h("div",{class:"sname"},bName),h("div",{class:"sloc"},cbb?cbb.s:"")]);
-    var front=h("div",{class:"swipe front"});
-    var lblY=h("div",{class:"sw-lbl yes"},"BETTER"),lblN=h("div",{class:"sw-lbl no"},"WORSE");
-    front.appendChild(lblY); front.appendChild(lblN);
-    front.appendChild(h("div",{class:"sname",html:aName+(ca&&isT100(ca)?' <span class="star">★</span>':"")}));
-    front.appendChild(h("div",{class:"sloc"},ca?ca.s:""));
-    front.appendChild(h("div",{class:"svs"},"VERSUS"));
-    front.appendChild(h("div",{class:"sopp",html:bName+(cbb&&isT100(cbb)?' <span class="star">★</span>':"")+(S.order.indexOf(bName)>=0?"  ·  currently #"+(S.order.indexOf(bName)+1):"")}));
-    deck.appendChild(back); deck.appendChild(front); card.appendChild(deck);
-    var ctrl=h("div",{class:"sw-pick"});
-    var bYes=h("button",{class:"pickbtn a"},aName),bNo=h("button",{class:"pickbtn b"},bName);
-    ctrl.appendChild(bYes);ctrl.appendChild(bNo); card.appendChild(ctrl);
-    var bTie=h("button",{class:"tie-link"},"Too close to call");
-    card.appendChild(bTie);
-    card.appendChild(h("div",{class:"sw-hint"},"Tap your pick — or swipe the card"));
-    cmp.appendChild(card); cmp.classList.add("show");
-    var sx=0,sy=0,drag=false,done=false;
-    front.addEventListener("pointerdown",function(e){drag=true;sx=e.clientX;sy=e.clientY;front.style.transition="none";try{front.setPointerCapture(e.pointerId);}catch(_){}});
-    front.addEventListener("pointermove",function(e){ if(!drag)return; var dx=e.clientX-sx,dy=e.clientY-sy;
-      front.style.transform="translate("+dx+"px,"+dy+"px) rotate("+(dx/20)+"deg)";
-      lblY.style.opacity=Math.max(0,Math.min(1,dx/100)); lblN.style.opacity=Math.max(0,Math.min(1,-dx/100)); });
-    function end(e){ if(!drag)return; drag=false; var dx=e.clientX-sx,dy=e.clientY-sy; front.style.transition="transform .3s ease";
-      if(dx>95)fly(1,"a"); else if(dx<-95)fly(-1,"b"); else if(dy<-100)resolve("tie");
-      else{front.style.transform="";lblY.style.opacity=0;lblN.style.opacity=0;} }
-    front.addEventListener("pointerup",end); front.addEventListener("pointercancel",end);
-    function fly(dir,res){ front.style.transition="transform .26s ease"; front.style.transform="translate("+(dir*640)+"px,-50px) rotate("+(dir*32)+"deg)"; setTimeout(function(){resolve(res);},240); }
-    function resolve(res){ if(done)return; done=true; cmp.classList.remove("show"); setTimeout(function(){cb(res);},150); }
-    bNo.onclick=function(){fly(-1,"b");}; bYes.onclick=function(){fly(1,"a");}; bTie.onclick=function(){resolve("tie");};
-  }
-  function battle(){ var rated=S.order.filter(isRated); if(rated.length<2){toast("Rate two courses first");return;}
-    var i=Math.floor(Math.random()*rated.length),j; do{j=Math.floor(Math.random()*rated.length);}while(j===i);
-    var A=rated[i],B=rated[j];
-    compare(A,B,"Settle it — which wins?",function(res){ if(res==="tie"){toast("Called a tie");return;}
-      var winner=res==="a"?A:B,loser=res==="a"?B:A,wi=S.order.indexOf(winner),li=S.order.indexOf(loser);
-      if(wi>li){S.order.splice(wi,1);S.order.splice(S.order.indexOf(loser),0,winner);save();}
-      refreshMarker(byName[winner]);refreshMarker(byName[loser]);renderAll(); toast(winner+" stays ahead of "+loser); }); }
-  document.getElementById("battleBtn").onclick=battle;
 
   /* ---------- picker ---------- */
   function openPicker(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
@@ -880,7 +864,7 @@
     var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]); var inp=h("input",{placeholder:"Search courses…"}); s.appendChild(inp); sheet.appendChild(s);
     var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
     function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
-      COURSES.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,80).forEach(function(c){ var sc=beliScore(c.n);
+      COURSES.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,80).forEach(function(c){ var sc=courseScore(c.n);
         var lead=isRated(c.n)?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
         var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
         var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},c.s)]),h("div",{class:"chev"},"›")]);
@@ -972,7 +956,9 @@
   document.querySelectorAll("#dream-seg .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#dream-seg .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); dreamSeg=ch.dataset.d; renderDream(); }; });
   document.getElementById("q").oninput=function(e){query=e.target.value.trim().toLowerCase();renderRank();};
 
-  function boot(){ activeTripId=S.activeTripId||null; initMap(); renderAll(); drawTrip(); updateTripBar(); pollUpdates(); }
+  function boot(){ activeTripId=S.activeTripId||null;
+    try{ initMap(); }catch(e){} // map is optional — keep the rest of the app alive if Leaflet/tiles can't load
+    renderAll(); drawTrip(); updateTripBar(); pollUpdates(); }
   loadState().then(boot).catch(function(){ boot(); });
 })();
 </script>
