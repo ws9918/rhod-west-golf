@@ -158,7 +158,7 @@
   .who button.on{border-color:var(--green);background:#eef6f0}
   .slabel{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 3px}
   .slabel .t{font-weight:700;font-size:15px}
-  .slabel .d{font-size:11.5px;color:var(--muted);max-width:56%;text-align:right}
+  .slabel .d{font-size:11.5px;color:var(--muted);max-width:60%;text-align:right;text-wrap:balance}
   .slabel .v{font-weight:800;color:var(--green);font-size:16px;margin-left:8px;font-family:"Fraunces",serif;white-space:nowrap}
   input[type=range]{-webkit-appearance:none;width:100%;height:30px;background:transparent}
   input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) var(--p,70%),#e7e9e3 var(--p,70%))}
@@ -174,6 +174,7 @@
   #recapWrap{padding:6px 2px 0}
   .recap{border-radius:22px;overflow:hidden;background:#0c241a;color:#fff;position:relative}
   .recap .rphoto{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#143226}
+  .recap .rph-empty{aspect-ratio:auto;height:150px}
   .recap .rgrad{position:absolute;left:0;right:0;top:0;height:60%;background:linear-gradient(180deg,rgba(0,0,0,.5),transparent)}
   .recap .rkick{position:absolute;top:16px;left:18px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.92}
   .recap .rscore{position:absolute;top:14px;right:16px;width:58px;height:58px;border-radius:15px;display:grid;place-items:center;font-weight:600;font-size:23px;color:#0c241a;font-family:"Fraunces",serif}
@@ -183,7 +184,7 @@
   .recap .rsub{opacity:.78;font-size:13px;margin-top:4px}
   .recap .rbars{margin:15px 0 4px}
   .rbar{display:flex;align-items:center;gap:9px;margin:7px 0}
-  .rbar .rn{width:112px;font-size:11.5px;opacity:.85;text-transform:uppercase;letter-spacing:.5px}
+  .rbar .rn{width:128px;font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.4px}
   .rbar .rt{flex:1;height:6px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
   .rbar .rt i{display:block;height:100%;background:linear-gradient(90deg,#7fd6a3,#b9e8cd)}
   .rbar .rv{width:40px;text-align:right;font-weight:700;font-size:12px;font-family:"Fraunces",serif;white-space:nowrap}
@@ -196,7 +197,7 @@
   .empty .em{font-size:30px;margin-bottom:8px}
   .wipe-wrap{text-align:center;padding:14px 0 22px}
   .wipe-link{background:transparent;border:0;color:var(--bad);font-size:12.5px;font-weight:700;text-decoration:underline;opacity:.75;font-family:inherit}
-  .toast{position:fixed;left:50%;bottom:calc(104px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+  .toast{position:fixed;left:50%;bottom:calc(180px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .leaflet-div-icon{background:transparent;border:0}
   .pin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 6px rgba(0,0,0,.35);display:grid;place-items:center;border:2px solid #fff}
@@ -216,9 +217,9 @@
   .map-layers button{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 4px 14px rgba(20,35,25,.12);display:flex;align-items:center;gap:7px;opacity:.62}
   .map-layers button.on{opacity:1;color:var(--ink)}
   .map-layers .dot{width:9px;height:9px;border-radius:50%}
-  .map-trip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(20px + var(--sab));z-index:501;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:13px 22px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(15,30,20,.32);display:flex;align-items:center;gap:8px}
+  .map-trip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(112px + var(--sab));z-index:501;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:13px 22px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(15,30,20,.32);display:flex;align-items:center;gap:8px}
   .map-trip .ic{font-size:15px}
-  .trip-bar{position:absolute;left:12px;right:12px;bottom:calc(16px + var(--sab));z-index:501;background:var(--ink);color:#fff;border-radius:16px;padding:13px 16px;box-shadow:0 12px 34px rgba(15,30,20,.34);display:flex;align-items:center;gap:12px}
+  .trip-bar{position:absolute;left:12px;right:12px;bottom:calc(108px + var(--sab));z-index:501;background:var(--ink);color:#fff;border-radius:16px;padding:13px 16px;box-shadow:0 12px 34px rgba(15,30,20,.34);display:flex;align-items:center;gap:12px}
   .trip-bar .tb-info{flex:1;min-width:0}
   .trip-bar b{font-family:"Fraunces",serif;font-size:15px;display:block}
   .trip-bar span{font-size:12px;opacity:.8}
@@ -267,6 +268,77 @@
   .gem{display:flex;align-items:center;gap:10px;background:#fbf6ea;border:1px solid #ecddb6;border-radius:13px;padding:10px 11px;margin-bottom:8px}
   .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:#977a2f;margin-top:2px}
   .gem button{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12.5px}
+  .add-lbl{font-size:10px;font-weight:700;color:var(--green)}
+  .ibtn{border:1px solid var(--line);background:var(--bg);border-radius:9px;width:34px;height:34px;font-size:15px;display:grid;place-items:center;color:var(--muted);flex:0 0 auto;font-family:inherit}
+  .ibtn.del{color:var(--bad)}
+  .seg.stack button{flex:1 1 100%;text-align:left}
+  .who.sm button{flex-direction:row;justify-content:center;gap:8px;padding:9px 10px;font-size:13px}
+  .who.sm button .av{width:24px;height:24px;font-size:11px}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+  .who-wrap{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted);padding:10px 14px 0}
+  /* side by side: West vs Rhod */
+  .cmp-box{background:#f7f8f4;border:1px solid var(--line);border-radius:16px;padding:12px 14px 10px;margin:2px 0 14px}
+  .cmp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .cmp-lbl{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+  .cmp-cols{display:flex;gap:26px;padding-right:13px}
+  .cmp-row{display:grid;grid-template-columns:1fr 58px 58px;align-items:center;padding:7px 0;border-top:1px solid #ecede7;font-size:13px}
+  .cmp-row .cl{color:#46504a;font-weight:600}
+  .cmp-row .cv{text-align:center;font-family:"Fraunces",serif;font-weight:700;font-size:15px}
+  .cmp-row .cv.sm{font-family:"Inter",sans-serif;font-size:12px;font-weight:700;white-space:nowrap}
+  .cmp-row.gap{background:#fbf3dc;margin:0 -8px;padding:7px 8px;border-radius:9px;border-top-color:transparent}
+  .cmp-sum{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+  .cmp-wait{display:flex;align-items:center;gap:10px;font-size:13px;color:#46504a}
+  .cmp-wait .av{flex:0 0 auto}
+  .cmp-wait button{margin-left:auto;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:9px 13px;font-weight:800;font-size:12.5px;white-space:nowrap;font-family:inherit}
+  /* ---------- web view (desktop, ≥ 900px): side nav, wider grids, centered dialogs ---------- */
+  @media (min-width:900px){
+    body{background:#e6e4dc}
+    #app{max-width:1200px;height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr);grid-template-rows:100vh;box-shadow:0 0 0 1px var(--line),0 20px 60px rgba(20,35,25,.12)}
+    main{grid-column:2;grid-row:1}
+    nav{position:relative;grid-column:1;grid-row:1;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:4px;padding:26px 14px;border-top:0;border-right:1px solid var(--line);background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;z-index:1}
+    nav::before{content:"Rhod & West";font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:22px;color:var(--ink);padding:4px 12px 18px;letter-spacing:-.3px}
+    nav button{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:12px 14px;border-radius:12px;letter-spacing:0}
+    nav button.on{background:#eef6f0}
+    nav button svg{width:22px;height:22px}
+    nav .add{order:10;margin-top:18px}
+    nav .add .plus{width:100%;height:48px;border-radius:12px;font-size:22px;margin:0;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(21,100,63,.28)}
+    nav .add .plus::after{content:"Rate a course";font-size:14px;font-weight:800;margin-left:8px}
+    nav .add .add-lbl{display:none}
+    .view{padding-bottom:48px}
+    .hero{height:320px}
+    .hero .crest{top:22px}
+    .hero .ttl h1{font-size:44px}
+    .statbar{max-width:720px;padding:18px 24px 6px}
+    .section-h{margin-left:24px;margin-right:24px}
+    .filters{padding-left:24px;padding-right:24px}
+    #feed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px;padding:0 24px;align-items:start}
+    #feed .mcard,#rank-list .row,#dream-body .drow{min-width:0}
+    #feed .mcard{margin:0 0 16px}
+    #feed .empty{grid-column:1/-1}
+    .search{margin:20px 24px 2px}
+    #rank-list{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
+    #rank-list .section-h,#rank-list .empty{grid-column:1/-1;margin-left:0;margin-right:0}
+    #rank-list .row{margin:0 0 10px}
+    #dream-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
+    #dream-body .prog,#dream-body .wish-add,#dream-body .empty{grid-column:1/-1;margin-left:0;margin-right:0}
+    #dream-body .drow{margin:0 0 9px}
+    .dream-hero{border-radius:0;height:180px}
+    .sheet{left:50%;right:auto;bottom:auto;top:50%;width:680px;max-width:calc(100vw - 48px);max-height:88vh;border-radius:24px;padding:22px 28px 30px;transform:translate(-50%,-47%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s,visibility 0s .22s}
+    .sheet.show{transform:translate(-50%,-50%);opacity:1;visibility:visible;pointer-events:auto;transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s,visibility 0s}
+    .grab{display:none}
+    .row-pick{max-height:52vh}
+    .toast{bottom:100px}
+    .wipe-wrap{padding:22px 24px 30px;text-align:left}
+    .who-wrap{justify-content:flex-start;padding-left:24px}
+    .map-trip{bottom:calc(20px + var(--sab))}
+    .trip-bar{bottom:calc(16px + var(--sab))}
+    .recap .rph-empty{height:170px}
+    button,.row,.mcard,.chip,.drow,.trip-row,.gem,.gallery img,.tstop .x,.ibtn{cursor:pointer}
+    .row:hover,.mcard:hover,.drow:hover,.trip-row:hover{box-shadow:var(--shadow-lg)}
+    .chip:hover{border-color:var(--ink)}
+    nav button:hover{background:#f3f4f0;color:var(--ink)}
+    .btn:hover{filter:brightness(1.05)}
+  }
 </style>
 </head>
 <body>
@@ -286,15 +358,14 @@
       </div>
       <div class="statbar">
         <div class="stat"><b id="s-played">0</b><span>Courses</span></div>
-        <div class="stat"><b id="s-rounds">0</b><span>Rounds</span></div>
+        <div class="stat"><b id="s-rounds">0</b><span>Ratings</span></div>
         <div class="stat"><b id="s-top100">0</b><span>Top 100</span></div>
       </div>
       <div class="section-h" style="margin-bottom:8px">Memories <a id="feed-all" href="#">All courses ›</a></div>
       <div class="filters" id="feed-filters">
         <button class="chip on" data-w="all">Everyone</button>
-        <button class="chip" data-w="both"><span class="dot" style="background:var(--green)"></span>Together</button>
-        <button class="chip" data-w="west"><span class="dot" style="background:var(--green-2)"></span>West</button>
-        <button class="chip" data-w="rhod"><span class="dot" style="background:var(--navy)"></span>Rhod</button>
+        <button class="chip" data-w="west"><span class="dot" style="background:var(--green-2)"></span>West’s ratings</button>
+        <button class="chip" data-w="rhod"><span class="dot" style="background:var(--navy)"></span>Rhod’s ratings</button>
       </div>
       <div id="feed" style="margin-top:12px"></div>
     </section>
@@ -327,11 +398,12 @@
       <div class="filters" id="rank-filters" style="padding-top:10px">
         <button class="chip on" data-f="all">All</button>
         <button class="chip" data-f="rated">Rated</button>
-        <button class="chip" data-f="unrated">To play</button>
+        <button class="chip" data-f="unrated">Unrated</button>
         <button class="chip" data-f="top100">Top 100</button>
         <button class="chip" data-f="snub">Should be Top 100</button>
       </div>
       <div id="rank-list" style="margin-top:10px"></div>
+      <div id="whoWrap" class="who-wrap"></div>
       <div class="wipe-wrap"><button id="wipeBtn" class="wipe-link">Start fresh — wipe all ratings</button></div>
     </section>
 
@@ -355,7 +427,7 @@
   <nav>
     <button class="on" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Feed</button>
     <button data-v="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>Map</button>
-    <button class="add" id="navAdd"><span class="plus">＋</span><span style="font-size:10px;font-weight:700;color:var(--green)">Log</span></button>
+    <button class="add" id="navAdd"><span class="plus">＋</span><span class="add-lbl">Rate</span></button>
     <button data-v="rank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 16l3-8 4 5 3-9 4 12"/></svg>Courses</button>
     <button data-v="dream"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg>Dream</button>
   </nav>
@@ -377,27 +449,41 @@
   /* The Rhod + West rating system.
      Six categories, then Totality — a separate gut-call score that drives the rankings. */
   var CATS=[
-    {k:"design",t:"Design",d:"Overall design — routing, boldness, how interesting",max:10,step:0.5,def:7},
-    {k:"holes",t:"Memorable Holes",d:"Of the 18, how many can you actually remember?",max:18,step:1,def:0,count:true},
-    {k:"cond",t:"Condition",d:"Turf, greens and bunkers",max:10,step:0.5,def:7},
+    {k:"design",t:"Overall Design",d:"Routing, boldness, the design as a whole — not how dramatic it is",max:10,step:0.5,def:7},
+    {k:"holes",t:"Memorable Holes",d:"Self-explanatory — how many of the 18",max:18,step:1,def:0,count:true},
+    {k:"cond",t:"Condition",d:"1 = Thunderbird (Arizona) · 10 = Augusta",max:10,min:1,step:0.5,def:7},
     {k:"enjoy",t:"Enjoyment",d:"Played alone, would you have enjoyed it? Ignore your score and the company",max:10,step:0.5,def:7},
     {k:"exp",t:"Experience",d:"Everything that doesn't touch a club — clubhouse, turn house, comfort stations, how they treat you",max:10,step:0.5,def:7},
     {k:"diff",t:"Difficulty",d:"Self-explanatory",max:10,step:0.5,def:7}
   ];
   var TOT={k:"tot",t:"Totality",d:"The whole thing, gut call — if it adds up to a 10, it's a 10. This is what ranks the course",max:10,step:0.5,def:7};
   var RECOS=[
-    {k:"travel",t:"✈️ Travel for it",s:"Worth a trip on its own"},
-    {k:"trip",t:"🧳 Trip-worthy",s:"Build it into a golf trip"},
-    {k:"nearby",t:"📍 If nearby",s:"Play it when you're close"},
-    {k:"skip",t:"➖ Skip it",s:"Don't go out of your way"}
+    {k:"fly",t:"✈️ I'd fly there for it",e:"✈️",sh:"Fly",s:"Worth a trip on its own"},
+    {k:"drive",t:"🚗 I'd drive out of my way if nearby",e:"🚗",sh:"Drive",s:"Go play it when you're in the area"},
+    {k:"skip",t:"➖ Skip it",e:"➖",sh:"Skip",s:"Don't go out of your way"}
   ];
-  function recoLabel(k){ for(var i=0;i<RECOS.length;i++)if(RECOS[i].k===k)return RECOS[i].t; return null; }
+  var RECO_LEGACY={travel:"fly",trip:"drive",nearby:"drive"};
+  function recoKey(k){ return k?(RECO_LEGACY[k]||k):null; }
+  function recoObj(k){ k=recoKey(k); for(var i=0;i<RECOS.length;i++)if(RECOS[i].k===k)return RECOS[i]; return null; }
+  function recoLabel(k){ var r=recoObj(k); return r?r.t:null; }
+  function recoShort(k){ var r=recoObj(k); return r?r.t.replace(/^\S+\s/,""):null; }
   // older rounds were scored on a previous factor set; read the nearest equivalent
   function catVal(rd,k){ if(typeof rd[k]==="number")return rd[k];
     if(k==="exp"&&typeof rd.club==="number")return rd.club;
     if(k==="enjoy"&&typeof rd.fun==="number")return rd.fun;
     return null; }
   var LEGACY=["design","scenery","cond","memory","play","fun","club","excl"];
+  /* Whose rating is this? Each rating is scored by one person; each phone remembers its owner. */
+  var ME=""; try{ME=localStorage.getItem("rwWho")||"";}catch(e){}
+  function setMe(n){ ME=n; try{localStorage.setItem("rwWho",n);}catch(e){} }
+  function raterOf(rd){ if(rd.by&&PRINCIPALS.indexOf(rd.by)>=0)return rd.by;
+    var p=rd.players||[],w=p.indexOf("West")>=0,r=p.indexOf("Rhod")>=0; if(w&&!r)return"West"; if(r&&!w)return"Rhod"; return"Together"; }
+  function raterLabel(rd){ var w=raterOf(rd); return w==="Together"?"Rated together":w+"’s rating"; }
+  function latestBy(name,who){ var out=null; rounds(name).forEach(function(r){ if(raterOf(r)===who)out=r; }); return out; }
+  function courseRaters(name){ var set={}; rounds(name).forEach(function(r){ var w=raterOf(r); if(w!=="Together")set[w]=1; }); return Object.keys(set); }
+  // the ratings that count for a course: each person's latest, plus any legacy shared ratings
+  function ratingSet(name){ var out=[]; PRINCIPALS.forEach(function(p){ var r=latestBy(name,p); if(r)out.push(r); }); rounds(name).forEach(function(r){ if(raterOf(r)==="Together")out.push(r); }); return out; }
+  function roundById(name,id){ var arr=rounds(name); for(var i=0;i<arr.length;i++)if(arr[i].id===id)return arr[i]; return null; }
   var KEY="rwGolf.v2"; // keep prior data
   var PRINCIPALS=["West","Rhod"];
   var COURSES=window.COURSES||[];
@@ -447,6 +533,13 @@
     fetch("/api/state",{method:"PUT",headers:hdr(),body:JSON.stringify(S)})
       .then(function(r){ if(r.status===401)promptCode(); }).catch(function(){})
       .then(function(){ saving=false; if(saveAgain){saveAgain=false;pushState();} }); }
+  // Re-fetch the shared state before writing a rating, so two phones saving at once don't overwrite each other
+  function withFresh(mutate){
+    if(saveT||saving){ mutate(); save(); return Promise.resolve(); } // a local change is already in flight — keep it
+    return fetch("/api/state",{headers:hdr()}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+      .then(function(d){ if(d){ var n=normalizeState(d); for(var k in S)delete S[k]; for(var j in n)S[j]=n[j]; activeTripId=S.activeTripId||null; }
+        mutate(); pushState(); });
+  }
   function refreshState(){ if(saveT||saving)return; var sc=document.getElementById("scrim"); if(sc&&sc.classList.contains("show"))return;
     fetch("/api/state",{headers:hdr()}).then(function(r){return r.ok?r.json():null;}).then(function(d){ if(!d)return;
       var n=normalizeState(d); for(var j in n)S[j]=n[j]; activeTripId=S.activeTripId||null;
@@ -463,9 +556,9 @@
   function roundScore(rd){ if(typeof rd.tot==="number")return rd.tot;
     var s=0,n=0; LEGACY.forEach(function(k){ if(typeof rd[k]==="number"){s+=rd[k];n++;} }); return n?s/n:0; }
   function hasTot(name){ return rounds(name).some(function(r){return typeof r.tot==="number";}); }
-  function courseScore(name){ var rs=rounds(name); if(!rs.length)return null; var t=0;
+  function courseScore(name){ var rs=ratingSet(name); if(!rs.length)return null; var t=0;
     rs.forEach(function(r){t+=roundScore(r);}); return Math.round(t/rs.length*10)/10; }
-  function catAvg(name,k){ var t=0,n=0; rounds(name).forEach(function(r){ var v=catVal(r,k); if(v!=null){t+=v;n++;} }); return n?t/n:null; }
+  function catAvg(name,k){ var t=0,n=0; ratingSet(name).forEach(function(r){ var v=catVal(r,k); if(v!=null){t+=v;n++;} }); return n?t/n:null; }
   function rankedNames(){ return COURSES.map(function(c){return c.n;}).filter(isRated)
     .sort(function(a,b){ var d=(courseScore(b)||0)-(courseScore(a)||0); if(d)return d;
       d=rounds(b).length-rounds(a).length; if(d)return d; return a<b?-1:1; }); }
@@ -476,8 +569,6 @@
   function payLabel(v){ return "$"+(Math.round(v)===v?v:v.toFixed(2)); }
 
   /* who played */
-  function whoTag(players){ players=players||[]; var w=players.indexOf("West")>=0,r=players.indexOf("Rhod")>=0;
-    if(w&&r)return"both"; if(w)return"west"; if(r)return"rhod"; return"guest"; }
   function avClass(name){ if(name==="West")return"w"; if(name==="Rhod")return"r"; return"g"; }
   function avatarsFor(players,lg){ players=players||[]; var grp=h("div",{class:"avgrp"});
     var ordered=[]; if(players.indexOf("West")>=0)ordered.push("West"); if(players.indexOf("Rhod")>=0)ordered.push("Rhod");
@@ -524,8 +615,6 @@
       map.removeLayer(curBase); curBase=baseLayers[b.dataset.b]; curBase.addTo(map); if(curBase.bringToBack)curBase.bringToBack(); }; });
     document.querySelectorAll("#mapLayers button").forEach(function(b){ b.onclick=function(){ b.classList.toggle("on");
       var grp=b.dataset.l==="played"?playedLayer:dreamLayer; if(b.classList.contains("on"))map.addLayer(grp); else map.removeLayer(grp); }; });
-    document.getElementById("openTrip").onclick=openTrips;
-    document.getElementById("tb-manage").onclick=function(){ if(activeTripId)openTripDetail(activeTripId); };
   }
 
   /* ---------- helpers ---------- */
@@ -534,9 +623,10 @@
     if(kids!=null){(Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });}
     return e; }
   function tag(label,val,cls){ return h("span",{class:"tag "+(cls||"")},[h("em",{},label),val]); }
-  function showScrim(s){ s.style.transform=""; document.getElementById("scrim").classList.add("show"); requestAnimationFrame(function(){s.classList.add("show");}); }
+  function showScrim(s){ s.style.transform=""; s.scrollTop=0; document.getElementById("scrim").classList.add("show"); requestAnimationFrame(function(){s.classList.add("show");}); }
   function closeSheet(){ document.getElementById("sheet").classList.remove("show"); document.getElementById("scrim").classList.remove("show"); }
   document.getElementById("scrim").onclick=closeSheet;
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("scrim").classList.contains("show"))closeSheet(); });
   // swipe the sheet down (or tap the grab handle) to dismiss
   (function(){ var sheet=document.getElementById("sheet"); var sy=0,dragging=false,moved=0;
     sheet.addEventListener("pointerdown",function(e){ if(!e.target.classList||!e.target.classList.contains("grab"))return; if(sheet.scrollTop>0)return; dragging=true; sy=e.clientY; moved=0; sheet.style.transition="none"; });
@@ -555,10 +645,10 @@
     document.getElementById("s-rounds").textContent=allRounds().length;
     document.getElementById("s-top100").textContent=COURSES.filter(isT100).length;
     var feed=document.getElementById("feed"); feed.innerHTML="";
-    var ar=allRounds().filter(function(it){ if(feedFilter==="all")return true; return whoTag(it.rd.players)===feedFilter; });
+    var ar=allRounds().filter(function(it){ if(feedFilter==="all")return true; return raterOf(it.rd)===(feedFilter==="west"?"West":"Rhod"); });
     if(!ar.length){ feed.appendChild(h("div",{class:"empty"},[
       h("img",{class:"emimg",src:"bar.jpg",onerror:"this.style.display='none'"}),
-      h("div",{},feedFilter==="all"?"No memories yet. Tap Log after your next round to add photos, scores and the story.":"No rounds logged for this filter yet.")
+      h("div",{},feedFilter==="all"?"No ratings yet. Tap Rate after your next round to add scores, photos and the story.":"No ratings from "+(feedFilter==="west"?"West":"Rhod")+" yet.")
     ])); return; }
     ar.slice(0,40).forEach(function(it){ feed.appendChild(memCard(it.course,it.rd)); });
   }
@@ -575,7 +665,7 @@
     var topRight = (rd.photos&&rd.photos.length)?null:avatarsFor(rd.players);
     var topRow=h("div",{class:"top"},[
       h("div",{class:"badge",style:"background:"+scoreColor(roundScore(rd))},fmt(roundScore(rd))),
-      h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},c?c.s:"")]),
+      h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},(c?c.s+" · ":"")+raterLabel(rd))]),
       topRight
     ]);
     body.appendChild(topRow);
@@ -597,7 +687,7 @@
     if(rankFilter!=="unrated"){ var rr=rated.filter(match);
       if(rr.length){ host.appendChild(h("div",{class:"section-h"},"Ranked")); rr.forEach(function(n,i){host.appendChild(rowFor(byName[n],i+1));}); } }
     if(rankFilter!=="rated"){ var uu=unrated.filter(match).sort(function(a,b){return a<b?-1:1;});
-      if(uu.length){ host.appendChild(h("div",{class:"section-h"},rankFilter==="unrated"?"Courses to play":"Not yet rated ("+uu.length+")")); uu.forEach(function(n){host.appendChild(rowFor(byName[n],null));}); } }
+      if(uu.length){ host.appendChild(h("div",{class:"section-h"},"Not yet rated ("+uu.length+")")); uu.forEach(function(n){host.appendChild(rowFor(byName[n],null));}); } }
     if(!host.children.length)host.appendChild(h("div",{class:"empty"},"No courses match.")); }
   function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
@@ -605,10 +695,12 @@
       else lead=rated?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
     var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
     if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
-    var sub=rated?(fmt(sc)+" · "+rs.length+" round"+(rs.length>1?"s":"")+" · "+c.s):c.s;
+    var rtr=courseRaters(c.n),bothIn=rtr.indexOf("West")>=0&&rtr.indexOf("Rhod")>=0;
+    var whoTxt=bothIn?"both rated":(rtr.length?rtr.join(" & ")+" only":rs.length+" rating"+(rs.length>1?"s":""));
+    var sub=rated?(fmt(sc)+" · "+whoTxt+" · "+c.s):c.s;
     var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},"#"+rankNo));
     kids.push(lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
-    var rt=h("div",{class:"rt"}); if(rated)rt.appendChild(avatarsFor(coursePlayers(c.n))); rt.appendChild(h("div",{class:"chev"},"›"));
+    var rt=h("div",{class:"rt"}); if(rated)rt.appendChild(avatarsFor(rtr.length?rtr:coursePlayers(c.n))); rt.appendChild(h("div",{class:"chev"},"›"));
     kids.push(rt);
     var row=h("div",{class:"row"},kids); row.onclick=function(){openCourse(c);}; return row; }
 
@@ -672,7 +764,11 @@
   }
   function renderMapStats(){ var a=document.getElementById("m-played"),b=document.getElementById("m-rated");
     if(a)a.textContent=COURSES.length; if(b)b.textContent=COURSES.filter(function(c){return isRated(c.n);}).length; }
-  function renderAll(){ renderFeed(); renderRank(); renderDream(); renderMapStats(); }
+  function renderIdentity(){ var w=document.getElementById("whoWrap"); if(!w)return; w.innerHTML="";
+    function pick(n){ setMe(n); renderIdentity(); toast("This phone is now "+n+"’s"); }
+    if(ME){ w.appendChild(h("span",{},"This phone is "+ME+"’s")); var sw=h("button",{class:"wipe-link",style:"color:var(--green)"},"Switch to "+(ME==="West"?"Rhod":"West")); sw.onclick=function(){pick(ME==="West"?"Rhod":"West");}; w.appendChild(sw); }
+    else { w.appendChild(h("span",{},"Whose phone is this?")); PRINCIPALS.forEach(function(n){ var b=h("button",{class:"wipe-link",style:"color:var(--green)"},n); b.onclick=function(){pick(n);}; w.appendChild(b); }); } }
+  function renderAll(){ renderFeed(); renderRank(); renderDream(); renderMapStats(); renderIdentity(); }
 
   /* ---------- COURSE SHEET ---------- */
   function openCourse(c){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n);
@@ -685,42 +781,46 @@
     var rk=rankOf(c.n); if(rated&&rk>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(rk+1)+" OF "+rankedNames().length));
     sheet.appendChild(loc);
     var anyPhoto=false; rs.forEach(function(r){ if(r.photos&&r.photos.length)anyPhoto=true; });
-    if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"hero.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},"Add your own photos when you log a round")); sheet.appendChild(ban); }
+    if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"hero.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},rated?"No photos yet — tap ✎ on a rating to add some":"Add your own photos when you rate it")); sheet.appendChild(ban); }
     if(rated){
       var pays=rs.map(function(r){return r.pay;}).filter(function(v){return typeof v==="number";});
-      var subs=[ h("div",{class:"sub"},[h("b",{},"Totality "+fmt(sc))," · "+rs.length+" round"+(rs.length>1?"s":"")]) ];
+      var subs=[ h("div",{class:"sub"},[h("b",{},"Totality "+fmt(sc))," · "+rs.length+" rating"+(rs.length>1?"s":"")]) ];
       if(pays.length){ var lo=Math.min.apply(null,pays),hi=Math.max.apply(null,pays);
         subs.push(h("div",{class:"sub",style:"margin-top:3px"},[h("b",{},"Would pay "+payLabel(lo)+(hi>lo?"–"+payLabel(hi):""))])); }
-      if(!hasTot(c.n))subs.push(h("div",{class:"sub",style:"margin-top:3px"},"Old scoring — edit a round to add Totality"));
+      if(!hasTot(c.n))subs.push(h("div",{class:"sub",style:"margin-top:3px"},"Old scoring — adjust a rating to add Totality"));
       var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), h("div",{},subs) ]);
       sheet.appendChild(hr);
       var cp=coursePlayers(c.n); if(cp.length){ var pl=h("div",{style:"display:flex;align-items:center;gap:8px;margin:-6px 0 12px"},[avatarsFor(cp),h("span",{style:"font-size:12.5px;color:var(--muted)"},"Played by "+cp.join(" & "))]); sheet.appendChild(pl); }
       var allPhotos=[]; rs.forEach(function(r){(r.photos||[]).forEach(function(p){allPhotos.push(p);});});
       if(allPhotos.length){ var g=h("div",{class:"gallery"}); allPhotos.forEach(function(p){ var im=h("img",{alt:""}); loadPhoto(p,im); im.onclick=function(){viewPhoto(p);}; g.appendChild(im); }); sheet.appendChild(g); }
-      var fb=h("div",{style:"margin:6px 0 2px"});
+      var cb=compareBlock(c); if(cb)sheet.appendChild(cb);
+      sheet.appendChild(h("div",{class:"section-h",style:"margin:12px 0 4px"},"Combined"));
+      var fb=h("div",{style:"margin:2px 0 2px"});
       CATS.forEach(function(f){ var v=catAvg(c.n,f.k); if(v==null)return;
-        fb.appendChild(h("div",{class:"fb"},[h("div",{class:"fn"},f.t),h("div",{class:"ft"},h("i",{style:"width:"+(v/f.max*100)+"%"})),h("div",{class:"fv"},f.count?Math.round(v)+"":fmt(v))])); });
+        fb.appendChild(h("div",{class:"fb"},[h("div",{class:"fn"},f.t),h("div",{class:"ft"},h("i",{style:"width:"+(v/f.max*100)+"%"})),h("div",{class:"fv"},f.count?Math.round(v)+"/"+f.max:fmt(v))])); });
       sheet.appendChild(fb);
-      var recoTags=h("div",{class:"tags"}); rs.forEach(function(r){ var rl=recoLabel(r.reco); if(!rl)return;
-        recoTags.appendChild(tag((r.players&&r.players.length?r.players.join(" & "):"Verdict"),rl,"win")); });
-      if(recoTags.children.length)sheet.appendChild(recoTags);
-      sheet.appendChild(h("div",{class:"section-h",style:"margin:18px 0 8px"},"Rounds"));
+      sheet.appendChild(h("div",{class:"section-h",style:"margin:18px 0 8px"},"Ratings"));
       rs.slice().reverse().forEach(function(r){
         var bits=[]; if(typeof r.tot==="number")bits.push("Totality "+fmt(r.tot));
         if(typeof r.pay==="number")bits.push(payLabel(r.pay));
-        var rl=recoLabel(r.reco); if(rl)bits.push(rl.replace(/^\S+\s/,""));
+        var rl=recoShort(r.reco); if(rl)bits.push(rl);
         if(r.photos&&r.photos.length)bits.push(r.photos.length+" photos");
-        if(!bits.length)bits.push("Tap to view or edit");
+        if(!bits.length)bits.push("Tap to view");
+        var ed=h("button",{class:"ibtn",title:"Adjust this rating","aria-label":"Adjust"},"✎");
+        ed.onclick=function(e){ e.stopPropagation(); openLog(c,r); };
+        var dl=h("button",{class:"ibtn del",title:"Delete this rating","aria-label":"Delete"},"🗑");
+        dl.onclick=function(e){ e.stopPropagation(); deleteRound(c,r,function(){ if(isRated(c.n))openCourse(c); else closeSheet(); }); };
         var line=h("div",{class:"row",style:"margin:0 0 9px"},[
           h("div",{class:"badge-sm",style:"background:"+scoreColor(roundScore(r))},fmt(roundScore(r))),
-          h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},(r.players&&r.players.length?r.players.join(" & "):"Round")),h("div",{class:"sb"},bits.join(" · "))]),
-          h("div",{class:"rt"},[avatarsFor(r.players),h("div",{class:"chev"},"›")])
+          h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},raterLabel(r)),h("div",{class:"sb"},bits.join(" · "))]),
+          h("div",{class:"rt"},[ed,dl])
         ]);
         line.onclick=function(){openRecap(c,r);}; sheet.appendChild(line);
       });
-    } else { sheet.appendChild(h("div",{class:"empty",style:"padding:14px 0 18px"},[h("div",{class:"em"},"⛳"),h("div",{},"You've played here. Log the round to add photos, scores and a rating.")])); }
-    var rate=h("button",{class:"btn primary"},rated?"Log another round":"Log a round");
-    rate.onclick=function(){closeSheet();setTimeout(function(){openLog(c);},180);}; sheet.appendChild(rate);
+    } else { sheet.appendChild(h("div",{class:"empty",style:"padding:14px 0 18px"},[h("div",{class:"em"},"⛳"),h("div",{},"You've played here. Rate it to add scores, photos and the story.")])); }
+    var mine=ME?latestBy(c.n,ME):null;
+    var rate=h("button",{class:"btn primary"},!rated?"Rate this course":(mine?"Adjust "+ME+"’s rating":(ME?"Add "+ME+"’s rating":"Add a rating")));
+    rate.onclick=function(){ if(mine)openLog(c,mine); else openLog(c); }; sheet.appendChild(rate);
     var tp=h("button",{class:"btn ghost"},"Add to a road trip");
     tp.onclick=function(){ addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng}); }; sheet.appendChild(tp);
     var tg=h("button",{class:"btn ghost"},isT100(c)?"Remove Top-100 flag":"Flag as Top 100");
@@ -729,6 +829,42 @@
       sn.onclick=function(){ if(isSnub(c))delete S.snub[c.n]; else S.snub[c.n]=true; save();renderAll();openCourse(c); }; sheet.appendChild(sn); }
     showScrim(sheet);
   }
+  /* West vs Rhod, latest rating each */
+  function compareBlock(c){
+    var w=latestBy(c.n,"West"),r=latestBy(c.n,"Rhod"); if(!w&&!r)return null;
+    var box=h("div",{class:"cmp-box"});
+    if(w&&r){
+      box.appendChild(h("div",{class:"cmp-head"},[h("div",{class:"cmp-lbl"},"Side by side"),h("div",{class:"cmp-cols"},[h("div",{class:"av w"},"W"),h("div",{class:"av r"},"R")])]));
+      var agree=0,total=0,big=null;
+      function show(v,count){ return v==null?"—":(count?Math.round(v)+"/18":fmt(v)); }
+      function num(label,a,b,max,count){ if(a==null&&b==null)return; var row=h("div",{class:"cmp-row"});
+        var both=(a!=null&&b!=null),gap=both?Math.abs(a-b):0,thr=count?3:1.5,wide=both&&gap>=thr;
+        if(both){ total++; if(!wide)agree++; else if(!big||gap/max>big.gap/big.max)big={t:label,a:a,b:b,gap:gap,max:max,count:count}; }
+        if(wide)row.classList.add("gap");
+        row.appendChild(h("div",{class:"cl"},label)); row.appendChild(h("div",{class:"cv"},show(a,count))); row.appendChild(h("div",{class:"cv"},show(b,count)));
+        box.appendChild(row); }
+      CATS.forEach(function(f){ num(f.t,catVal(w,f.k),catVal(r,f.k),f.max,!!f.count); });
+      num("Totality",typeof w.tot==="number"?w.tot:null,typeof r.tot==="number"?r.tot:null,10,false);
+      function txt(label,a,b,ta,tb){ if(a==null&&b==null)return; var row=h("div",{class:"cmp-row"});
+        row.appendChild(h("div",{class:"cl"},label)); row.appendChild(h("div",{class:"cv sm",title:ta||""},a==null?"—":a)); row.appendChild(h("div",{class:"cv sm",title:tb||""},b==null?"—":b)); box.appendChild(row); }
+      txt("Would pay",typeof w.pay==="number"?payLabel(w.pay):null,typeof r.pay==="number"?payLabel(r.pay):null);
+      var wr=recoObj(w.reco),rr=recoObj(r.reco); txt("Verdict",wr?wr.e+" "+wr.sh:null,rr?rr.e+" "+rr.sh:null,wr?wr.t:"",rr?rr.t:"");
+      if(total){ var sum=agree===total?"You agree right down the line.":"Agree on "+agree+" of "+total+(big?" · biggest gap: "+big.t+" ("+show(big.a,big.count)+" vs "+show(big.b,big.count)+")":"");
+        box.appendChild(h("div",{class:"cmp-sum"},sum)); }
+    } else {
+      var have=w?"West":"Rhod",need=w?"Rhod":"West";
+      var wait=h("div",{class:"cmp-wait"},[h("div",{class:"av "+(w?"w":"r")},have[0]),h("div",{},[h("b",{},have+" has rated. "),"Waiting on "+need+"."])]);
+      var add=h("button",{},"Add "+need+"’s rating"); add.onclick=function(){ openLog(c,null,need); }; wait.appendChild(add);
+      box.appendChild(wait);
+    }
+    return box; }
+  function deleteRound(c,rd,after){
+    var who=raterOf(rd)==="Together"?"the shared rating":raterLabel(rd);
+    if(!confirm("Delete "+who+" of "+c.n+"? This can't be undone."))return;
+    (rd.photos||[]).forEach(function(pid){delPhoto(pid);});
+    withFresh(function(){ var arr=rounds(c.n),i=-1; arr.forEach(function(x,j){ if(x.id===rd.id)i=j; }); if(i>=0)arr.splice(i,1);
+      if(!arr.length){ delete S.ratings[c.n]; var oi=S.order.indexOf(c.n); if(oi>=0)S.order.splice(oi,1); } })
+    .then(function(){ refreshMarker(c); renderAll(); toast("Rating deleted"); if(after)after(); else closeSheet(); }); }
   function viewPhoto(id){ var wrap=h("div",{style:"position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:970;display:grid;place-items:center"});
     var im=h("img",{style:"max-width:96%;max-height:88%;border-radius:12px"}); loadPhoto(id,im);
     var x=h("button",{style:"position:absolute;top:calc(16px + env(safe-area-inset-top));right:18px;background:rgba(255,255,255,.2);color:#fff;border:0;width:40px;height:40px;border-radius:50%;font-size:22px"},"✕");
@@ -738,22 +874,33 @@
     del.onclick=function(){removePhotoEverywhere(id);delPhoto(id);close();renderAll();toast("Photo deleted");}; }
   function removePhotoEverywhere(id){ for(var n in S.ratings){rounds(n).forEach(function(r){if(r.photos){var i=r.photos.indexOf(id);if(i>=0)r.photos.splice(i,1);}});} save(); }
 
-  /* ---------- LOG / EDIT ---------- */
+  /* ---------- RATE / ADJUST ---------- */
   var pendingPhotos=[];
-  function openLog(c,editRd){ pendingPhotos=[]; var editing=!!editRd;
+  function openLog(c,editRd,forWho){ pendingPhotos=[]; var editing=!!editRd;
     var vals={}; CATS.forEach(function(f){ var v=editing?catVal(editRd,f.k):null; vals[f.k]=(v==null?f.def:v); });
     vals.tot=editing&&typeof editRd.tot==="number"?editRd.tot:TOT.def;
-    var reco=editing?(editRd.reco||null):null;
+    var reco=editing?recoKey(editRd.reco):null;
+    var by=forWho||(editing?(raterOf(editRd)==="Together"?"":raterOf(editRd)):ME);
     var chosen=editing?(editRd.players||[]).slice():["West","Rhod"];
     var guests=chosen.filter(function(p){return PRINCIPALS.indexOf(p)<0;});
     var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"}));
-    sheet.appendChild(h("h2",{},editing?"Edit round":"Log a round"));
+    sheet.appendChild(h("h2",{},editing?"Adjust rating":"Rate the course"));
     sheet.appendChild(h("div",{class:"loc"},[h("span",{},"📍 "+c.n),c.s?h("span",{class:"pill"},c.s):null]));
 
+    // WHOSE RATING — one person scores; the other adds theirs separately, then you compare
+    var byField=h("div",{class:"field"}); byField.appendChild(h("label",{},"Whose rating is this?"));
+    var bySeg=h("div",{class:"who sm"});
+    var byW=h("button",{},[h("div",{class:"av w"},"W"),h("span",{},"West")]);
+    var byR=h("button",{},[h("div",{class:"av r"},"R"),h("span",{},"Rhod")]);
+    function syncBy(){ byW.classList.toggle("on",by==="West"); byR.classList.toggle("on",by==="Rhod"); }
+    byW.onclick=function(){by="West";syncBy();}; byR.onclick=function(){by="Rhod";syncBy();};
+    bySeg.appendChild(byW); bySeg.appendChild(byR); byField.appendChild(bySeg);
+    byField.appendChild(h("div",{class:"hint"},"One person per rating. The other adds theirs on their own phone — then you compare side by side."));
+    sheet.appendChild(byField);
 
     // WHO PLAYED — big toggles
-    var wField=h("div",{class:"field"}); wField.appendChild(h("label",{},"Who played"));
+    var wField=h("div",{class:"field"}); wField.appendChild(h("label",{},"Who was in the group"));
     var who=h("div",{class:"who"});
     var bW=h("button",{},[h("div",{class:"av w"},"W"),h("span",{},"West")]);
     var bR=h("button",{},[h("div",{class:"av r"},"R"),h("span",{},"Rhod")]);
@@ -771,57 +918,62 @@
     if(editing&&editRd.photos&&editRd.photos.length){ editRd.photos.forEach(function(pid){ var im=h("img",{alt:""}); loadPhoto(pid,im); gal.insertBefore(im,addBtn); }); }
 
     function slider(f,initial,onset){ var lab=h("div",{class:"slabel"},[h("div",{class:"t"},f.t),h("div",{class:"d"},f.d),h("div",{class:"v"},"")]);
-      var rng=document.createElement("input");rng.type="range";rng.min=0;rng.max=f.max;rng.step=f.step;rng.value=initial;
-      function paint(){ var v=parseFloat(rng.value); rng.style.setProperty("--p",(v/f.max*100)+"%");
+      var mn=f.min||0; var rng=document.createElement("input");rng.type="range";rng.min=mn;rng.max=f.max;rng.step=f.step;rng.value=initial;
+      function paint(){ var v=parseFloat(rng.value); rng.style.setProperty("--p",((v-mn)/(f.max-mn)*100)+"%");
         lab.querySelector(".v").textContent=f.count?(Math.round(v)+" / "+f.max):v.toFixed(1).replace(/\.0$/,""); }
       rng.oninput=function(){ onset(parseFloat(rng.value)); paint(); }; paint();
       sheet.appendChild(lab); sheet.appendChild(rng); }
 
-    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"Rate the course"));
+    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"The scores"));
     CATS.forEach(function(f){ slider(f,vals[f.k],function(v){vals[f.k]=v;}); });
 
-    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"The verdict"));
+    sheet.appendChild(h("div",{class:"section-h",style:"margin:20px 0 2px"},"Totality & verdict"));
     slider(TOT,vals.tot,function(v){vals.tot=v;});
     var rField=h("div",{class:"field"}); rField.appendChild(h("label",{},"Would you send someone?"));
-    var seg=h("div",{class:"seg"});
+    var seg=h("div",{class:"seg stack"});
     RECOS.forEach(function(r){ var b=h("button",{title:r.s},r.t); b.dataset.k=r.k;
       b.onclick=function(){ reco=(reco===r.k?null:r.k); syncReco(); }; seg.appendChild(b); });
     function syncReco(){ seg.querySelectorAll("button").forEach(function(b){b.classList.toggle("on",b.dataset.k===reco);}); }
-    rField.appendChild(seg);
-    rField.appendChild(h("div",{style:"font-size:11.5px;color:var(--muted);margin-top:8px"},"Travel = worth a trip on its own. Trip-worthy = worth building into a golf trip."));
-    sheet.appendChild(rField);
+    rField.appendChild(seg); sheet.appendChild(rField);
     var payField=h("div",{class:"field"}); payField.appendChild(h("label",{},"What would you pay?"));
-    var pay=h("input",{class:"txt",type:"number",inputmode:"decimal",min:"0",placeholder:"Not what they charge — what it's worth to you, in $"});
+    var pay=h("input",{class:"txt",type:"number",inputmode:"decimal",min:"0",placeholder:"What it's worth to you, in $"});
     if(editing&&typeof editRd.pay==="number")pay.value=editRd.pay;
-    payField.appendChild(pay); sheet.appendChild(payField);
+    payField.appendChild(pay); payField.appendChild(h("div",{class:"hint"},"Not what they charge — what you'd pay.")); sheet.appendChild(payField);
 
     var nField=h("div",{class:"field"}); nField.appendChild(h("label",{},"The story")); var notes=h("textarea",{placeholder:"Best shot, the choke, conditions, signature hole…"}); if(editing&&editRd.notes)notes.value=editRd.notes; nField.appendChild(notes); sheet.appendChild(nField);
 
-    var go=h("button",{class:"btn primary"},editing?"Save changes":"Save round");
-    go.onclick=function(){ if(!chosen.length){toast("Pick who played");return;}
+    var go=h("button",{class:"btn primary"},editing?"Save changes":"Save rating");
+    go.onclick=function(){ if(!by){toast("Pick whose rating this is");sheet.scrollTop=0;return;}
+      if(chosen.indexOf(by)<0)chosen.unshift(by);
       var rec=editing?editRd:{id:uid(),date:new Date().toISOString().slice(0,10),photos:[]};
-      rec.photos=rec.photos||[]; rec.players=chosen.slice(); rec.notes=notes.value.trim();
+      rec.photos=rec.photos||[]; rec.by=by; rec.players=chosen.slice(); rec.notes=notes.value.trim();
       CATS.forEach(function(f){rec[f.k]=vals[f.k];}); rec.tot=vals.tot;
       if(reco)rec.reco=reco; else delete rec.reco;
       var pv=parseFloat(pay.value); if(pay.value!==""&&isFinite(pv))rec.pay=Math.max(0,pv); else delete rec.pay;
+      if(!ME&&!forWho&&!editing)setMe(by); // first-time setup only — adding or adjusting the other person's rating never flips the phone's identity
       Promise.all(pendingPhotos.map(function(p){rec.photos.push(p.id);return putPhoto(p.id,p.data);})).then(function(){
-        if(!editing){ if(!S.ratings[c.n])S.ratings[c.n]={rounds:[]}; S.ratings[c.n].rounds.push(rec); }
-        save(); afterLog(c,editing); });
+        return withFresh(function(){
+          if(!S.ratings[c.n])S.ratings[c.n]={rounds:[]}; var arr=S.ratings[c.n].rounds;
+          var t=editing?roundById(c.n,rec.id):null;
+          if(t&&t!==rec){ for(var k in t)if(!(k in rec))delete t[k]; for(var k2 in rec)t[k2]=rec[k2]; }
+          else if(!t)arr.push(rec);
+        }); }).then(function(){ afterLog(c,editing); });
     };
-    sheet.appendChild(go); syncWho(); syncReco(); showScrim(sheet);
+    sheet.appendChild(go); syncBy(); syncWho(); syncReco(); showScrim(sheet);
   }
   function stageFiles(gal,addBtn){ var inp=document.getElementById("fileIn"); inp.value="";
     inp.onchange=function(){ Array.prototype.slice.call(inp.files).forEach(function(f){ downscale(f).then(function(data){ if(!data)return; var id=uid();
       pendingPhotos.push({id:id,data:data}); photoCache[id]=data; var im=h("img",{alt:"",src:data}); im.onclick=function(){var i=pendingPhotos.findIndex(function(x){return x.id===id;});if(i>=0)pendingPhotos.splice(i,1);gal.removeChild(im);}; gal.insertBefore(im,addBtn); }); }); };
     inp.click(); }
-  function afterLog(c,edited){ refreshMarker(c); renderAll(); closeSheet(); toast((edited?"Round updated · ":"Round saved · ")+c.n); }
+  // after saving, land on the course view: side-by-side (or "waiting on…"), with adjust/delete on each rating
+  function afterLog(c,edited){ refreshMarker(c); renderAll(); closeSheet(); toast((edited?"Rating updated · ":"Rating saved · ")+c.n); setTimeout(function(){openCourse(c);},260); }
 
   /* ---------- RECAP ---------- */
   function openRecap(c,rd){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
-    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Round recap")); sheet.appendChild(h("div",{class:"loc"},(c.s||"")));
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},raterLabel(rd))); sheet.appendChild(h("div",{class:"loc"},(c.s||"")));
     var wrap=h("div",{id:"recapWrap"}); var card=h("div",{class:"recap",id:"recapCard"}); var rsc=roundScore(rd);
     if(rd.photos&&rd.photos.length){ var im=h("img",{class:"rphoto",alt:"",crossorigin:"anonymous"}); loadPhoto(rd.photos[0],im); card.appendChild(im); }
-    else card.appendChild(h("div",{class:"rphoto",style:"display:grid;place-items:center;font-size:46px"},"⛳"));
+    else card.appendChild(h("div",{class:"rphoto rph-empty",style:"display:grid;place-items:center;font-size:46px"},"⛳"));
     card.appendChild(h("div",{class:"rgrad"}));
     card.appendChild(h("div",{class:"rkick"},"RHOD + WEST · GOLF ADVENTURES"));
     card.appendChild(h("div",{class:"rscore",style:"background:"+scoreColor(rsc)},fmt(rsc)));
@@ -832,38 +984,36 @@
     var bars=h("div",{class:"rbars"}); CATS.forEach(function(f){ var v=catVal(rd,f.k); if(v==null)return;
       bars.appendChild(h("div",{class:"rbar"},[h("div",{class:"rn"},f.t),h("div",{class:"rt"},h("i",{style:"width:"+(v/f.max*100)+"%"})),h("div",{class:"rv"},f.count?Math.round(v)+"/"+f.max:fmt(v))])); }); body.appendChild(bars);
     var tags=h("div",{class:"rtags"});
+    tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Rated by"),raterOf(rd)]));
     tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Played"),(rd.players||[]).join(" & ")]));
     if(typeof rd.pay==="number")tags.appendChild(h("span",{class:"rtag"},[h("em",{},"Would pay"),payLabel(rd.pay)]));
     var rl=recoLabel(rd.reco); if(rl)tags.appendChild(h("span",{class:"rtag win"},rl));
     body.appendChild(tags);
     if(rd.notes)body.appendChild(h("div",{style:"font-size:13px;opacity:.85;margin-top:14px;line-height:1.5"},rd.notes));
     card.appendChild(body); wrap.appendChild(card); sheet.appendChild(wrap);
-    var ed=h("button",{class:"btn primary"},"Edit this round"); ed.onclick=function(){closeSheet();setTimeout(function(){openLog(c,rd);},180);}; sheet.appendChild(ed);
+    var ed=h("button",{class:"btn primary"},"Adjust this rating"); ed.onclick=function(){ openLog(c,rd); }; sheet.appendChild(ed);
     var share=h("button",{class:"btn dark"},"Save / share recap image"); share.onclick=function(){shareRecap(card,c);}; sheet.appendChild(share);
-    var addP=h("button",{class:"btn ghost"},"Add more photos to this round"); addP.onclick=function(){addPhotosTo(c,rd);}; sheet.appendChild(addP);
-    var del=h("button",{class:"btn ghost",style:"color:var(--bad)"},"Delete this round");
-    del.onclick=function(){ if(!confirm("Delete this round at "+c.n+"? This can't be undone."))return;
-      (rd.photos||[]).forEach(function(pid){delPhoto(pid);});
-      var arr=rounds(c.n),i=arr.indexOf(rd); if(i>=0)arr.splice(i,1);
-      if(!arr.length){ delete S.ratings[c.n]; var oi=S.order.indexOf(c.n); if(oi>=0)S.order.splice(oi,1); }
-      save(); refreshMarker(c); renderAll(); closeSheet(); toast("Round deleted"); };
+    var addP=h("button",{class:"btn ghost"},"Add more photos"); addP.onclick=function(){addPhotosTo(c,rd);}; sheet.appendChild(addP);
+    var del=h("button",{class:"btn ghost",style:"color:var(--bad)"},"Delete this rating");
+    del.onclick=function(){ deleteRound(c,rd,function(){ if(isRated(c.n))openCourse(c); else closeSheet(); }); };
     sheet.appendChild(del);
     showScrim(sheet); }
   function addPhotosTo(c,rd){ var inp=document.getElementById("fileIn"); inp.value="";
     inp.onchange=function(){ Promise.all(Array.prototype.slice.call(inp.files).map(function(f){return downscale(f).then(function(data){if(!data)return null;var id=uid();photoCache[id]=data;return putPhoto(id,data).then(function(){return id;});});}))
-      .then(function(ids){ ids.filter(Boolean).forEach(function(id){rd.photos=rd.photos||[];rd.photos.push(id);}); save(); renderAll(); toast("Photos added"); openRecap(c,rd); }); };
+      .then(function(ids){ ids=ids.filter(Boolean); withFresh(function(){ var t=roundById(c.n,rd.id)||rd; t.photos=t.photos||[]; ids.forEach(function(id){t.photos.push(id);}); if(t!==rd)rd.photos=t.photos; })
+        .then(function(){ renderAll(); toast("Photos added"); openRecap(c,roundById(c.n,rd.id)||rd); }); }); };
     inp.click(); }
   function shareRecap(card,c){ if(typeof html2canvas!=="function"){toast("Screenshot this card to share");return;} toast("Rendering image…");
     html2canvas(card,{backgroundColor:null,scale:2,useCORS:true}).then(function(canvas){ canvas.toBlob(function(blob){ if(!blob){toast("Couldn't render. Try a screenshot.");return;}
       var file=new File([blob],(c.n.replace(/[^a-z0-9]+/gi,"-")+"-recap.png"),{type:"image/png"});
-      if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:c.n,text:"Round at "+c.n}).catch(function(){});
+      if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:c.n,text:"Rating · "+c.n}).catch(function(){});
       else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},4000);toast("Saved recap image");} },"image/png");
     }).catch(function(){toast("Couldn't render. Try a screenshot of the card.");}); }
 
 
   /* ---------- picker ---------- */
   function openPicker(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
-    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Log a round")); sheet.appendChild(h("div",{class:"loc"},"Pick the course you played"));
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Rate a course")); sheet.appendChild(h("div",{class:"loc"},"Pick the course"));
     var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]); var inp=h("input",{placeholder:"Search courses…"}); s.appendChild(inp); sheet.appendChild(s);
     var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
     function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
@@ -896,7 +1046,7 @@
     if(!t||!t.stops.length){bar.style.display="none"; if(btn)btn.style.display="flex"; return;}
     bar.style.display="flex"; if(btn)btn.style.display="none";
     document.getElementById("tb-name").textContent=t.name;
-    document.getElementById("tb-meta").textContent=t.stops.length+" stops · ~"+Math.round(tripDistance(optimize(t.stops)))+" mi · "+Math.max(1,Math.ceil(t.stops.length/2))+" days"; }
+    document.getElementById("tb-meta").textContent=t.stops.length+" stops · ~"+Math.round(tripDistance(optimize(t.stops)))+" mi · "+(function(d){return d+(d===1?" day":" days");})(Math.max(1,Math.ceil(t.stops.length/2))); }
   function openTrips(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Road trips")); sheet.appendChild(h("div",{class:"loc"},"Plan your next golf adventure"));
     if(!S.trips.length)sheet.appendChild(h("div",{class:"empty",style:"padding:10px 0 16px"},[h("div",{class:"em"},"🗺️"),h("div",{},"No trips yet. Start one, then add courses from the map, dream lists, or search.")]));
@@ -910,7 +1060,7 @@
     sheet.appendChild(h("div",{class:"grab"}));
     sheet.appendChild(h("h2",{},t.name));
     var ord=optimize(t.stops);
-    sheet.appendChild(h("div",{class:"loc"},[h("span",{class:"pill green"},t.stops.length+" STOPS"),h("span",{class:"pill"},"~"+Math.round(tripDistance(ord))+" MI"),h("span",{class:"pill"},Math.max(1,Math.ceil(t.stops.length/2))+" DAYS")]));
+    sheet.appendChild(h("div",{class:"loc"},[h("span",{class:"pill green"},t.stops.length+" STOPS"),h("span",{class:"pill"},"~"+Math.round(tripDistance(ord))+" MI"),h("span",{class:"pill"},(function(d){return d+(d===1?" DAY":" DAYS");})(Math.max(1,Math.ceil(t.stops.length/2))))]));
     if(!t.stops.length)sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 12px"},"No stops yet. Add courses below."));
     ord.forEach(function(s,i){ var leg=i>0?"~"+Math.round(haversine(ord[i-1],s))+" mi from "+ord[i-1].n:"Start";
       var st=h("div",{class:"tstop"},[ h("div",{class:"tn"},""+(i+1)), h("div",{class:"meta"},[h("div",{class:"nm",style:"font-family:Fraunces,serif;font-weight:600;font-size:15px"},s.n),h("div",{class:"leg"},leg)]) ]);
@@ -962,7 +1112,7 @@
   /* ---------- start fresh (wipe ratings, keep the course list) ---------- */
   function resetRankings(){
     var n=Object.keys(S.ratings).length;
-    if(!confirm("Start fresh? This wipes every round, score, note, photo and ranking"+(n?" across "+n+" course"+(n>1?"s":""):"")+" — for both of you. The course list, Top-100 flags, trips and wishlist all stay."))return;
+    if(!confirm("Start fresh? This wipes every rating, note, photo and ranking"+(n?" across "+n+" course"+(n>1?"s":""):"")+" — for both of you — and clears any “Should be Top 100” flags. The course list, Top-100 flags, trips and wishlist all stay."))return;
     var typed=prompt('Last check — this can\'t be undone. Type RESET to wipe it all.');
     if(typed==null||typed.trim().toUpperCase()!=="RESET"){toast("Nothing was wiped");return;}
     var ids=[]; for(var nm in S.ratings){ rounds(nm).forEach(function(r){(r.photos||[]).forEach(function(p){ids.push(p);});}); }
@@ -974,6 +1124,8 @@
   document.getElementById("wipeBtn").onclick=resetRankings;
 
   function boot(){ activeTripId=S.activeTripId||null;
+    document.getElementById("openTrip").onclick=openTrips;
+    document.getElementById("tb-manage").onclick=function(){ if(activeTripId)openTripDetail(activeTripId); };
     try{ initMap(); }catch(e){} // map is optional — keep the rest of the app alive if Leaflet/tiles can't load
     renderAll(); drawTrip(); updateTripBar(); pollUpdates(); }
   loadState().then(boot).catch(function(){ boot(); });
