@@ -41,6 +41,28 @@ function readBody(req) {
 function authed(req) { return !CODE || (req.headers["x-rw-code"] || "") === CODE; }
 function safeId(s) { return String(s || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 64); }
 
+/* One-time reset (Sept 2026): the rating system was rebuilt around Totality,
+   and the old scores must not seed the new rankings. On boot, if the stored
+   state still has any pre-Totality round (no `tot` score), archive the whole
+   state to state-backup-<timestamp>.json on the volume, then wipe ratings,
+   the old head-to-head order, and snub flags. Keeps t100 flags, trips,
+   wishlist and dream progress; photo files stay on disk (the backup still
+   references them). Once wiped there are no legacy rounds left, so this
+   never fires again. */
+try {
+  const st = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+  const hasLegacy = st && st.ratings && Object.keys(st.ratings).some(function (n) {
+    return ((st.ratings[n] && st.ratings[n].rounds) || []).some(function (r) { return r && typeof r.tot !== "number"; });
+  });
+  if (hasLegacy) {
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    fs.writeFileSync(path.join(DATA_DIR, "state-backup-" + stamp + ".json"), JSON.stringify(st));
+    st.ratings = {}; st.order = []; st.snub = {};
+    fs.writeFileSync(STATE_FILE, JSON.stringify(st));
+    console.log("One-time reset: wiped pre-Totality ratings (backup: state-backup-" + stamp + ".json)");
+  }
+} catch (e) { /* no state yet, or unreadable — nothing to migrate */ }
+
 const server = http.createServer(async (req, res) => {
   const u = decodeURIComponent((req.url || "/").split("?")[0]);
 
@@ -84,6 +106,8 @@ const server = http.createServer(async (req, res) => {
   let rel = u === "/" ? "/index.html" : u;
   const full = path.normalize(path.join(ROOT, rel));
   if (!full.startsWith(ROOT)) return send(res, 403, "forbidden");
+  // never serve the data dir (state, backups, photos) as static files
+  if (full.startsWith(path.normalize(DATA_DIR + path.sep))) return send(res, 403, "forbidden");
   fs.readFile(full, (err, buf) => {
     if (err) { // SPA-ish fallback to index
       return fs.readFile(path.join(ROOT, "index.html"), (e2, idx) =>
