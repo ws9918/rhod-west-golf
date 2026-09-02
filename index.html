@@ -194,6 +194,8 @@
   .empty{text-align:center;color:var(--muted);padding:10px 26px 30px;font-size:14px;line-height:1.5}
   .empty .emimg{width:100%;height:150px;object-fit:cover;border-radius:18px;margin-bottom:16px}
   .empty .em{font-size:30px;margin-bottom:8px}
+  .wipe-wrap{text-align:center;padding:14px 0 22px}
+  .wipe-link{background:transparent;border:0;color:var(--bad);font-size:12.5px;font-weight:700;text-decoration:underline;opacity:.75;font-family:inherit}
   .toast{position:fixed;left:50%;bottom:calc(104px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .leaflet-div-icon{background:transparent;border:0}
@@ -330,6 +332,7 @@
         <button class="chip" data-f="snub">Should be Top 100</button>
       </div>
       <div id="rank-list" style="margin-top:10px"></div>
+      <div class="wipe-wrap"><button id="wipeBtn" class="wipe-link">Start fresh — wipe all ratings</button></div>
     </section>
 
     <!-- DREAM -->
@@ -955,6 +958,20 @@
   document.querySelectorAll("#rank-filters .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#rank-filters .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); rankFilter=ch.dataset.f; renderRank(); }; });
   document.querySelectorAll("#dream-seg .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#dream-seg .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); dreamSeg=ch.dataset.d; renderDream(); }; });
   document.getElementById("q").oninput=function(e){query=e.target.value.trim().toLowerCase();renderRank();};
+
+  /* ---------- start fresh (wipe ratings, keep the course list) ---------- */
+  function resetRankings(){
+    var n=Object.keys(S.ratings).length;
+    if(!confirm("Start fresh? This wipes every round, score, note, photo and ranking"+(n?" across "+n+" course"+(n>1?"s":""):"")+" — for both of you. The course list, Top-100 flags, trips and wishlist all stay."))return;
+    var typed=prompt('Last check — this can\'t be undone. Type RESET to wipe it all.');
+    if(typed==null||typed.trim().toUpperCase()!=="RESET"){toast("Nothing was wiped");return;}
+    var ids=[]; for(var nm in S.ratings){ rounds(nm).forEach(function(r){(r.photos||[]).forEach(function(p){ids.push(p);});}); }
+    ids.forEach(function(id){ delPhoto(id); delete photoCache[id]; });
+    S.ratings={}; S.order=[]; S.snub={};
+    save(); COURSES.forEach(refreshMarker); renderAll();
+    toast("Fresh start — every course is back to unrated");
+  }
+  document.getElementById("wipeBtn").onclick=resetRankings;
 
   function boot(){ activeTripId=S.activeTripId||null;
     try{ initMap(); }catch(e){} // map is optional — keep the rest of the app alive if Leaflet/tiles can't load
