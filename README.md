@@ -25,6 +25,8 @@ Each rating also carries a **verdict** — ✈️ I'd fly there for it · 🚗 I
 
 Courses not on the Top 100 can be flagged **"Should be Top 100"** (looking at you, Gold Mountain).
 
+**💸 Worth it** (a chip on the Courses tab) sorts the rated courses by money: *Pay anything* — you'd pay in the top third of your own figures, or someone's verdict is ✈️ fly — and *Doesn't make sense* — Totality 8+ but you'd pay in the bottom third, or someone said ➖ skip. It needs at least three courses with a would-pay figure.
+
 ## Starting over
 
 **Start fresh** at the bottom of the Courses tab wipes every rating, note, photo and ranking (after a confirm and typing `RESET`) while keeping the course list, Top-100 flags, trips, wishlist and dream progress. The server also does this once automatically on boot if it finds ratings from the pre-Totality scoring system, archiving them first to `state-backup-<timestamp>.json` in the data directory.

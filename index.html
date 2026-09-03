@@ -196,6 +196,8 @@
   .empty .emimg{width:100%;height:150px;object-fit:cover;border-radius:18px;margin-bottom:16px}
   .empty .em{font-size:30px;margin-bottom:8px}
   .wipe-wrap{text-align:center;padding:14px 0 22px}
+  .rank-note{font-size:12.5px;color:var(--muted);margin:2px 18px 12px;line-height:1.45}
+  .row .pill.money{white-space:nowrap;font-family:"Fraunces",serif;font-size:13px;padding:5px 10px}
   .wipe-link{background:transparent;border:0;color:var(--bad);font-size:12.5px;font-weight:700;text-decoration:underline;opacity:.75;font-family:inherit}
   .toast{position:fixed;left:50%;bottom:calc(180px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -317,7 +319,7 @@
     #feed .empty{grid-column:1/-1}
     .search{margin:20px 24px 2px}
     #rank-list{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
-    #rank-list .section-h,#rank-list .empty{grid-column:1/-1;margin-left:0;margin-right:0}
+    #rank-list .section-h,#rank-list .empty,#rank-list .rank-note{grid-column:1/-1;margin-left:0;margin-right:0}
     #rank-list .row{margin:0 0 10px}
     #dream-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
     #dream-body .prog,#dream-body .wish-add,#dream-body .empty{grid-column:1/-1;margin-left:0;margin-right:0}
@@ -401,6 +403,7 @@
         <button class="chip" data-f="unrated">Unrated</button>
         <button class="chip" data-f="top100">Top 100</button>
         <button class="chip" data-f="snub">Should be Top 100</button>
+        <button class="chip" data-f="worth">💸 Worth it</button>
       </div>
       <div id="rank-list" style="margin-top:10px"></div>
       <div id="whoWrap" class="who-wrap"></div>
@@ -677,7 +680,39 @@
 
   /* ---------- COURSES ---------- */
   var rankFilter="all",query="";
+  /* ---------- WORTH THE MONEY ---------- */
+  // one entry per rated course that has at least one "what would you pay" figure
+  function worthData(){ var out=[];
+    COURSES.forEach(function(c){ if(!isRated(c.n))return; var pays=[],by={};
+      ratingSet(c.n).forEach(function(r){ var who=raterOf(r); if(typeof r.pay==="number")pays.push(r.pay);
+        by[who]={pay:(typeof r.pay==="number"?r.pay:null),reco:recoKey(r.reco)}; });
+      if(!pays.length)return; var avg=pays.reduce(function(a,b){return a+b;},0)/pays.length;
+      var recos=Object.keys(by).map(function(k){return by[k].reco;});
+      out.push({c:c,score:courseScore(c.n),pay:avg,by:by,fly:recos.indexOf("fly")>=0,skip:recos.indexOf("skip")>=0}); });
+    return out; }
+  function renderWorth(host){
+    var all=worthData();
+    if(all.length<3){ host.appendChild(h("div",{class:"empty"},[h("div",{class:"em"},"💸"),h("div",{},"Worth the money needs a few more ratings with a “what would you pay” figure — "+all.length+" course"+(all.length===1?"":"s")+" so far.")])); return; }
+    var sorted=all.map(function(d){return d.pay;}).sort(function(a,b){return a-b;});
+    var lo=sorted[Math.floor((sorted.length-1)/3)], hi=sorted[Math.ceil((sorted.length-1)*2/3)];
+    var data=all.filter(function(d){ return !query||(d.c.n+" "+d.c.s).toLowerCase().indexOf(query)>=0; });
+    var anything=data.filter(function(d){return d.pay>=hi||d.fly;}).sort(function(a,b){return (b.pay-a.pay)||(b.score-a.score);});
+    var inA={}; anything.forEach(function(d){inA[d.c.n]=1;});
+    var nonsense=data.filter(function(d){return !inA[d.c.n]&&d.score>=8&&(d.pay<=lo||d.skip);}).sort(function(a,b){return (b.score-a.score)||(a.pay-b.pay);});
+    host.appendChild(h("div",{class:"rank-note"},"Pay anything: you'd pay "+payLabel(hi)+" or more, or someone's verdict is ✈️ fly. Doesn't make sense: Totality 8+ but you'd pay "+payLabel(lo)+" or less, or someone said ➖ skip. Cut-offs are the top and bottom third of what you've said you'd pay."));
+    function row(d){ var c=d.c; var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★")); if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
+      var bits=[]; PRINCIPALS.concat(["Together"]).forEach(function(p){ var b=d.by[p]; if(!b)return; var ro=recoObj(b.reco); bits.push(p+" "+(b.pay!=null?payLabel(b.pay):"—")+(ro?" "+ro.e:"")); });
+      var r=h("div",{class:"row"},[ h("div",{class:"badge-sm",style:"background:"+scoreColor(d.score)},fmt(d.score)),
+        h("div",{class:"meta"},[nm,h("div",{class:"sb"},bits.join(" · "))]),
+        h("div",{class:"rt"},[h("div",{class:"pill green money"},payLabel(Math.round(d.pay))),h("div",{class:"chev"},"›")]) ]);
+      r.onclick=function(){openCourse(c);}; return r; }
+    host.appendChild(h("div",{class:"section-h"},"Pay anything ("+anything.length+")"));
+    if(anything.length)anything.forEach(function(d){host.appendChild(row(d));}); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"Nothing clears the bar yet."));
+    host.appendChild(h("div",{class:"section-h"},"Doesn't make sense ("+nonsense.length+")"));
+    if(nonsense.length)nonsense.forEach(function(d){host.appendChild(row(d));}); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"No highly rated course you'd skimp on. Good."));
+  }
   function renderRank(){ var host=document.getElementById("rank-list"); host.innerHTML="";
+    if(rankFilter==="worth"){ renderWorth(host); return; }
     var rated=rankedNames();
     var unrated=COURSES.map(function(c){return c.n;}).filter(function(n){return !isRated(n);});
     function match(n){ var c=byName[n]; if(!c)return false;
