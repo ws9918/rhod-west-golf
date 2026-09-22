@@ -27,6 +27,16 @@ Courses not on the Top 100 can be flagged **"Should be Top 100"** (looking at yo
 
 **💸 Worth it** (a chip on the Courses tab) sorts the rated courses by money: *Pay anything* — you'd pay in the top third of your own figures, or someone's verdict is ✈️ fly — and *Doesn't make sense* — Totality 8+ but you'd pay in the bottom third, or someone said ➖ skip. It needs at least three courses with a would-pay figure.
 
+## The map
+
+No API key, no account, no billing, for anything in the app.
+
+- **Leaflet** and **html2canvas** are vendored in `vendor/`, so the app has no CDN dependency and keeps working if a CDN is blocked or down.
+- **Tiles** come from Esri's public ArcGIS endpoints, which need no key: Light Gray Canvas for *Clean*, World Topo for *Terrain*, World Imagery for *Satellite*.
+- Credit is shown on the map, as those terms require.
+
+CARTO used to serve the *Clean* basemap. It now stamps `API KEY REQUIRED` across unkeyed tiles, so it was replaced.
+
 ## Starting over
 
 **Start fresh** at the bottom of the Courses tab wipes every rating, note, photo and ranking (after a confirm and typing `RESET`) while keeping the course list, Top-100 flags, trips, wishlist and dream progress. The server also does this once automatically on boot if it finds ratings from the pre-Totality scoring system, archiving them first to `state-backup-<timestamp>.json` in the data directory.
