@@ -37,6 +37,16 @@ No API key, no account, no billing, for anything in the app.
 
 CARTO used to serve the *Clean* basemap. It now stamps `API KEY REQUIRED` across unkeyed tiles, so it was replaced.
 
+## Photography
+
+`img/` holds two mountain-golf photographs, free under the
+[Unsplash License](https://unsplash.com/license) and credited in `img/CREDITS.md`.
+They were chosen for Rock Creek Cattle Company's character: high country, big sky.
+
+Rock Creek's own photographs are copyrighted by the club, so they are not shipped
+here. For real Rock Creek imagery, add your own photos from the round to a rating
+(✎ on the rating, then Photos) and they become that course's pictures.
+
 ## Starting over
 
 **Start fresh** at the bottom of the Courses tab wipes every rating, note, photo and ranking (after a confirm and typing `RESET`) while keeping the course list, Top-100 flags, trips, wishlist and dream progress. The server also does this once automatically on boot if it finds ratings from the pre-Totality scoring system, archiving them first to `state-backup-<timestamp>.json` in the data directory.

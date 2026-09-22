@@ -21,7 +21,8 @@
     --rhod:#243b4f; --rhod-2:#3a5f7d; --rhod-soft:#e9eef4;
     --gap:#b9702c; --gap-soft:#fbf1e2;
     --bad:#c75f43; --mid:#cf9a35; --good:#3f9a64; --great:#15643f;
-    --shadow:0 6px 22px rgba(20,35,25,.08); --shadow-lg:0 16px 44px rgba(20,35,25,.18);
+    --shadow:0 1px 2px rgba(20,35,25,.04); --shadow-lg:0 16px 44px rgba(20,35,25,.16);
+    --hair:#f0f1ec;
     --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -45,7 +46,7 @@
   .hero .ttl h1{font-size:30px;margin:4px 0 0;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.45)}
   .hero .ttl p{margin:5px 0 0;font-size:12.5px;opacity:.9;letter-spacing:.2px}
   .statbar{display:flex;gap:10px;padding:14px}
-  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 8px;text-align:center;box-shadow:var(--shadow)}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center}
   .stat b{display:block;font-size:24px;line-height:1;font-family:"Fraunces",serif;font-weight:600}
   .stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px;display:block;font-weight:700}
   .section-h{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:800;margin:20px 18px 10px;display:flex;justify-content:space-between;align-items:center}
@@ -56,7 +57,7 @@
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .chip .dot{width:9px;height:9px;border-radius:50%}
   /* memory card */
-  .mcard{background:var(--card);border:1px solid var(--line);border-radius:20px;margin:0 14px 16px;overflow:hidden;box-shadow:var(--shadow)}
+  .mcard{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:0 14px 14px;overflow:hidden;box-shadow:var(--shadow)}
   .mcard.t100{border-color:#ecd9a6;box-shadow:0 6px 22px rgba(184,144,47,.14)}
   .mcard .ph{position:relative;width:100%;aspect-ratio:16/10;background:#e7e6de;overflow:hidden}
   .mcard .ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -87,10 +88,13 @@
   .av.g{background:linear-gradient(150deg,var(--gold-soft),var(--gold))}
   .av-over .av{border-color:rgba(255,255,255,.92)}
   /* list rows */
-  .search{margin:12px 14px 2px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 14px;box-shadow:var(--shadow)}
+  .search{margin:12px 14px 4px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px}
   .search input{border:0;outline:0;background:transparent;font-size:15px;width:100%;color:var(--ink);font-family:inherit}
+  .list{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 14px 20px;overflow:hidden}
   .row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 10px;border-radius:16px;padding:11px;box-shadow:var(--shadow)}
-  .rank-no{width:22px;text-align:center;font-weight:700;color:var(--faint);font-size:13px;flex:0 0 auto;font-family:"Fraunces",serif}
+  .list .row{border:0;border-radius:0;margin:0;box-shadow:none;padding:14px 15px}
+  .list .row+.row{border-top:1px solid var(--hair)}
+  .rank-no{width:20px;text-align:center;font-weight:600;color:#c3c8be;font-size:13px;flex:0 0 auto;font-family:"Fraunces",serif}
   .badge-sm{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;font-family:"Fraunces",serif}
   .badge-sm.un{background:#edece5;color:#9aa295;font-size:20px;font-family:"Inter"}
   .row .meta{flex:1;min-width:0}
@@ -251,7 +255,9 @@
   .prog .pc b{color:var(--green);font-size:20px;font-family:"Fraunces",serif}
   .prog .pbar{height:9px;background:#edefe9;border-radius:99px;margin-top:11px;overflow:hidden}
   .prog .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-soft))}
-  .drow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 9px;border-radius:15px;padding:11px 12px;box-shadow:var(--shadow)}
+  .drow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 9px;border-radius:15px;padding:11px 12px}
+  .list .drow{border:0;border-radius:0;margin:0;padding:13px 15px}
+  .list .drow+.drow{border-top:1px solid var(--hair)}
   .drow .dr-rank{width:30px;text-align:center;font-family:"Fraunces",serif;font-weight:600;font-size:17px;color:var(--gold);flex:0 0 auto}
   .drow.done .dr-rank{color:var(--green)}
   .drow .meta{flex:1;min-width:0}
@@ -279,9 +285,9 @@
   /* ranked course rows read like a leaderboard */
   .rank-no{font-family:"Fraunces",serif;font-variant-numeric:tabular-nums}
   .row.top3 .rank-no{color:var(--gold);font-weight:700}
-  .row .score-chip{font-family:"Fraunces",serif;font-weight:600;font-size:15px;color:#fff;padding:5px 10px;border-radius:9px;min-width:44px;text-align:center;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .row .score-chip{font-family:"Fraunces",serif;font-weight:600;font-size:19px;letter-spacing:-.4px;min-width:40px;text-align:right;font-variant-numeric:tabular-nums;flex:0 0 auto}
   .row .rated-by{display:flex;gap:3px;flex:0 0 auto}
-  .row .rated-by i{width:7px;height:7px;border-radius:50%;display:block}
+  .row .rated-by i{width:6px;height:6px;border-radius:50%;display:block;opacity:.9}
   .row .rated-by i.w{background:var(--west)} .row .rated-by i.r{background:var(--rhod)}
   .row .rated-by i.off{background:#dfe3dd}
   /* feed entries: a logbook, not a social feed */
@@ -299,42 +305,42 @@
   .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
   .who-wrap{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted);padding:10px 14px 0}
   /* ---------- head to head: the app's signature moment ---------- */
-  .h2h{border:1px solid var(--line);border-radius:18px;overflow:hidden;margin:4px 0 16px;background:var(--card)}
-  .h2h-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:16px 16px 14px;background:linear-gradient(180deg,#f7f8f4,var(--card))}
+  .h2h{margin:2px 0 20px}
+  .h2h-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:4px 0 18px}
   .h2h-p{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
   .h2h-p .who{font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
   .h2h-p .tot{font-family:"Fraunces",serif;font-weight:600;font-size:38px;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
   .h2h-p.w .tot{color:var(--west)} .h2h-p.r .tot{color:var(--rhod)}
   .h2h-p .cap{font-size:10.5px;color:var(--faint);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
   .h2h-vs{font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--faint);padding:0 2px}
-  .h2h-rows{padding:4px 16px 2px}
+  .h2h-rows{padding:0}
   .h2h-row{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:10px;padding:9px 0}
-  .h2h-row+.h2h-row{border-top:1px solid #f0f1ec}
+  .h2h-row+.h2h-row{border-top:1px solid var(--hair)}
   .h2h-row .v{font-family:"Fraunces",serif;font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;color:var(--faint)}
   .h2h-row .v.l{text-align:left} .h2h-row .v.r{text-align:right}
   .h2h-row .v.lead.l{color:var(--west)} .h2h-row .v.lead.r{color:var(--rhod)}
   .h2h-row .mid{min-width:0}
   .h2h-row .lbl{font-size:11.5px;font-weight:700;color:#5c665e;text-align:center;letter-spacing:.2px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .h2h-row .track{display:flex;gap:3px;height:6px}
-  .h2h-row .track .half{flex:1;background:#edefe9;border-radius:99px;overflow:hidden;display:flex}
+  .h2h-row .track .half{flex:1;background:#eef0ea;border-radius:99px;overflow:hidden;display:flex}
   .h2h-row .track .half.l{justify-content:flex-end}
   .h2h-row .track i{display:block;height:100%;border-radius:99px}
-  .h2h-row .track .half.l i{background:linear-gradient(90deg,var(--west-2),var(--west))}
-  .h2h-row .track .half.r i{background:linear-gradient(90deg,var(--rhod),var(--rhod-2))}
+  .h2h-row .track .half.l i{background:var(--west)}
+  .h2h-row .track .half.r i{background:var(--rhod)}
   .h2h-row.gap .lbl{color:var(--gap)}
   .h2h-row.gap .lbl::after{content:" ●";font-size:8px;vertical-align:2px}
-  .h2h-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 16px 0}
+  .h2h-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 0 0}
   .h2h-verdict{border-radius:12px;padding:9px 10px;text-align:center;font-size:12px;font-weight:700;line-height:1.35}
   .h2h-verdict.w{background:var(--west-soft);color:var(--west)}
   .h2h-verdict.r{background:var(--rhod-soft);color:var(--rhod)}
   .h2h-verdict b{display:block;font-size:13px}
   .h2h-verdict span{display:block;font-size:10.5px;opacity:.75;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px}
-  .h2h-sum{margin-top:12px;padding:11px 16px;border-top:1px solid #f0f1ec;display:flex;align-items:center;gap:9px;font-size:12.5px;color:#5c665e;line-height:1.4}
+  .h2h-sum{margin-top:14px;padding:13px 0 0;border-top:1px solid var(--hair);display:flex;align-items:center;gap:9px;font-size:12.5px;color:#5c665e;line-height:1.4}
   .h2h-sum .pipm{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:4px 9px;border-radius:99px}
   .h2h-sum .pipm.agree{background:var(--west-soft);color:var(--west)}
   .h2h-sum .pipm.split{background:var(--gap-soft);color:var(--gap)}
   /* waiting for the other rating */
-  .h2h-wait{display:flex;align-items:center;gap:11px;padding:15px 16px;font-size:13.5px;color:#46504a;line-height:1.4}
+  .h2h-wait{display:flex;align-items:center;gap:11px;padding:14px 15px;font-size:13.5px;color:#46504a;line-height:1.4;background:var(--card);border:1px solid var(--line);border-radius:14px}
   .h2h-wait .av{flex:0 0 auto;width:34px;height:34px;font-size:13px}
   .h2h-wait b{display:block;font-size:14px}
   .h2h-wait span{font-size:12.5px;color:var(--muted)}
@@ -364,15 +370,16 @@
     .section-h{margin-left:24px;margin-right:24px}
     .filters{padding-left:24px;padding-right:24px}
     #feed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px;padding:0 24px;align-items:start}
-    #feed .mcard,#rank-list .row,#dream-body .drow{min-width:0}
+    #feed .mcard{min-width:0}
     #feed .mcard{margin:0 0 16px}
     #feed .empty{grid-column:1/-1}
     .search{margin:20px 24px 2px}
-    #rank-list{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
-    #rank-list .section-h,#rank-list .empty,#rank-list .rank-note{grid-column:1/-1;margin-left:0;margin-right:0}
+    #rank-list{padding:0 24px;max-width:820px}
+    #rank-list .section-h,#rank-list .empty,#rank-list .rank-note{margin-left:0;margin-right:0}
+    #rank-list .list,#dream-body .list{margin-left:0;margin-right:0}
     #rank-list .row{margin:0 0 10px}
-    #dream-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;padding:0 24px;align-items:start}
-    #dream-body .prog,#dream-body .wish-add,#dream-body .empty{grid-column:1/-1;margin-left:0;margin-right:0}
+    #dream-body{padding:0 24px;max-width:820px}
+    #dream-body .prog,#dream-body .wish-add,#dream-body .empty{margin-left:0;margin-right:0}
     #dream-body .drow{margin:0 0 9px}
     .dream-hero{border-radius:0;height:180px}
     .sheet{left:50%;right:auto;bottom:auto;top:50%;width:680px;max-width:calc(100vw - 48px);max-height:88vh;border-radius:24px;padding:22px 28px 30px;transform:translate(-50%,-47%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s,visibility 0s .22s}
@@ -399,7 +406,7 @@
     <!-- FEED -->
     <section class="view active" id="view-feed">
       <div class="hero">
-        <img src="hero.jpg" alt="" id="heroImg" />
+        <img src="img/hero-mountain.jpg" alt="" id="heroImg" />
         <div class="ov"></div>
         <img src="crest.jpg" alt="" class="crest" id="crestImg" onerror="this.style.display='none'" />
         <div class="ttl">
@@ -463,7 +470,7 @@
     <!-- DREAM -->
     <section class="view" id="view-dream">
       <div class="dream-hero">
-        <img src="bar.jpg" alt="" onerror="this.style.display='none'" />
+        <img src="img/course-mountain.jpg" alt="" onerror="this.style.display='none'" />
         <div class="dh-ov"></div>
         <div class="dh-ttl"><div class="kick">The bucket list</div><h1>Dream Courses</h1></div>
       </div>
@@ -704,7 +711,7 @@
     var feed=document.getElementById("feed"); feed.innerHTML="";
     var ar=allRounds().filter(function(it){ if(feedFilter==="all")return true; return raterOf(it.rd)===(feedFilter==="west"?"West":"Rhod"); });
     if(!ar.length){ feed.appendChild(h("div",{class:"empty"},[
-      h("img",{class:"emimg",src:"bar.jpg",onerror:"this.style.display='none'"}),
+      h("img",{class:"emimg",src:"img/course-mountain.jpg",onerror:"this.style.display='none'"}),
       h("div",{},feedFilter==="all"?"No ratings yet. Tap Rate after your next round to add scores, photos and the story.":"No ratings from "+(feedFilter==="west"?"West":"Rhod")+" yet.")
     ])); return; }
     ar.slice(0,40).forEach(function(it){ feed.appendChild(memCard(it.course,it.rd)); });
@@ -762,10 +769,11 @@
         h("div",{class:"meta"},[nm,h("div",{class:"sb"},bits.join(" · "))]),
         h("div",{class:"rt"},[h("div",{class:"pill green money"},payLabel(Math.round(d.pay))),h("div",{class:"chev"},"›")]) ]);
       r.onclick=function(){openCourse(c);}; return r; }
+    function grp(rows){ var g=h("div",{class:"list"}); rows.forEach(function(r){g.appendChild(r);}); return g; }
     host.appendChild(h("div",{class:"section-h"},"Pay anything ("+anything.length+")"));
-    if(anything.length)anything.forEach(function(d){host.appendChild(row(d));}); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"Nothing clears the bar yet."));
+    if(anything.length)host.appendChild(grp(anything.map(row))); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"Nothing clears the bar yet."));
     host.appendChild(h("div",{class:"section-h"},"Doesn't make sense ("+nonsense.length+")"));
-    if(nonsense.length)nonsense.forEach(function(d){host.appendChild(row(d));}); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"No highly rated course you'd skimp on. Good."));
+    if(nonsense.length)host.appendChild(grp(nonsense.map(row))); else host.appendChild(h("div",{class:"empty",style:"padding:4px 26px 16px"},"No highly rated course you'd skimp on. Good."));
   }
   function renderRank(){ var host=document.getElementById("rank-list"); host.innerHTML="";
     if(rankFilter==="worth"){ renderWorth(host); return; }
@@ -775,10 +783,13 @@
       if(query&&(c.n+" "+c.s).toLowerCase().indexOf(query)<0)return false;
       if(rankFilter==="rated")return isRated(n); if(rankFilter==="unrated")return !isRated(n);
       if(rankFilter==="top100")return isT100(c); if(rankFilter==="snub")return isSnub(c); return true; }
+    function group(rows){ var g=h("div",{class:"list"}); rows.forEach(function(r){g.appendChild(r);}); return g; }
     if(rankFilter!=="unrated"){ var rr=rated.filter(match);
-      if(rr.length){ host.appendChild(h("div",{class:"section-h"},"Ranked")); rr.forEach(function(n,i){host.appendChild(rowFor(byName[n],i+1));}); } }
+      if(rr.length){ host.appendChild(h("div",{class:"section-h"},"Ranked"));
+        host.appendChild(group(rr.map(function(n,i){return rowFor(byName[n],i+1);}))); } }
     if(rankFilter!=="rated"){ var uu=unrated.filter(match).sort(function(a,b){return a<b?-1:1;});
-      if(uu.length){ host.appendChild(h("div",{class:"section-h"},"Not yet rated ("+uu.length+")")); uu.forEach(function(n){host.appendChild(rowFor(byName[n],null));}); } }
+      if(uu.length){ host.appendChild(h("div",{class:"section-h"},"Not yet rated ("+uu.length+")"));
+        host.appendChild(group(uu.map(function(n){return rowFor(byName[n],null);}))); } }
     if(!host.children.length)host.appendChild(h("div",{class:"empty"},"No courses match.")); }
   function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
@@ -796,7 +807,7 @@
     if(rated){ // two dots say at a glance whose ratings are in
       rt.appendChild(h("div",{class:"rated-by",title:whoTxt},[
         h("i",{class:hasW?"w":"off"}),h("i",{class:hasR?"r":"off"})]));
-      rt.appendChild(h("div",{class:"score-chip",style:"background:"+scoreColor(sc)},fmt(sc))); }
+      rt.appendChild(h("div",{class:"score-chip",style:"color:"+scoreColor(sc)},fmt(sc))); }
     rt.appendChild(h("div",{class:"chev"},"›"));
     kids.push(rt);
     var row=h("div",{class:"row"+(rankNo!=null&&rankNo<=3?" top3":"")},kids);
@@ -815,7 +826,7 @@
       h("div",{class:"pc"},[h("b",{},""+done)," of "+total+" played"]) ]));
     prog.appendChild(h("div",{class:"pbar"},h("i",{style:"width:"+(total?done/total*100:0)+"%"})));
     host.appendChild(prog);
-    list.forEach(function(d){ host.appendChild(dreamRow(d)); });
+    var g=h("div",{class:"list"}); list.forEach(function(d){ g.appendChild(dreamRow(d)); }); host.appendChild(g);
   }
   function dreamRow(d){
     var done=dreamPlayed(d);
@@ -879,7 +890,7 @@
     var rk=rankOf(c.n); if(rated&&rk>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(rk+1)+" OF "+rankedNames().length));
     sheet.appendChild(loc);
     var anyPhoto=false; rs.forEach(function(r){ if(r.photos&&r.photos.length)anyPhoto=true; });
-    if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"hero.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},rated?"No photos yet — tap ✎ on a rating to add some":"Add your own photos when you rate it")); sheet.appendChild(ban); }
+    if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"img/course-mountain.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},rated?"No photos yet — tap ✎ on a rating to add some":"Add your own photos when you rate it")); sheet.appendChild(ban); }
     if(rated){
       var pays=rs.map(function(r){return r.pay;}).filter(function(v){return typeof v==="number";});
       var nR=rs.length;
