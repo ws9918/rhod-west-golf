@@ -8,6 +8,16 @@ which permits commercial use without attribution. Credited anyway:
 | `hero-mountain.jpg` | Frugal Flyer | https://unsplash.com/photos/ExBkM0ssrHQ |
 | `course-mountain.jpg` | Frugal Flyer | https://unsplash.com/photos/NQKrhdgEVqQ |
 
+## The crest
+
+`crest.png` (512px), plus `crest-180/64/32.png` for app and browser icons, are
+drawn vector marks, not photographs: a deep green disc, a gold rim and a Fraunces
+"RW". They replace a 1024px photograph of an embossed crest on velvet, which went
+to mush at 48px on the hero and was unreadable as a 32px favicon.
+
+To change it, edit the mark in `scratchpad/crest/render.html` and re-render, or
+just replace these four PNGs at the same sizes.
+
 ## Why not Rock Creek Cattle Company's own photos?
 
 They are copyrighted by the club and their photographers. This repository is
