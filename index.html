@@ -16,6 +16,10 @@
     --bg:#f3f1ea; --card:#ffffff; --ink:#16201a; --muted:#7a8279; --faint:#aeb4aa;
     --line:#e8e7df; --green:#15643f; --green-2:#1c8b56; --green-d:#0d4a2d; --gold:#b8902f; --gold-soft:#d9b25a;
     --navy:#243b4f;
+    /* the app is about two people, so each one is a colour in the system */
+    --west:#15643f; --west-2:#1c8b56; --west-soft:#e9f3ed;
+    --rhod:#243b4f; --rhod-2:#3a5f7d; --rhod-soft:#e9eef4;
+    --gap:#b9702c; --gap-soft:#fbf1e2;
     --bad:#c75f43; --mid:#cf9a35; --good:#3f9a64; --great:#15643f;
     --shadow:0 6px 22px rgba(20,35,25,.08); --shadow-lg:0 16px 44px rgba(20,35,25,.18);
     --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
@@ -272,6 +276,21 @@
   .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:#977a2f;margin-top:2px}
   .gem button{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12.5px}
   .add-lbl{font-size:10px;font-weight:700;color:var(--green)}
+  /* ranked course rows read like a leaderboard */
+  .rank-no{font-family:"Fraunces",serif;font-variant-numeric:tabular-nums}
+  .row.top3 .rank-no{color:var(--gold);font-weight:700}
+  .row .score-chip{font-family:"Fraunces",serif;font-weight:600;font-size:15px;color:#fff;padding:5px 10px;border-radius:9px;min-width:44px;text-align:center;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .row .rated-by{display:flex;gap:3px;flex:0 0 auto}
+  .row .rated-by i{width:7px;height:7px;border-radius:50%;display:block}
+  .row .rated-by i.w{background:var(--west)} .row .rated-by i.r{background:var(--rhod)}
+  .row .rated-by i.off{background:#dfe3dd}
+  /* feed entries: a logbook, not a social feed */
+  .mcard .body{padding:15px}
+  .mcard .stamp{font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--faint);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .mcard .stamp .dot{width:6px;height:6px;border-radius:50%}
+  .mcard .stamp .dot.w{background:var(--west)} .mcard .stamp .dot.r{background:var(--rhod)} .mcard .stamp .dot.g{background:var(--gold)}
+  /* the save button follows you down the rate sheet */
+  .savebar{margin-top:6px}
   .ibtn{border:1px solid var(--line);background:var(--bg);border-radius:9px;width:34px;height:34px;font-size:15px;display:grid;place-items:center;color:var(--muted);flex:0 0 auto;font-family:inherit}
   .ibtn.del{color:var(--bad)}
   .seg.stack button{flex:1 1 100%;text-align:left}
@@ -279,17 +298,47 @@
   .who.sm button .av{width:24px;height:24px;font-size:11px}
   .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
   .who-wrap{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted);padding:10px 14px 0}
-  /* side by side: West vs Rhod */
-  .cmp-box{background:#f7f8f4;border:1px solid var(--line);border-radius:16px;padding:12px 14px 10px;margin:2px 0 14px}
-  .cmp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-  .cmp-lbl{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
-  .cmp-cols{display:flex;gap:26px;padding-right:13px}
-  .cmp-row{display:grid;grid-template-columns:1fr 58px 58px;align-items:center;padding:7px 0;border-top:1px solid #ecede7;font-size:13px}
-  .cmp-row .cl{color:#46504a;font-weight:600}
-  .cmp-row .cv{text-align:center;font-family:"Fraunces",serif;font-weight:700;font-size:15px}
-  .cmp-row .cv.sm{font-family:"Inter",sans-serif;font-size:12px;font-weight:700;white-space:nowrap}
-  .cmp-row.gap{background:#fbf3dc;margin:0 -8px;padding:7px 8px;border-radius:9px;border-top-color:transparent}
-  .cmp-sum{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+  /* ---------- head to head: the app's signature moment ---------- */
+  .h2h{border:1px solid var(--line);border-radius:18px;overflow:hidden;margin:4px 0 16px;background:var(--card)}
+  .h2h-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:16px 16px 14px;background:linear-gradient(180deg,#f7f8f4,var(--card))}
+  .h2h-p{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+  .h2h-p .who{font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+  .h2h-p .tot{font-family:"Fraunces",serif;font-weight:600;font-size:38px;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+  .h2h-p.w .tot{color:var(--west)} .h2h-p.r .tot{color:var(--rhod)}
+  .h2h-p .cap{font-size:10.5px;color:var(--faint);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+  .h2h-vs{font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--faint);padding:0 2px}
+  .h2h-rows{padding:4px 16px 2px}
+  .h2h-row{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:10px;padding:9px 0}
+  .h2h-row+.h2h-row{border-top:1px solid #f0f1ec}
+  .h2h-row .v{font-family:"Fraunces",serif;font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;color:var(--faint)}
+  .h2h-row .v.l{text-align:left} .h2h-row .v.r{text-align:right}
+  .h2h-row .v.lead.l{color:var(--west)} .h2h-row .v.lead.r{color:var(--rhod)}
+  .h2h-row .mid{min-width:0}
+  .h2h-row .lbl{font-size:11.5px;font-weight:700;color:#5c665e;text-align:center;letter-spacing:.2px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .h2h-row .track{display:flex;gap:3px;height:6px}
+  .h2h-row .track .half{flex:1;background:#edefe9;border-radius:99px;overflow:hidden;display:flex}
+  .h2h-row .track .half.l{justify-content:flex-end}
+  .h2h-row .track i{display:block;height:100%;border-radius:99px}
+  .h2h-row .track .half.l i{background:linear-gradient(90deg,var(--west-2),var(--west))}
+  .h2h-row .track .half.r i{background:linear-gradient(90deg,var(--rhod),var(--rhod-2))}
+  .h2h-row.gap .lbl{color:var(--gap)}
+  .h2h-row.gap .lbl::after{content:" ●";font-size:8px;vertical-align:2px}
+  .h2h-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 16px 0}
+  .h2h-verdict{border-radius:12px;padding:9px 10px;text-align:center;font-size:12px;font-weight:700;line-height:1.35}
+  .h2h-verdict.w{background:var(--west-soft);color:var(--west)}
+  .h2h-verdict.r{background:var(--rhod-soft);color:var(--rhod)}
+  .h2h-verdict b{display:block;font-size:13px}
+  .h2h-verdict span{display:block;font-size:10.5px;opacity:.75;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px}
+  .h2h-sum{margin-top:12px;padding:11px 16px;border-top:1px solid #f0f1ec;display:flex;align-items:center;gap:9px;font-size:12.5px;color:#5c665e;line-height:1.4}
+  .h2h-sum .pipm{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:4px 9px;border-radius:99px}
+  .h2h-sum .pipm.agree{background:var(--west-soft);color:var(--west)}
+  .h2h-sum .pipm.split{background:var(--gap-soft);color:var(--gap)}
+  /* waiting for the other rating */
+  .h2h-wait{display:flex;align-items:center;gap:11px;padding:15px 16px;font-size:13.5px;color:#46504a;line-height:1.4}
+  .h2h-wait .av{flex:0 0 auto;width:34px;height:34px;font-size:13px}
+  .h2h-wait b{display:block;font-size:14px}
+  .h2h-wait span{font-size:12.5px;color:var(--muted)}
+  .h2h-wait button{margin-left:auto;background:var(--ink);color:#fff;border:0;border-radius:11px;padding:10px 14px;font-weight:800;font-size:12.5px;white-space:nowrap;font-family:inherit}
   .cmp-wait{display:flex;align-items:center;gap:10px;font-size:13px;color:#46504a}
   .cmp-wait .av{flex:0 0 auto}
   .cmp-wait button{margin-left:auto;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:9px 13px;font-weight:800;font-size:12.5px;white-space:nowrap;font-family:inherit}
@@ -670,11 +719,13 @@
       card.appendChild(ph); }
     var body=h("div",{class:"body"});
     var nm=h("div",{class:"nm"},c?c.n:courseName); if(t100)nm.appendChild(h("span",{class:"star"},"★"));
-    var topRight = (rd.photos&&rd.photos.length)?null:avatarsFor(rd.players);
+    var who=raterOf(rd);
+    body.appendChild(h("div",{class:"stamp"},[
+      h("span",{class:"dot "+(who==="West"?"w":who==="Rhod"?"r":"g")}),
+      who==="Together"?"Rated together":who+"’s rating"]));
     var topRow=h("div",{class:"top"},[
       h("div",{class:"badge",style:"background:"+scoreColor(roundScore(rd))},fmt(roundScore(rd))),
-      h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},(c?c.s+" · ":"")+raterLabel(rd))]),
-      topRight
+      h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},c?c.s:"")])
     ]);
     body.appendChild(topRow);
     if(rd.notes)body.appendChild(h("div",{class:"note"},rd.notes));
@@ -732,17 +783,24 @@
   function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
     var lead; if(firstPhoto){lead=h("img",{class:"thumb",alt:""});loadPhoto(firstPhoto,lead);}
-      else lead=rated?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
+      else if(!rated)lead=h("div",{class:"badge-sm un"},"＋"); else lead=null;
     var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
     if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
-    var rtr=courseRaters(c.n),bothIn=rtr.indexOf("West")>=0&&rtr.indexOf("Rhod")>=0;
+    var rtr=courseRaters(c.n),hasW=rtr.indexOf("West")>=0,hasR=rtr.indexOf("Rhod")>=0,bothIn=hasW&&hasR;
     var whoTxt=bothIn?"both rated":(rtr.length?rtr.join(" & ")+" only":rs.length+" rating"+(rs.length>1?"s":""));
-    var sub=rated?(fmt(sc)+" · "+whoTxt+" · "+c.s):c.s;
-    var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},"#"+rankNo));
-    kids.push(lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
-    var rt=h("div",{class:"rt"}); if(rated)rt.appendChild(avatarsFor(rtr.length?rtr:coursePlayers(c.n))); rt.appendChild(h("div",{class:"chev"},"›"));
+    var sub=rated?(whoTxt+" · "+c.s):c.s;
+    var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},""+rankNo));
+    if(lead)kids.push(lead);
+    kids.push(h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
+    var rt=h("div",{class:"rt"});
+    if(rated){ // two dots say at a glance whose ratings are in
+      rt.appendChild(h("div",{class:"rated-by",title:whoTxt},[
+        h("i",{class:hasW?"w":"off"}),h("i",{class:hasR?"r":"off"})]));
+      rt.appendChild(h("div",{class:"score-chip",style:"background:"+scoreColor(sc)},fmt(sc))); }
+    rt.appendChild(h("div",{class:"chev"},"›"));
     kids.push(rt);
-    var row=h("div",{class:"row"},kids); row.onclick=function(){openCourse(c);}; return row; }
+    var row=h("div",{class:"row"+(rankNo!=null&&rankNo<=3?" top3":"")},kids);
+    row.onclick=function(){openCourse(c);}; return row; }
 
   /* ---------- TOP 100 ---------- */
   /* ---------- DREAM TAB ---------- */
@@ -824,9 +882,10 @@
     if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:"hero.jpg",alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},rated?"No photos yet — tap ✎ on a rating to add some":"Add your own photos when you rate it")); sheet.appendChild(ban); }
     if(rated){
       var pays=rs.map(function(r){return r.pay;}).filter(function(v){return typeof v==="number";});
-      var subs=[ h("div",{class:"sub"},[h("b",{},"Totality "+fmt(sc))," · "+rs.length+" rating"+(rs.length>1?"s":"")]) ];
+      var nR=rs.length;
+      var subs=[ h("div",{class:"sub"},[h("b",{},nR>1?"Combined Totality":"Totality")," · from "+nR+" rating"+(nR>1?"s":"")]) ];
       if(pays.length){ var lo=Math.min.apply(null,pays),hi=Math.max.apply(null,pays);
-        subs.push(h("div",{class:"sub",style:"margin-top:3px"},[h("b",{},"Would pay "+payLabel(lo)+(hi>lo?"–"+payLabel(hi):""))])); }
+        subs.push(h("div",{class:"sub",style:"margin-top:3px"},["You'd pay ",h("b",{},payLabel(lo)+(hi>lo?"–"+payLabel(hi):""))])); }
       if(!hasTot(c.n))subs.push(h("div",{class:"sub",style:"margin-top:3px"},"Old scoring — adjust a rating to add Totality"));
       var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), h("div",{},subs) ]);
       sheet.appendChild(hr);
@@ -869,34 +928,60 @@
       sn.onclick=function(){ if(isSnub(c))delete S.snub[c.n]; else S.snub[c.n]=true; save();renderAll();openCourse(c); }; sheet.appendChild(sn); }
     showScrim(sheet);
   }
-  /* West vs Rhod, latest rating each */
+  /* West vs Rhod, latest rating each — read like a match, not a spreadsheet */
   function compareBlock(c){
     var w=latestBy(c.n,"West"),r=latestBy(c.n,"Rhod"); if(!w&&!r)return null;
-    var box=h("div",{class:"cmp-box"});
-    if(w&&r){
-      box.appendChild(h("div",{class:"cmp-head"},[h("div",{class:"cmp-lbl"},"Side by side"),h("div",{class:"cmp-cols"},[h("div",{class:"av w"},"W"),h("div",{class:"av r"},"R")])]));
-      var agree=0,total=0,big=null;
-      function show(v,count){ return v==null?"—":(count?Math.round(v)+"/18":fmt(v)); }
-      function num(label,a,b,max,count){ if(a==null&&b==null)return; var row=h("div",{class:"cmp-row"});
-        var both=(a!=null&&b!=null),gap=both?Math.abs(a-b):0,thr=count?3:1.5,wide=both&&gap>=thr;
-        if(both){ total++; if(!wide)agree++; else if(!big||gap/max>big.gap/big.max)big={t:label,a:a,b:b,gap:gap,max:max,count:count}; }
-        if(wide)row.classList.add("gap");
-        row.appendChild(h("div",{class:"cl"},label)); row.appendChild(h("div",{class:"cv"},show(a,count))); row.appendChild(h("div",{class:"cv"},show(b,count)));
-        box.appendChild(row); }
-      CATS.forEach(function(f){ num(f.t,catVal(w,f.k),catVal(r,f.k),f.max,!!f.count); });
-      num("Totality",typeof w.tot==="number"?w.tot:null,typeof r.tot==="number"?r.tot:null,10,false);
-      function txt(label,a,b,ta,tb){ if(a==null&&b==null)return; var row=h("div",{class:"cmp-row"});
-        row.appendChild(h("div",{class:"cl"},label)); row.appendChild(h("div",{class:"cv sm",title:ta||""},a==null?"—":a)); row.appendChild(h("div",{class:"cv sm",title:tb||""},b==null?"—":b)); box.appendChild(row); }
-      txt("Would pay",typeof w.pay==="number"?payLabel(w.pay):null,typeof r.pay==="number"?payLabel(r.pay):null);
-      var wr=recoObj(w.reco),rr=recoObj(r.reco); txt("Verdict",wr?wr.e+" "+wr.sh:null,rr?rr.e+" "+rr.sh:null,wr?wr.t:"",rr?rr.t:"");
-      if(total){ var sum=agree===total?"You agree right down the line.":"Agree on "+agree+" of "+total+(big?" · biggest gap: "+big.t+" ("+show(big.a,big.count)+" vs "+show(big.b,big.count)+")":"");
-        box.appendChild(h("div",{class:"cmp-sum"},sum)); }
-    } else {
+    var box=h("div",{class:"h2h"});
+    if(!(w&&r)){
       var have=w?"West":"Rhod",need=w?"Rhod":"West";
-      var wait=h("div",{class:"cmp-wait"},[h("div",{class:"av "+(w?"w":"r")},have[0]),h("div",{},[h("b",{},have+" has rated. "),"Waiting on "+need+"."])]);
+      var wait=h("div",{class:"h2h-wait"},[
+        h("div",{class:"av "+(w?"w":"r")},have[0]),
+        h("div",{},[h("b",{},have+" has rated it."),h("span",{},"Waiting on "+need+" before you can compare.")])]);
       var add=h("button",{},"Add "+need+"’s rating"); add.onclick=function(){ openLog(c,null,need); }; wait.appendChild(add);
-      box.appendChild(wait);
-    }
+      box.appendChild(wait); return box; }
+
+    function val(rd,k){ return k==="tot"?(typeof rd.tot==="number"?rd.tot:null):catVal(rd,k); }
+    function show(v,f){ return v==null?"—":(f&&f.count?Math.round(v)+"":fmt(v)); }
+    // header: both Totality scores, the number that actually ranks the course
+    var wt=val(w,"tot"),rt=val(r,"tot");
+    box.appendChild(h("div",{class:"h2h-top"},[
+      h("div",{class:"h2h-p w"},[h("div",{class:"who"},"West"),h("div",{class:"tot"},show(wt)),h("div",{class:"cap"},"Totality")]),
+      h("div",{class:"h2h-vs"},(wt!=null&&rt!=null&&wt!==rt)?("Δ "+fmt(Math.abs(wt-rt))):"VS"),
+      h("div",{class:"h2h-p r"},[h("div",{class:"who"},"Rhod"),h("div",{class:"tot"},show(rt)),h("div",{class:"cap"},"Totality")])
+    ]));
+    // one opposed bar per category: who leads, and by how much, at a glance
+    var rows=h("div",{class:"h2h-rows"}),agree=0,total=0,big=null;
+    CATS.forEach(function(f){
+      var a=val(w,f.k),b=val(r,f.k); if(a==null&&b==null)return;
+      var both=a!=null&&b!=null, gap=both?Math.abs(a-b):0, thr=f.count?3:1.5, wide=both&&gap>=thr;
+      if(both){ total++; if(!wide)agree++; else if(!big||gap/f.max>big.gap/big.max)big={t:f.t,a:a,b:b,gap:gap,max:f.max,f:f}; }
+      var row=h("div",{class:"h2h-row"+(wide?" gap":"")});
+      row.appendChild(h("div",{class:"v l"+(both&&a>b?" lead":"")},show(a,f)));
+      row.appendChild(h("div",{class:"mid"},[
+        h("div",{class:"lbl"},f.t),
+        h("div",{class:"track"},[
+          h("div",{class:"half l"},h("i",{style:"width:"+(a==null?0:a/f.max*100)+"%"})),
+          h("div",{class:"half r"},h("i",{style:"width:"+(b==null?0:b/f.max*100)+"%"}))])]));
+      row.appendChild(h("div",{class:"v r"+(both&&b>a?" lead":"")},show(b,f)));
+      rows.appendChild(row); });
+    box.appendChild(rows);
+    // the two things that aren't scores: what they'd pay, and whether they'd send you
+    function card(rd,cls){
+      var ro=recoObj(rd.reco), bits=[];
+      bits.push(h("span",{},"Would pay"));
+      bits.push(h("b",{},typeof rd.pay==="number"?payLabel(rd.pay):"—"));
+      if(ro)bits.push(h("div",{style:"margin-top:4px;font-size:11.5px"},ro.e+" "+ro.sh));
+      return h("div",{class:"h2h-verdict "+cls},bits); }
+    box.appendChild(h("div",{class:"h2h-verdicts"},[card(w,"w"),card(r,"r")]));
+    // the one line that settles it
+    if(total){
+      var split=agree!==total;
+      var txt=split
+        ? "Agree on "+agree+" of "+total+". Furthest apart on "+big.t+", "+show(big.a,big.f)+" against "+show(big.b,big.f)+"."
+        : "Dead on. You two agree right down the line.";
+      box.appendChild(h("div",{class:"h2h-sum"},[
+        h("span",{class:"pipm "+(split?"split":"agree")},split?"Split":"Agreed"),
+        h("span",{},txt)])); }
     return box; }
   function deleteRound(c,rd,after){
     var who=raterOf(rd)==="Together"?"the shared rating":raterLabel(rd);
@@ -983,6 +1068,7 @@
     var nField=h("div",{class:"field"}); nField.appendChild(h("label",{},"The story")); var notes=h("textarea",{placeholder:"Best shot, the choke, conditions, signature hole…"}); if(editing&&editRd.notes)notes.value=editRd.notes; nField.appendChild(notes); sheet.appendChild(nField);
 
     var go=h("button",{class:"btn primary"},editing?"Save changes":"Save rating");
+    var saveWrap=h("div",{class:"savebar"},go);
     go.onclick=function(){ if(!by){toast("Pick whose rating this is");sheet.scrollTop=0;return;}
       if(chosen.indexOf(by)<0)chosen.unshift(by);
       var rec=editing?editRd:{id:uid(),date:new Date().toISOString().slice(0,10),photos:[]};
@@ -999,7 +1085,7 @@
           else if(!t)arr.push(rec);
         }); }).then(function(){ afterLog(c,editing); });
     };
-    sheet.appendChild(go); syncBy(); syncWho(); syncReco(); showScrim(sheet);
+    sheet.appendChild(saveWrap); syncBy(); syncWho(); syncReco(); showScrim(sheet);
   }
   function stageFiles(gal,addBtn){ var inp=document.getElementById("fileIn"); inp.value="";
     inp.onchange=function(){ Array.prototype.slice.call(inp.files).forEach(function(f){ downscale(f).then(function(data){ if(!data)return; var id=uid();

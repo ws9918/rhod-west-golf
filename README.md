@@ -4,7 +4,7 @@ Shared golf logbook, rankings, dream lists and road-trip planner. Works as a pho
 
 ## How rating works
 
-**One person, one rating.** West rates a course on his phone, Rhod rates it on his, and the course view shows the two cards **side by side** — divergent categories are highlighted and a summary line calls out the biggest gap. Until both are in, the course shows "waiting on Rhod/West" with a one-tap button to add the missing rating. Every rating can be **adjusted** (✎) or **deleted** (🗑) from the course view or from the rating's recap.
+**One person, one rating.** West rates a course on his phone, Rhod rates it on his, and the course view shows the two ratings **head to head**: both Totality scores with the gap between them, then one opposed bar per category so you can see who leads and by how much. Categories you disagree on are marked, and a closing line settles it ("Agree on 4 of 6. Furthest apart on Experience, 8.0 against 6.0"). Until both are in, the course shows "waiting on Rhod/West" with a one-tap button to add the missing rating. Every rating can be **adjusted** (✎) or **deleted** (🗑) from the course view or from the rating's recap.
 
 Each phone remembers whose ratings it enters (the "Whose rating is this?" toggle at the top of the rate sheet).
 
