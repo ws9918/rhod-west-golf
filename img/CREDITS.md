@@ -49,6 +49,16 @@ The real answer is your own photos from the round. Add them to a rating (✎ on 
 rating, then Photos) and they become that course's pictures, replacing the stand-in
 everywhere it appears.
 
+## Course data
+
+`us-courses.js` is not photography but belongs in the same ledger: every golf course in
+the United States, from **OpenStreetMap**'s `leisure=golf_course`, open data under the
+[ODbL](https://www.openstreetmap.org/copyright). That licence asks for attribution, so
+the map credits "Courses © OpenStreetMap contributors" alongside the Esri tile credit.
+
+Rebuild it with `scratchpad/osm/pull.sh <dir>` (one Overpass query per state) then
+`scratchpad/osm/build.py <dir> us-courses.js`.
+
 ## The crest
 
 `crest.png` (512px), plus `crest-180/64/32.png` for app and browser icons, are
