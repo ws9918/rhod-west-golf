@@ -11,6 +11,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const zlib = require("zlib");
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(__dirname, "data"));
@@ -28,6 +29,30 @@ const TYPES = {
   ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon"
 };
 
+/* Gzip the static text assets. us-courses.js is ~14,000 rows of very repetitive JSON
+   and index.html carries all the CSS and JS inline, so this is the difference between
+   a fast load and a slow one on a phone. Compressed bodies are cached in memory and
+   re-made when the file's mtime moves. */
+const COMPRESSIBLE = /^(text\/|application\/(javascript|json|xml)|image\/svg)/;
+const gzCache = new Map();
+function sendStatic(req, res, file, buf, type) {
+  const enc = req.headers["accept-encoding"] || "";
+  if (!COMPRESSIBLE.test(type || "") || buf.length < 1024 || !/\bgzip\b/.test(enc))
+    return send(res, 200, buf, type);
+  let stamp = ""; try { const st = fs.statSync(file); stamp = st.mtimeMs + ":" + st.size; } catch { }
+  const hit = gzCache.get(file);
+  if (hit && hit.stamp === stamp) {
+    res.writeHead(200, { "Content-Type": type, "Content-Encoding": "gzip", "Vary": "Accept-Encoding" });
+    return res.end(hit.body);
+  }
+  zlib.gzip(buf, (err, gz) => {
+    if (err) return send(res, 200, buf, type);
+    if (gzCache.size > 64) gzCache.clear();
+    gzCache.set(file, { stamp, body: gz });
+    res.writeHead(200, { "Content-Type": type, "Content-Encoding": "gzip", "Vary": "Accept-Encoding" });
+    res.end(gz);
+  });
+}
 function send(res, code, body, type) {
   res.writeHead(code, { "Content-Type": type || "text/plain; charset=utf-8" });
   res.end(body);
@@ -114,10 +139,11 @@ const server = http.createServer(async (req, res) => {
   if (full.startsWith(DATA_DIR + path.sep)) return send(res, 403, "forbidden");
   fs.readFile(full, (err, buf) => {
     if (err) { // SPA-ish fallback to index
-      return fs.readFile(path.join(ROOT, "index.html"), (e2, idx) =>
-        e2 ? send(res, 404, "not found") : send(res, 200, idx, TYPES[".html"]));
+      const idxFile = path.join(ROOT, "index.html");
+      return fs.readFile(idxFile, (e2, idx) =>
+        e2 ? send(res, 404, "not found") : sendStatic(req, res, idxFile, idx, TYPES[".html"]));
     }
-    send(res, 200, buf, TYPES[path.extname(full).toLowerCase()] || "application/octet-stream");
+    sendStatic(req, res, full, buf, TYPES[path.extname(full).toLowerCase()] || "application/octet-stream");
   });
 });
 

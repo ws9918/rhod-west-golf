@@ -236,6 +236,9 @@
   .map-seg{display:flex;background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:13px;padding:4px;box-shadow:0 6px 22px rgba(20,35,25,.16)}
   .map-seg button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:9px}
   .map-seg button.on{background:var(--ink);color:#fff}
+  .map-note{margin-top:8px;align-self:flex-start;background:rgba(255,255,255,.94);border:1px solid var(--line);
+            border-radius:99px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--muted);
+            box-shadow:0 1px 4px rgba(20,32,24,.08)}
   .map-layers{display:flex;gap:7px}
   .map-layers button{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 4px 14px rgba(20,35,25,.12);display:flex;align-items:center;gap:7px;opacity:.62}
   .map-layers button.on{opacity:1;color:var(--ink)}
@@ -455,7 +458,9 @@
         <div class="map-layers" id="mapLayers">
           <button data-l="played" class="on"><span class="dot" style="background:#15a05a"></span>Played</button>
           <button data-l="dream"><span class="dot" style="background:#b8902f"></span>Dream</button>
+          <button data-l="us"><span class="dot" style="background:#8aa0b8"></span>All US</button>
         </div>
+        <div class="map-note" id="usNote" style="display:none"></div>
       </div>
       <button class="map-trip" id="openTrip"><span class="ic">🗺️</span> Plan a trip</button>
       <div class="trip-bar" id="tripBar" style="display:none">
@@ -513,6 +518,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="courses.js"></script>
+<script src="us-courses.js"></script>
 <script src="dream.js"></script>
 <script src="vendor/leaflet.js"></script>
 <script src="vendor/html2canvas.min.js"></script>
@@ -562,8 +568,20 @@
   function roundById(name,id){ var arr=rounds(name); for(var i=0;i<arr.length;i++)if(arr[i].id===id)return arr[i]; return null; }
   var KEY="rwGolf.v2"; // keep prior data
   var PRINCIPALS=["West","Rhod"];
-  var COURSES=window.COURSES||[];
-  var byName={}; COURSES.forEach(function(c){byName[c.n]=c;});
+  /* The courses Rhod and West have played. `courses.js` is the fixed list; anything
+     they add from the US-wide search lands in S.added and folds in here, so an added
+     course is rated, ranked, mapped and photographed like any other. */
+  var BASE_COURSES=window.COURSES||[];
+  var COURSES=BASE_COURSES.slice(),byName={},playedKeys={};
+  function indexCourses(){ var seen={}; COURSES=[];
+    BASE_COURSES.concat((S&&S.added)||[]).forEach(function(c){ if(!c||!c.n)return;
+      if(seen[c.n])return; seen[c.n]=1; COURSES.push(c); });
+    byName={}; playedKeys={}; COURSES.forEach(function(c){ byName[c.n]=c; playedKeys[normKey(c.n)]=c; }); }
+  function haveCourse(n){ return !!byName[n]; }
+  /* Hiding a US result they already have: the exact name, or the loose key but only
+     when the state agrees too — otherwise two unrelated Arrowheads cancel each other. */
+  function haveNear(n,state){ if(byName[n])return true;
+    var c=playedKeys[normKey(n)]; return !!(c&&c.s===state); }
 
   /* ---------- shared backend ---------- */
   var CODE=localStorage.getItem("rwCode")||"";
@@ -600,7 +618,7 @@
   var S=defaultState();
   function defaultState(){ return {ratings:{},order:[],t100:{},snub:{},players:["Rhod","West"],trips:[],wishlist:[],dreamDone:{},activeTripId:null}; }
   function normalizeState(r){ r=r||{}; if(!r.ratings)r.ratings={}; if(!r.order)r.order=[]; if(!r.t100)r.t100={}; if(!r.snub)r.snub={};
-    if(!r.players||!r.players.length)r.players=["Rhod","West"]; if(!r.trips)r.trips=[]; if(!r.wishlist)r.wishlist=[]; if(!r.dreamDone)r.dreamDone={}; return r; }
+    if(!r.players||!r.players.length)r.players=["Rhod","West"]; if(!r.trips)r.trips=[]; if(!r.wishlist)r.wishlist=[]; if(!r.dreamDone)r.dreamDone={}; if(!r.added)r.added=[]; return r; }
   function loadState(){ return fetch("/api/state",{headers:hdr()}).then(function(r){ if(r.status===401){promptCode();throw 0;} return r.json(); })
     .then(function(d){ for(var k in S)delete S[k]; var n=normalizeState(d); for(var j in n)S[j]=n[j]; }); }
   var saveT=null,saving=false,saveAgain=false;
@@ -619,7 +637,7 @@
   function refreshState(){ if(saveT||saving)return; var sc=document.getElementById("scrim"); if(sc&&sc.classList.contains("show"))return;
     fetch("/api/state",{headers:hdr()}).then(function(r){return r.ok?r.json():null;}).then(function(d){ if(!d)return;
       var n=normalizeState(d); for(var j in n)S[j]=n[j]; activeTripId=S.activeTripId||null;
-      buildDreamMarkers(); COURSES.forEach(refreshMarker); renderAll(); drawTrip(); updateTripBar(); }).catch(function(){}); }
+      syncCourseList(); buildDreamMarkers(); COURSES.forEach(refreshMarker); renderAll(); drawTrip(); updateTripBar(); drawUsLayer(); }).catch(function(){}); }
   function pollUpdates(){ setInterval(refreshState,20000); document.addEventListener("visibilitychange",function(){ if(!document.hidden)refreshState(); }); }
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
@@ -660,6 +678,48 @@
   // 128px squares for list rows — a 1600px banner behind a 46px thumbnail is a phone-data tax
   function courseThumb(c){ return courseImage(c).replace(/\.jpg$/,"-sm.jpg"); }
   function terrainLabel(c){ return TERRAINS[terrainOf(c)].t; }
+
+  /* ---------- every golf course in the US ----------
+     OpenStreetMap's leisure=golf_course, pulled a state at a time and bundled into
+     us-courses.js as [name, state, lat, lng] rows to keep the file small. Open data
+     under the ODbL, no key and no account — the same rule the basemap follows, and
+     credited on the map as that licence requires. */
+  var US_ROWS=(window.USGOLF&&window.USGOLF.rows)||[];
+  var US_STATES=(window.USGOLF&&window.USGOLF.states)||{};
+  var US_LC=null;   // built on first search, not at load — it costs nothing until used
+  function usCourse(r){ return {n:r[0],s:US_STATES[r[1]]||r[1],st:r[1],lat:r[2],lng:r[3],us:true}; }
+  function usSearch(q,cap){ q=(q||"").trim().toLowerCase(); if(q.length<2)return [];
+    if(!US_LC)US_LC=US_ROWS.map(function(r){ return (r[0]+" "+(US_STATES[r[1]]||r[1])).toLowerCase(); });
+    cap=cap||40; var starts=[],rest=[];
+    for(var i=0;i<US_ROWS.length;i++){ var at=US_LC[i].indexOf(q); if(at<0)continue;
+      if(haveNear(US_ROWS[i][0],US_STATES[US_ROWS[i][1]]))continue;   // already in their list
+      (at===0?starts:rest).push(US_ROWS[i]);
+      if(starts.length>=cap)break; }
+    function byNm(a,b){ return a[0]<b[0]?-1:a[0]>b[0]?1:0; }
+    return starts.sort(byNm).concat(rest.sort(byNm)).slice(0,cap).map(usCourse); }
+
+  /* Adding a course is a shared change: withFresh re-reads before writing so two
+     phones adding at once don't wipe each other. syncCourseList catches additions
+     that arrive from the other phone on the 20-second poll. */
+  function addUsCourse(u,after){
+    if(haveCourse(u.n)){ if(after)after(byName[u.n]); return; }
+    var rec={n:u.n,s:u.s,lat:u.lat,lng:u.lng,src:"osm"};
+    function done(){ syncCourseList(); renderAll(); if(after)after(byName[u.n]); }
+    // withFresh re-reads the shared state before writing, so it settles before we open the course
+    Promise.resolve(withFresh(function(){ if(!S.added)S.added=[];
+      if(!S.added.some(function(a){return a.n===rec.n;}))S.added.push(rec); })).then(done,done); }
+  function syncCourseList(){ var before=COURSES.length; indexCourses();
+    if(map)COURSES.forEach(function(c){ if(markers[c.n])return;
+      var m=L.circleMarker([c.lat,c.lng],circleStyle(c)); m.on("click",function(){openCourse(c);});
+      markers[c.n]=m; playedLayer.addLayer(m); });
+    return COURSES.length!==before; }
+  function removeAddedCourse(c,after){
+    if(!confirm("Remove "+c.n+" from your course list? Any ratings on it go too."))return;
+    function done(){ if(markers[c.n]){ playedLayer.removeLayer(markers[c.n]); delete markers[c.n]; }
+      indexCourses(); renderAll(); toast("Removed "+c.n); if(after)after(); }
+    Promise.resolve(withFresh(function(){ S.added=(S.added||[]).filter(function(a){return a.n!==c.n;});
+      delete S.ratings[c.n]; delete S.t100[c.n]; delete S.snub[c.n]; })).then(done,done); }
+  function isAdded(n){ return (S.added||[]).some(function(a){return a.n===n;}); }
 
   function isT100(c){ var o=S.t100[c.n]; return o===undefined?!!c.t100:!!o; }
   function rounds(name){ var r=S.ratings[name]; return (r&&r.rounds)||[]; }
@@ -707,7 +767,7 @@
   var DREAM=window.DREAM||{world:[],usa:[],europe:[]};
   function normKey(s){ return (s||"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g," ")
     .split(/\s+/).filter(function(w){return w&&["the","golf","club","course","gc","cc","links","national","country","at","resort"].indexOf(w)<0;}).sort().join(" "); }
-  var playedKeys={}; COURSES.forEach(function(c){ playedKeys[normKey(c.n)]=c; });
+  indexCourses();   // normKey and S both exist by here
   function dreamPlayed(d){ if(S.dreamDone[d.n])return true; if(d.pl)return true; var k=normKey(d.n);
     var dt=k.split(" "); if(dt.length<2)return false;
     if(playedKeys[k])return true;
@@ -716,6 +776,7 @@
 
   /* ---------- map ---------- */
   var map,markers={},dreamMarkers={},baseLayers={},curBase,playedLayer,dreamLayer,tripLayer;
+  var usLayer,usOn=false,US_MIN_ZOOM=9,US_MAX_DOTS=400;
   function initMap(){ map=L.map("map",{zoomControl:false,scrollWheelZoom:true}).setView([39.5,-98.5],4);
     map.attributionControl.setPrefix("");
     L.control.zoom({position:"topright"}).addTo(map);
@@ -726,10 +787,28 @@
     baseLayers.terrain=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>'});
     baseLayers.sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics'});
     curBase=baseLayers.clean; curBase.addTo(map);
-    playedLayer=L.layerGroup(); dreamLayer=L.layerGroup(); tripLayer=L.layerGroup();
+    if(US_ROWS.length)map.attributionControl.addAttribution('Courses © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors');
+    playedLayer=L.layerGroup(); dreamLayer=L.layerGroup(); tripLayer=L.layerGroup(); usLayer=L.layerGroup();
     COURSES.forEach(function(c){ var m=L.circleMarker([c.lat,c.lng],circleStyle(c)); m.on("click",function(){openCourse(c);}); markers[c.n]=m; playedLayer.addLayer(m); });
     buildDreamMarkers();
-    map.addLayer(playedLayer); tripLayer.addTo(map); wireMapControls(); }
+    map.addLayer(playedLayer); tripLayer.addTo(map); wireMapControls();
+    map.on("moveend zoomend",drawUsLayer); }
+  /* 14,000 markers would sink a phone, so only what is on screen is drawn, only once
+     you're zoomed in enough for it to mean anything, and never more than US_MAX_DOTS. */
+  function drawUsLayer(){ if(!usLayer)return; usLayer.clearLayers();
+    var note=document.getElementById("usNote");
+    function say(t){ if(note){ note.textContent=t||""; note.style.display=t?"":"none"; } }
+    if(!usOn){ say(""); return; }
+    if(map.getZoom()<US_MIN_ZOOM){ say("Zoom in to see every course"); return; }
+    var b=map.getBounds(),n=0,capped=false;
+    for(var i=0;i<US_ROWS.length;i++){ var r=US_ROWS[i];
+      if(!b.contains([r[2],r[3]]))continue;
+      if(haveNear(r[0],US_STATES[r[1]]))continue;         // already a dot on Played
+      if(n>=US_MAX_DOTS){ capped=true; break; }
+      (function(row){ var m=L.circleMarker([row[2],row[3]],{radius:4,fillColor:"#8aa0b8",color:"#fff",weight:1.5,opacity:1,fillOpacity:.95});
+        m.on("click",function(){ openUsCourse(usCourse(row)); }); usLayer.addLayer(m); })(r);
+      n++; }
+    say(n?(n+" course"+(n===1?"":"s")+" here"+(capped?" — zoom in for the rest":"")):"No other courses in view"); }
   function circleStyle(c){ var rated=isRated(c.n),sc=courseScore(c.n),t=isT100(c);
     var fill=t?"#b8902f":(rated?scoreColor(sc):"#aeb6ab");
     return {radius:t?7:6,fillColor:fill,color:"#fff",weight:2,opacity:1,fillOpacity:(t||rated)?1:.85}; }
@@ -743,7 +822,9 @@
       document.querySelectorAll("#basemaps button").forEach(function(x){x.classList.remove("on");}); b.classList.add("on");
       map.removeLayer(curBase); curBase=baseLayers[b.dataset.b]; curBase.addTo(map); if(curBase.bringToBack)curBase.bringToBack(); }; });
     document.querySelectorAll("#mapLayers button").forEach(function(b){ b.onclick=function(){ b.classList.toggle("on");
-      var grp=b.dataset.l==="played"?playedLayer:dreamLayer; if(b.classList.contains("on"))map.addLayer(grp); else map.removeLayer(grp); }; });
+      var k=b.dataset.l, on=b.classList.contains("on");
+      if(k==="us"){ usOn=on; if(on)map.addLayer(usLayer); else map.removeLayer(usLayer); drawUsLayer(); return; }
+      var grp=k==="played"?playedLayer:dreamLayer; if(on)map.addLayer(grp); else map.removeLayer(grp); }; });
   }
 
   /* ---------- helpers ---------- */
@@ -860,7 +941,21 @@
     if(rankFilter!=="rated"){ var uu=unrated.filter(match).sort(function(a,b){return a<b?-1:1;});
       if(uu.length){ host.appendChild(h("div",{class:"section-h"},"Not yet rated ("+uu.length+")"));
         host.appendChild(group(uu.map(function(n){return rowFor(byName[n],null);}))); } }
-    if(!host.children.length)host.appendChild(h("div",{class:"empty"},"No courses match.")); }
+    /* Search reaches past their own list into every course in the US. Only on a
+       real query — an unfiltered list of 14,000 courses helps nobody. */
+    if(rankFilter==="all"||rankFilter==="unrated"){
+      var us=usSearch(query,40);
+      if(us.length){ host.appendChild(h("div",{class:"section-h"},"Everywhere else in the US ("+us.length+(us.length>=40?"+":"")+")"));
+        var ug=h("div",{class:"list"});
+        us.forEach(function(u){
+          var row=h("div",{class:"row"},[
+            h("img",{class:"thumb terr un",src:courseThumb(u),alt:"",title:terrainLabel(u),loading:"lazy",decoding:"async",onerror:"this.style.display='none'"}),
+            h("div",{class:"meta"},[h("div",{class:"nm"},u.n),h("div",{class:"sb"},u.s+" · not in your list")]),
+            h("div",{class:"rt"},h("div",{class:"chev"},"＋"))]);
+          row.onclick=function(){openUsCourse(u);}; ug.appendChild(row); });
+        host.appendChild(ug);
+        host.appendChild(h("div",{class:"rank-note"},"From OpenStreetMap. Tap one to add it to your courses, a trip or your wishlist.")); } }
+    if(!host.children.length)host.appendChild(h("div",{class:"empty"},query?"No courses match.":"No courses match.")); }
   function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
     var lead; if(firstPhoto){lead=h("img",{class:"thumb",alt:""});loadPhoto(firstPhoto,lead);}
@@ -941,6 +1036,34 @@
     if(!dreamPlayed(d)||S.dreamDone[d.n]) sheet.appendChild(pl);
     showScrim(sheet);
   }
+  /* A course from the US list: not theirs yet, so the first action is claiming it. */
+  function openUsCourse(u){
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},u.n));
+    var loc=h("div",{class:"loc"},[h("span",{},"📍 "+u.s)]);
+    loc.appendChild(h("span",{class:"pill"},"NOT IN YOUR LIST"));
+    sheet.appendChild(loc);
+    var ban=h("div",{class:"course-banner"});
+    ban.appendChild(h("img",{src:courseImage(u),alt:"",onerror:"this.parentNode.style.display='none'"}));
+    ban.appendChild(h("div",{class:"cb-ov"}));
+    ban.appendChild(h("div",{class:"cb-cap"},terrainLabel(u)+" — a stand-in until you add your own."));
+    sheet.appendChild(ban);
+    sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 14px"},[h("div",{class:"em"},"⛳"),
+      h("div",{},"One of about "+US_ROWS.length.toLocaleString()+" US courses on the map. Add it and you can rate it like any other.")]));
+    var add=h("button",{class:"btn primary"},"I've played here — add it");
+    add.onclick=function(){ addUsCourse(u,function(c){ if(c)openCourse(c); else closeSheet(); toast(u.n+" added to your courses"); }); };
+    sheet.appendChild(add);
+    var sm=h("button",{class:"btn dark"},"Show it on the map");
+    sm.onclick=function(){ showOnMap(u,true); }; sheet.appendChild(sm);
+    var trip=h("button",{class:"btn ghost"},"Add to a road trip");
+    trip.onclick=function(){ addToTrip({n:u.n,s:u.s,lat:u.lat,lng:u.lng}); }; sheet.appendChild(trip);
+    var wish=h("button",{class:"btn ghost"},inWishlist(u.n)?"★ Remove from wishlist":"☆ Add to wishlist");
+    wish.onclick=function(){ if(inWishlist(u.n))S.wishlist=S.wishlist.filter(function(q){return q.n!==u.n;});
+      else S.wishlist.push({n:u.n,s:u.s,lat:u.lat,lng:u.lng}); save(); openUsCourse(u); renderDream(); };
+    sheet.appendChild(wish);
+    showScrim(sheet); }
+
   function renderMapStats(){ var a=document.getElementById("m-played"),b=document.getElementById("m-rated");
     if(a)a.textContent=COURSES.length; if(b)b.textContent=COURSES.filter(function(c){return isRated(c.n);}).length; }
   function renderIdentity(){ var w=document.getElementById("whoWrap"); if(!w)return; w.innerHTML="";
@@ -1003,12 +1126,16 @@
     var mine=ME?latestBy(c.n,ME):null;
     var rate=h("button",{class:"btn primary"},!rated?"Rate this course":(mine?"Adjust "+ME+"’s rating":(ME?"Add "+ME+"’s rating":"Add a rating")));
     rate.onclick=function(){ if(mine)openLog(c,mine); else openLog(c); }; sheet.appendChild(rate);
+    var sm2=h("button",{class:"btn ghost"},"Show it on the map");
+    sm2.onclick=function(){ showOnMap(c,false); }; sheet.appendChild(sm2);
     var tp=h("button",{class:"btn ghost"},"Add to a road trip");
     tp.onclick=function(){ addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng}); }; sheet.appendChild(tp);
     var tg=h("button",{class:"btn ghost"},isT100(c)?"Remove Top-100 flag":"Flag as Top 100");
     tg.onclick=function(){S.t100[c.n]=!isT100(c);save();refreshMarker(c);renderAll();openCourse(c);}; sheet.appendChild(tg);
     if(!isT100(c)){ var sn=h("button",{class:"btn ghost"},isSnub(c)?"Remove “Should be Top 100”":"↑ Should be Top 100");
       sn.onclick=function(){ if(isSnub(c))delete S.snub[c.n]; else S.snub[c.n]=true; save();renderAll();openCourse(c); }; sheet.appendChild(sn); }
+    if(isAdded(c.n)){ var rm=h("button",{class:"btn ghost",style:"color:var(--bad)"},"Remove from my courses");
+      rm.onclick=function(){ removeAddedCourse(c,closeSheet); }; sheet.appendChild(rm); }
     showScrim(sheet);
   }
   /* West vs Rhod, latest rating each — read like a match, not a spreadsheet */
@@ -1309,11 +1436,14 @@
     dreamAll.forEach(function(d){ var k=normKey(d.n); if(!seen[k]){seen[k]=1;cand.push({n:d.n,s:d.s,lat:d.lat,lng:d.lng,kind:"dream"});} });
     S.wishlist.forEach(function(w){ if(w.lat){var k=normKey(w.n); if(!seen[k]){seen[k]=1;cand.push({n:w.n,s:w.s,lat:w.lat,lng:w.lng,kind:"wish"});}} });
     function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
-      cand.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,60).forEach(function(c){
+      var hits=cand.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,60);
+      // past their own lists, the whole US dataset is fair game for a stop on a trip
+      if(ql)usSearch(ql,60-hits.length).forEach(function(u){ hits.push({n:u.n,s:u.s,lat:u.lat,lng:u.lng,kind:"us"}); });
+      hits.forEach(function(c){
         var inTrip=t.stops.some(function(s){return s.n===c.n;});
-        var tagcol=c.kind==="dream"?"var(--gold)":c.kind==="wish"?"var(--gold-soft)":"var(--green)";
-        var lead=h("div",{class:"badge-sm",style:"background:"+tagcol+";font-size:18px"},c.kind==="played"?"⛳":"★");
-        var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[h("div",{class:"nm"},c.n),h("div",{class:"sb"},c.s)]),h("div",{class:"chev"},inTrip?"✓":"＋")]);
+        var tagcol=c.kind==="dream"?"var(--gold)":c.kind==="wish"?"var(--gold-soft)":c.kind==="us"?"#8aa0b8":"var(--green)";
+        var lead=h("div",{class:"badge-sm",style:"background:"+tagcol+";font-size:18px"},c.kind==="played"?"⛳":c.kind==="us"?"📍":"★");
+        var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[h("div",{class:"nm"},c.n),h("div",{class:"sb"},c.s+(c.kind==="us"?" · not in your list":""))]),h("div",{class:"chev"},inTrip?"✓":"＋")]);
         row.onclick=function(){ if(inTrip){toast("Already added");return;} addToTrip(c); draw(); }; lw.appendChild(row); });
       if(!lw.children.length)lw.appendChild(h("div",{class:"empty"},"No matches.")); }
     var back=h("button",{class:"btn ghost"},"Done");
@@ -1321,6 +1451,16 @@
     showScrim(sheet); setTimeout(function(){inp.focus();},350); }
 
   /* ---------- nav / filters ---------- */
+  /* Drop the map on a course and turn the surrounding courses on, so a name from the
+     search becomes a place. */
+  function showOnMap(c,withUs){
+    switchView("map");
+    if(!map)return;
+    setTimeout(function(){ map.invalidateSize(); map.setView([c.lat,c.lng],13);
+      if(withUs){ var b=document.querySelector('#mapLayers button[data-l="us"]');
+        if(b&&!b.classList.contains("on"))b.click(); else drawUsLayer(); }
+      else drawUsLayer(); drawTrip(); },140);
+    closeSheet(); }
   function switchView(v){ ["feed","map","rank","dream"].forEach(function(x){document.getElementById("view-"+x).classList.toggle("active",x===v);});
     document.querySelectorAll("nav button[data-v]").forEach(function(b){b.classList.toggle("on",b.dataset.v===v);});
     if(v==="map"&&map)setTimeout(function(){map.invalidateSize();drawTrip();},120); }
@@ -1329,7 +1469,10 @@
   document.querySelectorAll("#feed-filters .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#feed-filters .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); feedFilter=ch.dataset.w; renderFeed(); }; });
   document.querySelectorAll("#rank-filters .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#rank-filters .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); rankFilter=ch.dataset.f; renderRank(); }; });
   document.querySelectorAll("#dream-seg .chip").forEach(function(ch){ ch.onclick=function(){ document.querySelectorAll("#dream-seg .chip").forEach(function(x){x.classList.remove("on");}); ch.classList.add("on"); dreamSeg=ch.dataset.d; renderDream(); }; });
-  document.getElementById("q").oninput=function(e){query=e.target.value.trim().toLowerCase();renderRank();};
+  // searching now scans 14,000 US courses as well as their own, so don't redraw on every keypress
+  var qT=null;
+  document.getElementById("q").oninput=function(e){ query=e.target.value.trim().toLowerCase();
+    clearTimeout(qT); qT=setTimeout(renderRank,120); };
 
   /* ---------- start fresh (wipe ratings, keep the course list) ---------- */
   function resetRankings(){

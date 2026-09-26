@@ -46,15 +46,43 @@ Courses not on the Top 100 can be flagged **"Should be Top 100"** (looking at yo
 
 **💸 Worth it** (a chip on the Courses tab) sorts the rated courses by money: *Pay anything* — you'd pay in the top third of your own figures, or someone's verdict is ✈️ fly — and *Doesn't make sense* — rated at or above your own middle mark but you'd pay in the bottom third, or someone said ➖ skip. Both bars are measured against your own ratings rather than fixed numbers, so they hold up as the scoring changes. It needs at least three courses with a would-pay figure.
 
+## Every course in the US
+
+Search reaches past the courses Rhod and West have played into **every golf course in the
+United States** — `us-courses.js`, built from OpenStreetMap's `leisure=golf_course`.
+
+- **Search.** Type two or more characters on the Courses tab. Their own list comes first;
+  below it, *Everywhere else in the US*. The trip picker searches the same set, so any
+  course in the country can be a stop on a road trip.
+- **The map.** An **All US** layer alongside Played and Dream. It draws only what's in
+  view, only from zoom 9 in, and never more than 400 dots at once — 14,000 markers would
+  sink a phone. A note under the layer buttons says how many are in view, or to zoom in.
+- **Adding one.** Tap a result → *I've played here — add it*. It goes into `S.added` in
+  the shared state, folds into the course list, and from then on it is rated, ranked,
+  mapped and given a photo like any other. *Remove from my courses* takes it back out.
+  Both writes go through `withFresh`, so two phones adding at once don't overwrite
+  each other.
+- **Show it on the map** on any course sheet drops the map on it at zoom 13.
+
+The data is open (ODbL) and credited on the map, as that licence requires. To rebuild it:
+`scratchpad/osm/pull.sh <dir>` pulls a state at a time from Overpass, then
+`build.py <dir> us-courses.js` filters and packs it. Rows are `[name, state, lat, lng]`;
+mis-tagged hole features (`#4 Green`, `golf=tee`) and driving ranges are filtered out.
+
 ## The map
 
 No API key, no account, no billing, for anything in the app.
 
 - **Leaflet** and **html2canvas** are vendored in `vendor/`, so the app has no CDN dependency and keeps working if a CDN is blocked or down.
 - **Tiles** come from Esri's public ArcGIS endpoints, which need no key: Light Gray Canvas for *Clean*, World Topo for *Terrain*, World Imagery for *Satellite*.
-- Credit is shown on the map, as those terms require.
+- **Courses** come from OpenStreetMap.
+- Credit is shown on the map for both, as those terms require.
 
 CARTO used to serve the *Clean* basemap. It now stamps `API KEY REQUIRED` across unkeyed tiles, so it was replaced.
+
+The server gzips its text assets (`index.html` carries all the CSS and JS inline;
+`us-courses.js` is very repetitive JSON), which cuts both by about 70%. Compressed bodies
+are cached in memory and re-made when a file's mtime moves.
 
 ## Photography
 
@@ -76,4 +104,4 @@ everywhere.
 
 ## Starting over
 
-**Start fresh** at the bottom of the Courses tab wipes every rating, note, photo and ranking (after a confirm and typing `RESET`) while keeping the course list, Top-100 flags, trips, wishlist and dream progress. The server also does this once automatically on boot if it finds ratings from the pre-Totality scoring system, archiving them first to `state-backup-<timestamp>.json` in the data directory.
+**Start fresh** at the bottom of the Courses tab wipes every rating, note, photo and ranking (after a confirm and typing `RESET`) while keeping the course list — including courses added from the US search — plus Top-100 flags, trips, wishlist and dream progress. The server also does this once automatically on boot if it finds ratings from the pre-Totality scoring system, archiving them first to `state-backup-<timestamp>.json` in the data directory.
