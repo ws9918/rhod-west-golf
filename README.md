@@ -64,10 +64,42 @@ United States** — `us-courses.js`, built from OpenStreetMap's `leisure=golf_co
   each other.
 - **Show it on the map** on any course sheet drops the map on it at zoom 13.
 
-The data is open (ODbL) and credited on the map, as that licence requires. To rebuild it:
-`scratchpad/osm/pull.sh <dir>` pulls a state at a time from Overpass, then
-`build.py <dir> us-courses.js` filters and packs it. Rows are `[name, state, lat, lng]`;
-mis-tagged hole features (`#4 Green`, `golf=tee`) and driving ranges are filtered out.
+The data is open (ODbL) and credited on the map, as that licence requires. Rows are
+`[name, state, lat, lng, extras?]`, where extras carries only what changes whether you'd
+stop — holes, par, whether it's private, the town, the website. Mis-tagged hole features
+(`#4 Green`, `golf=tee`), driving ranges and chipping greens are filtered out.
+`tools/README.md` has the rebuild steps.
+
+## Road trips
+
+Say where you're driving and the app finds the golf on the way.
+
+- **Points on the route.** *Add a place* geocodes a town, an address or an airport
+  through Nominatim; *Add a course* reaches the same 12,000 as search. A route with a
+  place in it keeps the order you gave it — that's the drive you're taking — while a
+  loose bag of courses is reshuffled into the shortest chain. Either way you can pin the
+  order yourself.
+- **The line is the real drive.** OSRM's public router returns the actual road geometry,
+  the mileage and the time behind the wheel, and the map frames it. If the router can't
+  be reached the app falls back to straight lines between stops and says so on the
+  screen, rather than passing crow-flies miles off as driving miles.
+- **Golf on the way.** Every course within 5, 15, 30 or 60 miles of the *line* — not
+  just near a stop — measured perpendicular to the route, so a course an hour along the
+  road but two miles off it ranks ahead of one that's close to where you started.
+  Sort by what's best, by least detour, or in driving order. Coast to coast comes back
+  in well under a tenth of a second.
+- **Why you'd stop.** Each suggestion carries what's actually known about it, from four
+  sources and no others: its place on the bucket lists (`dream.js`), the architect, the
+  year and the championships from Wikipedia's infoboxes (`notable.js`), the holes, par
+  and access OpenStreetMap recorded, and Rhod and West's own scores. A ★ marks an
+  architect worth the detour on their own — that's the app's opinion, and the only one
+  in here. Everything else is quoted, with a link to the article it came from.
+
+A name is not an identity at this scale: three courses are called Oakmont Country Club,
+and two clubs a mile apart in the same town share two words of their name. So every
+lookup has to agree on **where** the course is as well as what it's called, or it returns
+nothing. That is why a course sometimes shows no architect — not a gap in the plumbing,
+a gap in the record.
 
 ## The map
 
@@ -75,8 +107,10 @@ No API key, no account, no billing, for anything in the app.
 
 - **Leaflet** and **html2canvas** are vendored in `vendor/`, so the app has no CDN dependency and keeps working if a CDN is blocked or down.
 - **Tiles** come from Esri's public ArcGIS endpoints, which need no key: Light Gray Canvas for *Clean*, World Topo for *Terrain*, World Imagery for *Satellite*.
-- **Courses** come from OpenStreetMap.
-- Credit is shown on the map for both, as those terms require.
+- **Courses** come from OpenStreetMap; so does **place search** (Nominatim).
+- **Driving routes** come from OSRM's public demo server.
+- **Architects, years and tournaments** come from Wikipedia (CC BY-SA 4.0).
+- Credit is shown on the map, as those terms require.
 
 CARTO used to serve the *Clean* basemap. It now stamps `API KEY REQUIRED` across unkeyed tiles, so it was replaced.
 

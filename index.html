@@ -287,7 +287,7 @@
   .wish-add button{background:var(--green);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:800}
   /* trip sheet */
   .tstop{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;margin-bottom:8px}
-  .tstop .tn{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+  .tstop .tn{width:26px;height:26px;border-radius:50%;background:var(--green-d);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
   .tstop .meta{flex:1;min-width:0}
   .tstop .leg{font-size:11.5px;color:var(--gold);font-weight:700;margin-top:2px}
   .tstop .x{border:0;background:transparent;color:var(--faint);font-size:20px}
@@ -297,6 +297,33 @@
   .gem{display:flex;align-items:center;gap:10px;background:#fbf6ea;border:1px solid #ecddb6;border-radius:13px;padding:10px 11px;margin-bottom:8px}
   .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:#977a2f;margin-top:2px}
   .gem button{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12.5px}
+  /* a place you drive through rather than play */
+  .trip-dot{background:var(--green-d)}
+  .trip-dot.place{background:var(--navy)}
+  .tstop.place{background:#f7f9fb;border-color:#dde5ec}
+  .tstop.place .tn{background:var(--navy)}
+  .tstop .tctl{display:flex;align-items:center;gap:0;flex:0 0 auto}
+  .btn-row{display:flex;gap:8px}
+  .btn-row .btn{flex:1;margin-top:10px}
+  .chiprow{display:flex;gap:6px;overflow-x:auto;padding:0 0 9px;scrollbar-width:none}
+  .chiprow::-webkit-scrollbar{display:none}
+  .chiprow .chip{flex:0 0 auto;padding:7px 13px;font-size:12px}
+  /* a course worth coming off the highway for */
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:9px;box-shadow:var(--shadow)}
+  .cand .ch{display:flex;align-items:center;gap:10px}
+  .cand .ch .meta{flex:1;min-width:0}
+  .cand .nm{font-family:"Fraunces",serif;font-weight:600;font-size:15px;line-height:1.25}
+  .cand .sb{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .cand .addb{flex:0 0 auto;width:33px;height:33px;border-radius:10px;border:0;background:var(--green);color:#fff;font-size:18px;font-weight:700;line-height:1}
+  .inswrap{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .ins{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f1f2ee;color:#5a645c}
+  .ins.rank{background:#f7eed4;color:#8a6a18}
+  .ins.arch{background:#eee7f7;color:#5b4079}
+  .ins.host{background:#e4f1ea;color:var(--green-d)}
+  .ins.ours{background:var(--west-soft);color:var(--green-d)}
+  .ins.wish{background:var(--gap-soft);color:var(--gap)}
+  .ins.shut{background:#f9e9e5;color:#a04a32}
+  .ins.det{background:#eef1f4;color:#4a5a68}
   .add-lbl{font-size:10px;font-weight:700;color:var(--green)}
   /* ranked course rows read like a leaderboard */
   .rank-no{font-family:"Fraunces",serif;font-variant-numeric:tabular-nums}
@@ -520,6 +547,7 @@
 <script src="courses.js"></script>
 <script src="us-courses.js"></script>
 <script src="dream.js"></script>
+<script src="notable.js"></script>
 <script src="vendor/leaflet.js"></script>
 <script src="vendor/html2canvas.min.js"></script>
 <script>
@@ -687,16 +715,21 @@
   var US_ROWS=(window.USGOLF&&window.USGOLF.rows)||[];
   var US_STATES=(window.USGOLF&&window.USGOLF.states)||{};
   var US_LC=null;   // built on first search, not at load — it costs nothing until used
-  function usCourse(r){ return {n:r[0],s:US_STATES[r[1]]||r[1],st:r[1],lat:r[2],lng:r[3],us:true}; }
+  function usCourse(r){ return {n:r[0],s:US_STATES[r[1]]||r[1],st:r[1],lat:r[2],lng:r[3],x:r[4]||null,us:true}; }
+  var FAMOUS=null;   // normKey + state of every course Wikipedia writes about
+  function famous(r){ if(!FAMOUS){ FAMOUS={};
+      ((window.NOTABLE&&window.NOTABLE.rows)||[]).forEach(function(w){ if(w.s)FAMOUS[normKey(w.n)+"|"+w.s]=1; }); }
+    return FAMOUS[normKey(r[0])+"|"+r[1]]?1:0; }
   function usSearch(q,cap){ q=(q||"").trim().toLowerCase(); if(q.length<2)return [];
     if(!US_LC)US_LC=US_ROWS.map(function(r){ return (r[0]+" "+(US_STATES[r[1]]||r[1])).toLowerCase(); });
     cap=cap||40; var starts=[],rest=[];
     for(var i=0;i<US_ROWS.length;i++){ var at=US_LC[i].indexOf(q); if(at<0)continue;
       if(haveNear(US_ROWS[i][0],US_STATES[US_ROWS[i][1]]))continue;   // already in their list
       (at===0?starts:rest).push(US_ROWS[i]);
-      if(starts.length>=cap)break; }
-    function byNm(a,b){ return a[0]<b[0]?-1:a[0]>b[0]?1:0; }
-    return starts.sort(byNm).concat(rest.sort(byNm)).slice(0,cap).map(usCourse); }
+      if(starts.length>=cap*2)break; }
+    function rank(a,b){ var d=famous(b)-famous(a); if(d)return d;
+      return a[0]<b[0]?-1:a[0]>b[0]?1:0; }
+    return starts.sort(rank).concat(rest.sort(rank)).slice(0,cap).map(usCourse); }
 
   /* Adding a course is a shared change: withFresh re-reads before writing so two
      phones adding at once don't wipe each other. syncCourseList catches additions
@@ -774,6 +807,196 @@
     for(var pk in playedKeys){ var pt=pk.split(" "); if(dt.every(function(x){return pt.indexOf(x)>=0;}))return true; } return false; }
   var dreamAll=[]; (function(){ var seen={}; ["world","usa","europe"].forEach(function(k){ (DREAM[k]||[]).forEach(function(d){ var key=normKey(d.n); if(!seen[key]){seen[key]=1;dreamAll.push(d);} }); }); })();
 
+  /* ---------- WHAT MAKES A COURSE WORTH THE DETOUR ---------- */
+  /* Four honest sources, and nothing else: the bucket-list rankings in dream.js,
+     the Wikipedia infoboxes in notable.js, what OpenStreetMap recorded about the
+     course, and Rhod and West's own scorecards. If none of them knows anything,
+     the course gets no insight rather than an invented one. */
+  var NOTABLE=(window.NOTABLE&&window.NOTABLE.rows)||[];
+  var notableKeys={};
+  NOTABLE.forEach(function(r){ var k=normKey(r.n); if(!notableKeys[k])notableKeys[k]=r; });
+
+  /* Architects whose name on a scorecard is itself a reason to come off the
+     highway. This is the app's opinion, not a fact from the data — every
+     designer is shown either way, this only decides which ones get a star. */
+  var MARQUEE=/\b(donald ross|alister mackenzie|a\.?\s?w\.?\s?tillinghast|tillinghast|seth raynor|raynor|charles blair macdonald|c\.?\s?b\.?\s?macdonald|perry maxwell|william flynn|george c\.? thomas|harry colt|hugh wilson|george crump|herbert strong|walter travis|devereux emmet|william langford|charles banks|stanley thompson|william watson|max behr|william bell|billy bell|pete dye|alice dye|robert trent jones|coore|crenshaw|tom doak|doak|gil hanse|hanse|david mclay kidd|tom fazio|jack nicklaus|mike strantz|kyle franz|tom weiskopf|rod whitman|jim engh|bill diddel|wayne stiles|seth j\.? raynor|dick wilson|george fazio|robert von hagge)\b/i;
+
+  /* the bucket lists, indexed for lookup */
+  var dreamByKey={},usaByState={};
+  ["world","usa","europe"].forEach(function(L){ (DREAM[L]||[]).forEach(function(d){
+    var k=normKey(d.n),e=dreamByKey[k];
+    if(!e){ e=dreamByKey[k]={d:d,lists:{}}; }
+    if(e.lists[L]==null||d.r<e.lists[L])e.lists[L]=d.r; }); });
+  (DREAM.usa||[]).forEach(function(d){ var st=(d.s||"").split(",")[0].trim(); if(!st)return;
+    (usaByState[st]=usaByState[st]||[]).push(d); });
+  for(var _s in usaByState)usaByState[_s].sort(function(a,b){return a.r-b.r;});
+
+  function sameSpot(a,b,mi){ if(a.lat==null||b.lat==null)return true; return haversine(a,b)<=mi; }
+  function sameName(a,b){ var x=normKey(a).split(" ").filter(Boolean),y=normKey(b).split(" ").filter(Boolean);
+    if(!x.length||!y.length)return false;
+    var shared=0; x.forEach(function(w){ if(y.indexOf(w)>=0)shared++; });
+    return shared>0&&(x.length+y.length-2*shared)<=1; }
+  function dreamInfo(c){ if(!c)return null;
+    if(typeof c==="string")c={n:c};
+    var e=dreamByKey[normKey(c.n)];
+    return e&&sameSpot(c,e.d,30)?e:null; }
+  function stateRank(c){ var e=dreamInfo(c); if(!e)return null;
+    var st=(e.d.s||"").split(",")[0].trim(),list=usaByState[st];
+    if(!list||!list.length)return null;
+    var k=normKey(e.d.n);
+    for(var i=0;i<list.length;i++)if(normKey(list[i].n)===k)return {state:st,i:i+1,of:list.length};
+    return null; }
+
+  /* Wikipedia row for a course: the name has to agree, or the pin has to land
+     within a mile and a half of the article's own coordinates. */
+  var notableMemo={};
+  function notableFor(c){ if(!NOTABLE.length||!c)return null;
+    var memo=c.n+"@"+(c.lat==null?"":c.lat.toFixed(3)+","+c.lng.toFixed(3));
+    if(notableMemo.hasOwnProperty(memo))return notableMemo[memo];
+    var r=notableKeys[normKey(c.n)],out=null;
+    if(r&&sameSpot(c,r,25))out=r;
+    else if(c.lat!=null){   // a name the dataset spells differently, but only if it's the same course
+      var bd=1.5;
+      for(var i=0;i<NOTABLE.length;i++){ var d=haversine(c,NOTABLE[i]);
+        if(d<bd&&sameName(c.n,NOTABLE[i].n)){bd=d;out=NOTABLE[i];} } }
+    notableMemo[memo]=out; return out; }
+
+  function designerLine(r){ if(!r||!r.d||!r.d.length)return null;
+    var one=r.d[0][1]||"",same=r.d.every(function(p){return (p[1]||"")===one;});
+    var names=r.d.map(function(p){ return (!same&&p[1])?p[0]+" ("+p[1]+")":p[0]; });
+    var star=r.d.some(function(p){return MARQUEE.test(p[0]);});
+    var txt=names.slice(0,2).join(" · ")+(names.length>2?" +"+(names.length-2):"");
+    if(same&&one&&r.d.length>1)txt+=" — "+one;
+    return {t:(star?"★ ":"")+txt+(r.y?", "+r.y:""),k:"arch"}; }
+
+  /* Everything we can say about a course without making anything up. */
+  function insightsFor(c,detour){ var out=[],e=dreamInfo(c),sr=stateRank(c),nb=notableFor(c);
+    if(e){ var L=e.lists,bits=[];
+      if(L.world!=null)bits.push("#"+L.world+" in the world");
+      if(L.usa!=null)bits.push("#"+L.usa+" in America");
+      if(L.europe!=null&&L.world==null&&L.usa==null)bits.push("#"+L.europe+" in Europe");
+      if(bits.length)out.push({t:bits.join(" · "),k:"rank"}); }
+    if(sr)out.push({t:sr.i===1?"Top-rated course in "+sr.state
+      :"#"+sr.i+" of "+sr.of+" ranked in "+sr.state,k:"rank"});
+    var dl=designerLine(nb); if(dl)out.push(dl);
+    if(nb&&nb.m&&nb.m.length)out.push({t:"Has hosted the "+nb.m.slice(0,2).join(" and the "),k:"host"});
+    var sc=courseScore(c.n);
+    if(sc!=null){ var bits2=[]; PRINCIPALS.forEach(function(p){ var r=latestBy(c.n,p);
+        if(r)bits2.push(p+" "+fmt(roundScore(r))); });
+      out.push({t:bits2.length>1?bits2.join(" · "):"You rated it "+fmt(sc),k:"ours"}); }
+    else if(haveCourse(c.n))out.push({t:"In your list, not rated yet",k:"ours"});
+    if(e&&!sc&&!haveCourse(c.n))out.push({t:"On your dream list",k:"wish"});
+    else if((S.wishlist||[]).some(function(w){return normKey(w.n)===normKey(c.n);}))out.push({t:"On your wishlist",k:"wish"});
+    var x=c.x||{},facts=[];
+    if(x.h)facts.push(x.h+" holes");
+    if(x.p)facts.push("par "+x.p);
+    var acc=x.a?"Private":(nb&&nb.k?nb.k.charAt(0).toUpperCase()+nb.k.slice(1):null);
+    if(acc)facts.push(acc);
+    if(facts.length)out.push({t:facts.join(" · "),k:x.a?"shut":"fact"});
+    if(detour!=null)out.push({t:detour<1?"Right on the route":"~"+Math.round(detour)+" mi off the route",k:"det"});
+    return out; }
+
+  /* How badly you want to stop here. The insights above are the evidence —
+     this only decides what floats to the top of the list. */
+  function worthScore(c,detour){ var e=dreamInfo(c),sr=stateRank(c),nb=notableFor(c),w=0;
+    if(e){ var best=Math.min(e.lists.world==null?999:e.lists.world,
+                             e.lists.usa==null?999:e.lists.usa,
+                             e.lists.europe==null?999:e.lists.europe);
+      if(best<999)w+=60-best*0.4; }
+    if(sr&&sr.i===1)w+=12;
+    if(nb&&nb.d&&nb.d.length){ w+=5; if(nb.d.some(function(p){return MARQUEE.test(p[0]);}))w+=14; }
+    if(nb&&nb.m)w+=Math.min(16,nb.m.length*8);
+    if(nb)w+=4;
+    var sc=courseScore(c.n); if(sc!=null)w+=(sc-7)*4;
+    if(e&&!sc)w+=10;
+    var x=c.x||{};
+    if(x.h>=18)w+=2; else if(x.h&&x.h<18)w-=3;
+    if(x.a)w-=10;
+    return w-(detour||0)*0.6; }
+
+  /* ---------- THE ROUTE ITSELF ---------- */
+  /* OSRM's public demo server turns the stops into an actual driving line with
+     real miles and a real time behind the wheel. No key, no account. When it
+     can't be reached we fall back to straight lines and say so, rather than
+     quietly showing crow-flies miles as if they were driving miles. */
+  var OSRM="https://router.project-osrm.org/route/v1/driving/";
+  var routeCache={},routeWait={};
+  function stopSig(st){ return st.map(function(s){return s.lng.toFixed(4)+","+s.lat.toFixed(4);}).join(";"); }
+  function decodePoly(s){ var ll=[],i=0,lat=0,lng=0,b,sh,res;
+    while(i<s.length){
+      sh=0;res=0; do{ b=s.charCodeAt(i++)-63; res|=(b&31)<<sh; sh+=5; }while(b>=32);
+      lat+=(res&1)?~(res>>1):(res>>1);
+      sh=0;res=0; do{ b=s.charCodeAt(i++)-63; res|=(b&31)<<sh; sh+=5; }while(b>=32);
+      lng+=(res&1)?~(res>>1):(res>>1);
+      ll.push([lat/1e5,lng/1e5]); }
+    return ll; }
+  function straightRoute(st){ return {ll:st.map(function(s){return [s.lat,s.lng];}),
+    mi:tripDistance(st),sec:null,legs:st.slice(1).map(function(s,i){return haversine(st[i],s);}),driving:false}; }
+  /* cb(route) — synchronously with the cached or straight-line answer, then again
+     if the real one arrives. */
+  function getRoute(st,cb){ if(st.length<2){cb(null);return;}
+    var sig=stopSig(st);
+    if(routeCache[sig]){cb(routeCache[sig]);return;}
+    cb(straightRoute(st));
+    if(routeWait[sig]){ routeWait[sig].push(cb); return; }
+    routeWait[sig]=[cb];
+    var url=OSRM+sig+"?overview=full&geometries=polyline&annotations=false";
+    var done=false;
+    function settle(r){ if(done)return; done=true; clearTimeout(to);
+      var waiting=routeWait[sig]||[]; delete routeWait[sig];
+      if(r){ routeCache[sig]=r; waiting.forEach(function(f){ try{f(r);}catch(e){} }); } }
+    var to=setTimeout(function(){ settle(null); },12000);
+    fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      var rt=d&&d.code==="Ok"&&d.routes&&d.routes[0];
+      settle(rt?{ll:decodePoly(rt.geometry),mi:rt.distance/1609.344,sec:rt.duration,
+        legs:(rt.legs||[]).map(function(l){return l.distance/1609.344;}),driving:true}:null);
+    }).catch(function(){ settle(null); }); }
+  function driveTime(sec){ if(sec==null)return null; var h=Math.floor(sec/3600),m=Math.round(sec%3600/60);
+    if(m===60){h++;m=0;} return h?h+"h"+(m?" "+m+"m":""):m+"m"; }
+
+  /* ---------- COURSES ALONG THE WAY ---------- */
+  /* miles from a point to a route segment, flat-earth over the few miles that matter */
+  function segMi(p,a,b){ var kx=69.172*Math.cos(p[0]*Math.PI/180),ky=69.055;
+    var px=p[1]*kx,py=p[0]*ky,ax=a[1]*kx,ay=a[0]*ky,dx=b[1]*kx-ax,dy=b[0]*ky-ay;
+    var L=dx*dx+dy*dy,t=L?((px-ax)*dx+(py-ay)*dy)/L:0; t=t<0?0:t>1?1:t;
+    var qx=ax+t*dx-px,qy=ay+t*dy-py; return Math.sqrt(qx*qx+qy*qy); }
+  function decimate(ll,max){ if(ll.length<=max)return ll;
+    var step=(ll.length-1)/(max-1),out=[];
+    for(var i=0;i<max-1;i++)out.push(ll[Math.round(i*step)]);
+    out.push(ll[ll.length-1]); return out; }
+  /* how far along the route, 0..1 — so the list reads in driving order */
+  function alongAt(ll,i){ return ll.length<2?0:i/(ll.length-1); }
+
+  /* Every course within maxMi of the line, from all three pools: the ones they've
+     played, the bucket lists, and the 12,665 in the US dataset. */
+  function alongRoute(ll,maxMi,stops){
+    if(!ll||ll.length<2)return [];
+    var line=decimate(ll,500),n=line.length;
+    var la0=90,la1=-90,lo0=180,lo1=-180;
+    line.forEach(function(p){ if(p[0]<la0)la0=p[0]; if(p[0]>la1)la1=p[0];
+      if(p[1]<lo0)lo0=p[1]; if(p[1]>lo1)lo1=p[1]; });
+    var padLa=maxMi/69.055,padLo=maxMi/(69.172*Math.max(0.2,Math.cos((la0+la1)/2*Math.PI/180)));
+    la0-=padLa; la1+=padLa; lo0-=padLo; lo1+=padLo;
+    var inStops={}; (stops||[]).forEach(function(s){ inStops[normKey(s.n)]=1; });
+    function measure(c){ var p=[c.lat,c.lng],best=Infinity,bi=0;
+      for(var i=1;i<n;i++){ var d=segMi(p,line[i-1],line[i]);
+        if(d<best){best=d;bi=i; if(best<0.15)break;} }
+      return best<=maxMi?{d:best,at:alongAt(line,bi)}:null; }
+    var out=[],seen={};
+    function push(c){ var k=normKey(c.n);
+      if(!k||seen[k]||inStops[k])return;
+      if(c.lat==null||c.lng==null)return;
+      if(c.lat<la0||c.lat>la1||c.lng<lo0||c.lng>lo1)return;
+      var m=measure(c); if(!m)return;
+      seen[k]=1; out.push({c:c,det:m.d,at:m.at}); }
+    COURSES.forEach(function(c){ push({n:c.n,s:c.s,lat:c.lat,lng:c.lng,played:true}); });
+    dreamAll.forEach(function(d){ push({n:d.n,s:d.s,lat:d.lat,lng:d.lng,dream:true}); });
+    for(var i=0;i<US_ROWS.length;i++){ var r=US_ROWS[i];
+      if(r[2]<la0||r[2]>la1||r[3]<lo0||r[3]>lo1)continue;
+      push({n:r[0],s:US_STATES[r[1]]||r[1],st:r[1],lat:r[2],lng:r[3],x:r[4]||null,us:true}); }
+    out.forEach(function(o){ o.w=worthScore(o.c,o.det); });
+    return out; }
+
   /* ---------- map ---------- */
   var map,markers={},dreamMarkers={},baseLayers={},curBase,playedLayer,dreamLayer,tripLayer;
   var usLayer,usOn=false,US_MIN_ZOOM=9,US_MAX_DOTS=400;
@@ -788,10 +1011,11 @@
     baseLayers.sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics'});
     curBase=baseLayers.clean; curBase.addTo(map);
     if(US_ROWS.length)map.attributionControl.addAttribution('Courses © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors');
-    playedLayer=L.layerGroup(); dreamLayer=L.layerGroup(); tripLayer=L.layerGroup(); usLayer=L.layerGroup();
+    map.attributionControl.addAttribution('Routing <a href="http://project-osrm.org/" target="_blank" rel="noopener">OSRM</a>');
+    playedLayer=L.layerGroup(); dreamLayer=L.layerGroup(); tripLayer=L.layerGroup(); usLayer=L.layerGroup(); candLayer=L.layerGroup();
     COURSES.forEach(function(c){ var m=L.circleMarker([c.lat,c.lng],circleStyle(c)); m.on("click",function(){openCourse(c);}); markers[c.n]=m; playedLayer.addLayer(m); });
     buildDreamMarkers();
-    map.addLayer(playedLayer); tripLayer.addTo(map); wireMapControls();
+    map.addLayer(playedLayer); candLayer.addTo(map); tripLayer.addTo(map); wireMapControls();
     map.on("moveend zoomend",drawUsLayer); }
   /* 14,000 markers would sink a phone, so only what is on screen is drawn, only once
      you're zoomed in enough for it to mean anything, and never more than US_MAX_DOTS. */
@@ -815,7 +1039,7 @@
   function dreamCircleStyle(){ return {radius:6,fillColor:"#ffffff",color:"#b8902f",weight:2.5,opacity:1,fillOpacity:1}; }
   function buildDreamMarkers(){ if(!dreamLayer)return; dreamLayer.clearLayers(); dreamMarkers={};
     dreamAll.forEach(function(d){ if(dreamPlayed(d))return; var m=L.circleMarker([d.lat,d.lng],dreamCircleStyle()); m.on("click",function(){openDreamCourse(d);}); dreamMarkers[d.n]=m; dreamLayer.addLayer(m); }); }
-  function tripPin(n){ return L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],html:'<div class="trip-dot">'+n+'</div>'}); }
+  function tripPin(n,place){ return L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],html:'<div class="trip-dot'+(place?" place":"")+'">'+n+'</div>'}); }
   function refreshMarker(c){ if(markers[c.n])markers[c.n].setStyle(circleStyle(c)); }
   function wireMapControls(){
     document.querySelectorAll("#basemaps button").forEach(function(b){ b.onclick=function(){
@@ -1049,7 +1273,16 @@
     ban.appendChild(h("div",{class:"cb-ov"}));
     ban.appendChild(h("div",{class:"cb-cap"},terrainLabel(u)+" — a stand-in until you add your own."));
     sheet.appendChild(ban);
-    sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 14px"},[h("div",{class:"em"},"⛳"),
+    var uins=insightsFor(u,null);
+    if(uins.length)sheet.appendChild(insChips(uins,9));
+    var unb=notableFor(u);
+    if(unb)sheet.appendChild(h("div",{class:"rank-note",style:"margin:10px 0 0"},[
+      h("span",{},"Designer, year and tournaments from "),
+      h("a",{href:"https://en.wikipedia.org/wiki/"+encodeURIComponent((unb.t||unb.n).replace(/ /g,"_")),target:"_blank",rel:"noopener"},"Wikipedia"),
+      h("span",{},".")]));
+    if(u.x&&u.x.w)sheet.appendChild(h("div",{class:"rank-note",style:"margin:6px 0 0"},[
+      h("a",{href:"https://"+u.x.w,target:"_blank",rel:"noopener"},u.x.w)]));
+    if(!uins.length)sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 14px"},[h("div",{class:"em"},"⛳"),
       h("div",{},"One of about "+US_ROWS.length.toLocaleString()+" US courses on the map. Add it and you can rate it like any other.")]));
     var add=h("button",{class:"btn primary"},"I've played here — add it");
     add.onclick=function(){ addUsCourse(u,function(c){ if(c)openCourse(c); else closeSheet(); toast(u.n+" added to your courses"); }); };
@@ -1082,6 +1315,14 @@
     else if(isSnub(c))loc.appendChild(h("span",{class:"pill gold"},"↑ SHOULD BE TOP 100"));
     var rk=rankOf(c.n); if(rated&&rk>=0)loc.appendChild(h("span",{class:"pill green"},"RANKED #"+(rk+1)+" OF "+rankedNames().length));
     sheet.appendChild(loc);
+    /* the rank, the architect and the tournaments — the reasons it's on the list at all */
+    var cins=courseInsights(c);
+    if(cins.length)sheet.appendChild(insChips(cins,8));
+    var cnb=notableFor(c);
+    if(cnb)sheet.appendChild(h("div",{class:"rank-note",style:"margin:9px 0 0"},[
+      h("span",{},"Designer, year and tournaments from "),
+      h("a",{href:"https://en.wikipedia.org/wiki/"+encodeURIComponent((cnb.t||cnb.n).replace(/ /g,"_")),target:"_blank",rel:"noopener"},"Wikipedia"),
+      h("span",{},".")]));
     var anyPhoto=false; rs.forEach(function(r){ if(r.photos&&r.photos.length)anyPhoto=true; });
     if(!anyPhoto){ var ban=h("div",{class:"course-banner"}); var bi=h("img",{src:courseImage(c),alt:"",onerror:"this.parentNode.style.display='none'"}); ban.appendChild(bi); ban.appendChild(h("div",{class:"cb-ov"})); ban.appendChild(h("div",{class:"cb-cap"},terrainLabel(c)+" — a stand-in. "+(rated?"Tap ✎ on a rating to add your own.":"Add your own when you rate it."))); sheet.appendChild(ban); }
     if(rated){
@@ -1383,50 +1624,253 @@
   function tripDistance(st){ var t=0; for(var i=1;i<st.length;i++)t+=haversine(st[i-1],st[i]); return t; }
   function optimize(st){ if(st.length<3)return st.slice(); var rem=st.slice(),route=[rem.shift()];
     while(rem.length){ var last=route[route.length-1],bi=0,bd=Infinity; rem.forEach(function(s,i){var d=haversine(last,s);if(d<bd){bd=d;bi=i;}}); route.push(rem.splice(bi,1)[0]); } return route; }
+  /* A trip with a start and a finish in it has an order the driver chose; only a
+     loose bag of courses gets reshuffled into the shortest chain. */
+  function hasPlaces(t){ return (t.stops||[]).some(function(s){return s.place;}); }
+  function routeOrder(t){ if(!t)return []; return (t.fixed||hasPlaces(t))?t.stops.slice():optimize(t.stops); }
   function setActiveTrip(id){ activeTripId=id; S.activeTripId=id; save(); drawTrip(); updateTripBar(); }
-  function addToTrip(stop){ var t=activeTripId?tripById(activeTripId):null;
+  function addToTrip(stop,quiet){ var t=activeTripId?tripById(activeTripId):null;
     if(!t){ t={id:uid(),name:"Road Trip",stops:[]}; S.trips.push(t); activeTripId=t.id; S.activeTripId=t.id; }
     if(t.stops.some(function(s){return s.n===stop.n;})){toast(stop.n+" is already in "+t.name);return;}
-    t.stops.push({n:stop.n,s:stop.s||"",lat:stop.lat,lng:stop.lng}); save(); drawTrip(); updateTripBar(); toast("Added "+stop.n+" to "+t.name); }
-  function drawTrip(){ if(!tripLayer)return; tripLayer.clearLayers(); var t=activeTripId?tripById(activeTripId):null; if(!t||!t.stops.length)return;
-    var ord=optimize(t.stops),ll=[]; ord.forEach(function(s,i){ ll.push([s.lat,s.lng]); var m=L.marker([s.lat,s.lng],{icon:tripPin(i+1)}); m.on("click",function(){openTripDetail(t.id);}); tripLayer.addLayer(m); });
-    if(ll.length>1)tripLayer.addLayer(L.polyline(ll,{color:"#0c6e3c",weight:3,opacity:.85,dashArray:"3,9"})); }
+    var rec={n:stop.n,s:stop.s||"",lat:stop.lat,lng:stop.lng};
+    if(stop.place)rec.place=true;
+    t.stops.push(rec); save(); drawTrip(); updateTripBar();
+    if(!quiet)toast("Added "+stop.n+" to "+t.name); }
+
+  /* ---------- DRAWING THE TRIP ---------- */
+  var candLayer,candShown=[],lastRouteSig="",lastFitSig="";
+  function tripStats(t,cb){ var ord=routeOrder(t);
+    if(ord.length<2){ cb({mi:0,sec:null,legs:[],ll:ord.map(function(s){return [s.lat,s.lng];}),driving:false},ord); return; }
+    getRoute(ord,function(r){ cb(r,ord); }); }
+  function drawTrip(){ if(!tripLayer)return;
+    var t=activeTripId?tripById(activeTripId):null;
+    if(!t||!t.stops.length){ tripLayer.clearLayers(); if(candLayer)candLayer.clearLayers(); candShown=[]; lastRouteSig=""; return; }
+    tripStats(t,function(r,ord){
+      tripLayer.clearLayers();
+      if(r&&r.ll&&r.ll.length>1){
+        tripLayer.addLayer(L.polyline(r.ll,{color:"#fff",weight:7,opacity:.75}));
+        tripLayer.addLayer(L.polyline(r.ll,{color:"#0c6e3c",weight:3.5,opacity:.95,
+          dashArray:r.driving?null:"3,9"}));
+      }
+      ord.forEach(function(s,i){ var m=L.marker([s.lat,s.lng],{icon:tripPin(i+1,s.place)});
+        m.on("click",function(){openTripDetail(t.id);}); tripLayer.addLayer(m); });
+      drawCandidates(t,r);
+      frameTrip(t,r);
+    }); }
+  function frameTrip(t,r){ var sig=t.id+"|"+stopSig(t.stops)+"|"+((r&&r.driving)?"d":"s");
+    if(sig===lastFitSig||!map)return;
+    var size=map.getSize(); if(size.x<60||size.y<60)return;   // the map view isn't on screen yet
+    var ll=(r&&r.ll&&r.ll.length>1)?r.ll:t.stops.map(function(s){return [s.lat,s.lng];});
+    if(!ll.length)return;
+    lastFitSig=sig;
+    try{ map.fitBounds(L.latLngBounds(ll),{animate:false,maxZoom:12,
+      paddingTopLeft:[26,96],paddingBottomRight:[26,150]}); }catch(e){} }
+  /* the suggestions along the way, drawn once per route rather than per redraw */
+  function drawCandidates(t,r){ if(!candLayer)return;
+    var sig=(r&&r.ll?r.ll.length+"@"+stopSig(t.stops):"")+"|"+(t.det||15)+"|"+(t.showCand===false?"0":"1");
+    if(sig===lastRouteSig)return; lastRouteSig=sig;
+    candLayer.clearLayers(); candShown=[];
+    if(t.showCand===false||!r||!r.ll||r.ll.length<2)return;
+    var hits=alongRoute(r.ll,t.det||15,t.stops).sort(function(a,b){return b.w-a.w;}).slice(0,60);
+    candShown=hits;
+    hits.forEach(function(o,i){ var top=i<12;
+      var m=L.circleMarker([o.c.lat,o.c.lng],{radius:top?7:5,color:"#fff",weight:2,
+        fillColor:top?"#b8902f":"#8aa0b8",fillOpacity:top?.95:.8});
+      m.on("click",function(){ openStopCard(o.c,o.det,t.id); });
+      candLayer.addLayer(m); }); }
   function updateTripBar(){ var bar=document.getElementById("tripBar"),btn=document.getElementById("openTrip"); var t=activeTripId?tripById(activeTripId):null;
     if(!t||!t.stops.length){bar.style.display="none"; if(btn)btn.style.display="flex"; return;}
     bar.style.display="flex"; if(btn)btn.style.display="none";
     document.getElementById("tb-name").textContent=t.name;
-    document.getElementById("tb-meta").textContent=t.stops.length+" stops · ~"+Math.round(tripDistance(optimize(t.stops)))+" mi · "+(function(d){return d+(d===1?" day":" days");})(Math.max(1,Math.ceil(t.stops.length/2))); }
+    var m=document.getElementById("tb-meta");
+    m.textContent=t.stops.length+(t.stops.length===1?" stop":" stops");
+    tripStats(t,function(r){ var bits=[t.stops.length+(t.stops.length===1?" stop":" stops")];
+      if(r&&r.mi)bits.push((r.driving?"":"~")+Math.round(r.mi)+" mi");
+      var dt=r&&driveTime(r.sec); if(dt)bits.push(dt+" driving");
+      m.textContent=bits.join(" · "); }); }
+
   function openTrips(){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
-    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Road trips")); sheet.appendChild(h("div",{class:"loc"},"Plan your next golf adventure"));
-    if(!S.trips.length)sheet.appendChild(h("div",{class:"empty",style:"padding:10px 0 16px"},[h("div",{class:"em"},"🗺️"),h("div",{},"No trips yet. Start one, then add courses from the map, dream lists, or search.")]));
-    S.trips.forEach(function(t){ var d=tripDistance(optimize(t.stops));
-      var row=h("div",{class:"trip-row"},[ h("div",{class:"meta"},[h("div",{class:"nm"},t.name),h("div",{class:"sb"},t.stops.length+" stops · ~"+Math.round(d)+" mi"+(t.id===activeTripId?" · active":""))]), h("div",{class:"chev"},"›") ]);
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Road trips"));
+    sheet.appendChild(h("div",{class:"loc"},"Set where you're driving, and we'll find the golf on the way"));
+    if(!S.trips.length)sheet.appendChild(h("div",{class:"empty",style:"padding:10px 0 16px"},[h("div",{class:"em"},"🗺️"),h("div",{},"No trips yet. Start one, drop in where you're leaving from and where you're headed, and the courses worth stopping at will come up along the line.")]));
+    S.trips.forEach(function(t){ var ord=routeOrder(t);
+      var sb=h("div",{class:"sb"},t.stops.length+" stops"+(t.id===activeTripId?" · active":""));
+      var row=h("div",{class:"trip-row"},[ h("div",{class:"meta"},[h("div",{class:"nm"},t.name),sb]), h("div",{class:"chev"},"›") ]);
+      if(ord.length>1)tripStats(t,function(r){ var bits=[t.stops.length+" stops"];
+        if(r&&r.mi)bits.push((r.driving?"":"~")+Math.round(r.mi)+" mi");
+        var dt=r&&driveTime(r.sec); if(dt)bits.push(dt);
+        if(t.id===activeTripId)bits.push("active");
+        sb.textContent=bits.join(" · "); });
       row.onclick=function(){ setActiveTrip(t.id); openTripDetail(t.id); }; sheet.appendChild(row); });
-    var nw=h("button",{class:"btn primary"},"＋ New trip"); nw.onclick=function(){ var nm=prompt("Trip name","Road Trip"); if(nm===null)return; var t={id:uid(),name:nm.trim()||"Road Trip",stops:[]}; S.trips.push(t); setActiveTrip(t.id); openTripDetail(t.id); }; sheet.appendChild(nw);
+    var nw=h("button",{class:"btn primary"},"＋ New trip"); nw.onclick=function(){ var nm=prompt("Trip name","Road Trip"); if(nm===null)return; var t={id:uid(),name:nm.trim()||"Road Trip",stops:[],det:15}; S.trips.push(t); setActiveTrip(t.id); openTripDetail(t.id); }; sheet.appendChild(nw);
     showScrim(sheet); }
+
+  var DETOURS=[5,15,30,60];
   function openTripDetail(id){ var t=tripById(id); if(!t){openTrips();return;} setActiveTrip(id);
+    if(t.det==null)t.det=15;
     var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"}));
     sheet.appendChild(h("h2",{},t.name));
-    var ord=optimize(t.stops);
-    sheet.appendChild(h("div",{class:"loc"},[h("span",{class:"pill green"},t.stops.length+" STOPS"),h("span",{class:"pill"},"~"+Math.round(tripDistance(ord))+" MI"),h("span",{class:"pill"},(function(d){return d+(d===1?" DAY":" DAYS");})(Math.max(1,Math.ceil(t.stops.length/2))))]));
-    if(!t.stops.length)sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 12px"},"No stops yet. Add courses below."));
-    ord.forEach(function(s,i){ var leg=i>0?"~"+Math.round(haversine(ord[i-1],s))+" mi from "+ord[i-1].n:"Start";
-      var st=h("div",{class:"tstop"},[ h("div",{class:"tn"},""+(i+1)), h("div",{class:"meta"},[h("div",{class:"nm",style:"font-family:Fraunces,serif;font-weight:600;font-size:15px"},s.n),h("div",{class:"leg"},leg)]) ]);
-      var x=h("button",{class:"x"},"✕"); x.onclick=function(){ t.stops=t.stops.filter(function(q){return q.n!==s.n;}); save(); drawTrip(); updateTripBar(); openTripDetail(id); }; st.appendChild(x);
-      sheet.appendChild(st); });
-    // nearby gems
-    var gems=nearbyGems(t); if(gems.length){ sheet.appendChild(h("div",{class:"section-h",style:"margin:16px 0 8px"},"Nearby bucket-list gems"));
-      gems.forEach(function(g){ var row=h("div",{class:"gem"},[ h("div",{class:"meta"},[h("div",{class:"nm"},g.d.n),h("div",{class:"sb"},g.d.s+" · ~"+Math.round(g.dist)+" mi away")]) ]);
-        var ad=h("button",{},"Add"); ad.onclick=function(){ addToTrip({n:g.d.n,s:g.d.s,lat:g.d.lat,lng:g.d.lng}); openTripDetail(id); }; row.appendChild(ad); sheet.appendChild(row); }); }
-    var addc=h("button",{class:"btn primary"},"＋ Add a course"); addc.onclick=function(){ tripPicker(id); }; sheet.appendChild(addc);
+    var ord=routeOrder(t);
+    var stat=h("div",{class:"loc"},[h("span",{class:"pill green"},t.stops.length+(t.stops.length===1?" STOP":" STOPS"))]);
+    sheet.appendChild(stat);
+
+    /* the route */
+    if(!t.stops.length)sheet.appendChild(h("div",{class:"empty",style:"padding:8px 0 12px"},"Nothing in the route yet. Add where you're starting from, then where you're going."));
+    var legEls=[];
+    ord.forEach(function(s,i){
+      var role=i===0?"Start":(ord.length-1===i?"Finish":"Stop "+i);
+      var lbl=h("div",{class:"leg"},role); lbl.dataset.role=role;
+      legEls.push(lbl);
+      var nm=h("div",{class:"nm",style:"font-family:Fraunces,serif;font-weight:600;font-size:15px"},s.n);
+      var row=h("div",{class:"tstop"+(s.place?" place":"")},[ h("div",{class:"tn"},""+(i+1)),
+        h("div",{class:"meta"},[nm,lbl]) ]);
+      if(!s.place&&s.s)nm.title=s.s;
+      var ctl=h("div",{class:"tctl"});
+      if(i>0){ var up=h("button",{class:"x",title:"Move earlier"},"↑");
+        up.onclick=function(){ var k=t.stops.indexOf(s); if(k>0){t.stops.splice(k-1,0,t.stops.splice(k,1)[0]); t.fixed=true; save(); drawTrip(); updateTripBar(); openTripDetail(id);} }; ctl.appendChild(up); }
+      var x=h("button",{class:"x",title:"Remove"},"✕");
+      x.onclick=function(){ t.stops=t.stops.filter(function(q){return q.n!==s.n;}); save(); drawTrip(); updateTripBar(); openTripDetail(id); };
+      ctl.appendChild(x); row.appendChild(ctl);
+      sheet.appendChild(row); });
+
+    /* real driving miles once OSRM answers; crow-flies, clearly marked, until then */
+    tripStats(t,function(r,o2){
+      stat.innerHTML="";
+      stat.appendChild(h("span",{class:"pill green"},t.stops.length+(t.stops.length===1?" STOP":" STOPS")));
+      if(r&&r.mi)stat.appendChild(h("span",{class:"pill"},(r.driving?"":"~")+Math.round(r.mi)+" MI"+(r.driving?"":" AS THE CROW FLIES")));
+      var dt=r&&driveTime(r.sec); if(dt)stat.appendChild(h("span",{class:"pill"},dt+" DRIVING"));
+      if(r&&r.legs&&r.legs.length)o2.forEach(function(s,i){ if(i===0||!legEls[i])return;
+        legEls[i].textContent=legEls[i].dataset.role+" · "+(r.driving?"":"~")
+          +Math.round(r.legs[i-1])+" mi from "+o2[i-1].n; });
+      if(r&&!r.driving&&t.stops.length>1)stat.appendChild(h("span",{class:"pill"},"NO ROUTER"));
+    });
+
+    /* add to the route */
+    var addWrap=h("div",{class:"btn-row"});
+    var addp=h("button",{class:"btn dark"},"＋ Add a place"); addp.onclick=function(){ openPlacePicker(id); };
+    var addc=h("button",{class:"btn primary"},"＋ Add a course"); addc.onclick=function(){ tripPicker(id); };
+    addWrap.appendChild(addp); addWrap.appendChild(addc); sheet.appendChild(addWrap);
+    if(t.stops.length>2){ var opt=h("button",{class:"btn ghost"},t.fixed||hasPlaces(t)?"Reorder into the shortest drive":"Put the order back the way I set it");
+      opt.onclick=function(){ if(t.fixed||hasPlaces(t)){ t.stops=optimize(t.stops); t.fixed=false; if(hasPlaces(t))toast("Places hold the route in order"); }
+        else t.fixed=true; save(); drawTrip(); updateTripBar(); openTripDetail(id); }; sheet.appendChild(opt); }
+
+    /* courses along the way */
+    if(ord.length>1){
+      var hd=h("div",{class:"section-h",style:"margin:18px 0 8px"},[h("span",{},"Golf on the way")]);
+      sheet.appendChild(hd);
+      var chips=h("div",{class:"chiprow"});
+      DETOURS.forEach(function(d){ var c=h("button",{class:"chip"+(t.det===d?" on":"")},"within "+d+" mi");
+        c.onclick=function(){ t.det=d; save(); drawTrip(); openTripDetail(id); }; chips.appendChild(c); });
+      sheet.appendChild(chips);
+      var sortRow=h("div",{class:"chiprow"});
+      [["worth","Best first"],["det","Least detour"],["at","In driving order"]].forEach(function(p){
+        var c=h("button",{class:"chip"+((t.sort||"worth")===p[0]?" on":"")},p[1]);
+        c.onclick=function(){ t.sort=p[0]; save(); openTripDetail(id); }; sortRow.appendChild(c); });
+      sheet.appendChild(sortRow);
+      var list=h("div",{class:"cand-list"},h("div",{class:"empty",style:"padding:14px 0"},"Working out the route…"));
+      sheet.appendChild(list);
+      tripStats(t,function(r){
+        if(!r||!r.ll||r.ll.length<2){ list.innerHTML=""; list.appendChild(h("div",{class:"empty"},"Need two points to find the golf between them.")); return; }
+        var hits=alongRoute(r.ll,t.det,t.stops);
+        var mode=t.sort||"worth";
+        hits.sort(mode==="det"?function(a,b){return a.det-b.det;}
+                 :mode==="at"?function(a,b){return a.at-b.at;}
+                 :function(a,b){return b.w-a.w;});
+        list.innerHTML="";
+        if(!hits.length){ list.appendChild(h("div",{class:"empty"},"Nothing within "+t.det+" miles of this line. Try a wider detour.")); return; }
+        list.appendChild(h("div",{class:"rank-note",style:"margin:0 0 10px"},
+          hits.length+" course"+(hits.length===1?"":"s")+" within "+t.det+" miles of the route"
+          +(r.driving?"":" (straight-line route — the router didn't answer)")));
+        hits.slice(0,30).forEach(function(o){ list.appendChild(candRow(o,id)); });
+        if(hits.length>30)list.appendChild(h("div",{class:"rank-note"},"…and "+(hits.length-30)+" more, further down the list."));
+      });
+    }
+
     var rn=h("button",{class:"btn ghost"},"Rename trip"); rn.onclick=function(){ var nm=prompt("Trip name",t.name); if(nm!==null){t.name=nm.trim()||t.name;save();updateTripBar();openTripDetail(id);} }; sheet.appendChild(rn);
     var del=h("button",{class:"btn ghost"},"Delete trip"); del.onclick=function(){ if(confirm("Delete "+t.name+"?")){ S.trips=S.trips.filter(function(q){return q.id!==id;}); if(activeTripId===id){activeTripId=null;S.activeTripId=null;} save(); drawTrip(); updateTripBar(); closeSheet(); } }; sheet.appendChild(del);
     showScrim(sheet); }
-  function nearbyGems(t){ if(!t.stops.length)return []; var out=[];
-    dreamAll.forEach(function(d){ if(dreamPlayed(d))return; if(t.stops.some(function(s){return s.n===d.n;}))return;
-      var md=Infinity; t.stops.forEach(function(s){ var dd=haversine(s,d); if(dd<md)md=dd; }); if(md<=80)out.push({d:d,dist:md}); });
-    out.sort(function(a,b){return a.dist-b.dist;}); return out.slice(0,10); }
+
+  var INS_ICON={rank:"🏆",arch:"✎",host:"🏁",ours:"⛳",wish:"★",fact:"•",shut:"🔒",det:"↳"};
+  function insChips(list,cap){ var w=h("div",{class:"inswrap"});
+    list.slice(0,cap||6).forEach(function(i){ w.appendChild(h("span",{class:"ins "+i.k},(INS_ICON[i.k]||"")+" "+i.t)); });
+    return w; }
+  function candRow(o,tripId){ var c=o.c,ins=insightsFor(c,o.det);
+    var row=h("div",{class:"cand"});
+    var head=h("div",{class:"ch"},[ h("div",{class:"meta"},[h("div",{class:"nm"},c.n),h("div",{class:"sb"},(c.x&&c.x.c?c.x.c+", ":"")+(c.s||""))]) ]);
+    var add=h("button",{class:"addb",title:"Add to the route"},"＋"); add.onclick=function(ev){ ev.stopPropagation();
+      addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng}); openTripDetail(tripId); };
+    head.appendChild(add); row.appendChild(head);
+    if(ins.length)row.appendChild(insChips(ins,5));
+    row.onclick=function(){ openStopCard(c,o.det,tripId); };
+    return row; }
+
+  /* One card for anything you might stop at, whoever's dataset it came from. */
+  function openStopCard(c,det,tripId){
+    var known=haveCourse(c.n)?byName[c.n]:null;
+    var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"}));
+    sheet.appendChild(h("h2",{},c.n));
+    var loc=h("div",{class:"loc"},[h("span",{},"📍 "+((c.x&&c.x.c?c.x.c+", ":"")+(c.s||"")))]);
+    sheet.appendChild(loc);
+    var ins=insightsFor(c,det);
+    if(ins.length)sheet.appendChild(insChips(ins,9));
+    var nb=notableFor(c);
+    if(nb)sheet.appendChild(h("div",{class:"rank-note",style:"margin:10px 0 0"},[
+      h("span",{},"Designer, year and tournaments from "),
+      h("a",{href:"https://en.wikipedia.org/wiki/"+encodeURIComponent((nb.t||nb.n).replace(/ /g,"_")),target:"_blank",rel:"noopener"},"Wikipedia"),
+      h("span",{},".")]));
+    if(c.x&&c.x.w)sheet.appendChild(h("div",{class:"rank-note",style:"margin:6px 0 0"},[
+      h("a",{href:"https://"+c.x.w,target:"_blank",rel:"noopener"},c.x.w)]));
+    if(known){ var op=h("button",{class:"btn primary"},"Open this course"); op.onclick=function(){ openCourse(known); }; sheet.appendChild(op); }
+    else { var ad=h("button",{class:"btn primary"},"I've played here — add it");
+      ad.onclick=function(){ addUsCourse({n:c.n,s:c.s,lat:c.lat,lng:c.lng},function(k){ if(k)openCourse(k); else closeSheet(); toast(c.n+" added to your courses"); }); }; sheet.appendChild(ad); }
+    var t=tripId?tripById(tripId):(activeTripId?tripById(activeTripId):null);
+    var inRoute=t&&t.stops.some(function(s){return s.n===c.n;});
+    var rt=h("button",{class:"btn dark"},inRoute?"Already in the route":"Add to the route");
+    rt.onclick=function(){ if(inRoute){toast("Already a stop");return;} addToTrip({n:c.n,s:c.s,lat:c.lat,lng:c.lng});
+      if(tripId)openTripDetail(tripId); else closeSheet(); }; sheet.appendChild(rt);
+    var sm=h("button",{class:"btn ghost"},"Show it on the map"); sm.onclick=function(){ showOnMap(c,true); }; sheet.appendChild(sm);
+    showScrim(sheet); }
+
+  /* ---------- A PLACE, NOT A COURSE ---------- */
+  /* Nominatim turns "Asheville, NC" into a point you can anchor a route to. Same
+     OpenStreetMap data and licence as everything else on the map, no key. */
+  var GEO="https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=us&q=";
+  var geoCache={};
+  function geoSearch(q,cb){ q=q.trim(); if(q.length<3){cb([]);return;}
+    var k=q.toLowerCase(); if(geoCache[k]){cb(geoCache[k]);return;}
+    fetch(GEO+encodeURIComponent(q)).then(function(r){return r.ok?r.json():[];}).then(function(d){
+      var out=(d||[]).map(function(p){ var parts=(p.display_name||"").split(",").map(function(s){return s.trim();});
+        return {n:parts[0]||q,s:parts.slice(1,-1).slice(-2).join(", ")||parts.slice(1).join(", "),
+          full:p.display_name,lat:+p.lat,lng:+p.lon,place:true}; });
+      geoCache[k]=out; cb(out);
+    }).catch(function(){ cb(null); }); }
+  function openPlacePicker(id){ var sheet=document.getElementById("sheet"); sheet.innerHTML="";
+    sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Add a place"));
+    sheet.appendChild(h("div",{class:"loc"},"A town, an address, an airport — anywhere the drive starts, ends or turns"));
+    var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]);
+    var inp=h("input",{placeholder:"Asheville, NC"}); s.appendChild(inp); sheet.appendChild(s);
+    var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
+    var tT=null;
+    function draw(res){ lw.innerHTML="";
+      if(res===null){ lw.appendChild(h("div",{class:"empty"},"Couldn't reach the place lookup. Add a course as the start instead.")); return; }
+      if(!res.length){ lw.appendChild(h("div",{class:"empty"},inp.value.trim().length<3?"Type a town or an address.":"Nothing found.")); return; }
+      res.forEach(function(p){
+        var row=h("div",{class:"row",style:"margin:0 0 9px"},[
+          h("div",{class:"badge-sm",style:"background:var(--navy);font-size:18px"},"◆"),
+          h("div",{class:"meta"},[h("div",{class:"nm"},p.n),h("div",{class:"sb"},p.s)]),
+          h("div",{class:"chev"},"＋")]);
+        row.onclick=function(){ addToTrip(p); openTripDetail(id); }; lw.appendChild(row); }); }
+    inp.oninput=function(){ clearTimeout(tT); var q=inp.value;
+      lw.innerHTML=""; lw.appendChild(h("div",{class:"empty"},"Looking…"));
+      tT=setTimeout(function(){ geoSearch(q,draw); },450); };
+    draw([]);
+    var back=h("button",{class:"btn ghost"},"Done"); back.onclick=function(){openTripDetail(id);}; sheet.appendChild(back);
+    showScrim(sheet); setTimeout(function(){inp.focus();},350); }
+
+  function courseInsights(c){ var out=insightsFor(c,null);
+    return out.filter(function(i){ return i.k!=="ours"; }); }
   function tripPicker(id){ var t=tripById(id); var sheet=document.getElementById("sheet"); sheet.innerHTML="";
     sheet.appendChild(h("div",{class:"grab"})); sheet.appendChild(h("h2",{},"Add a course")); sheet.appendChild(h("div",{class:"loc"},"Played courses, dream courses and your wishlist"));
     var s=h("div",{class:"search",style:"margin:0 0 6px"},[h("span",{},"🔎")]); var inp=h("input",{placeholder:"Search…"}); s.appendChild(inp); sheet.appendChild(s);
