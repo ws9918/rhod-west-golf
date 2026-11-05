@@ -14,16 +14,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg:#f3f1ea; --card:#ffffff; --ink:#16201a; --muted:#7a8279; --faint:#aeb4aa;
-    --line:#e8e7df; --green:#15643f; --green-2:#1c8b56; --green-d:#0d4a2d; --gold:#b8902f; --gold-soft:#d9b25a;
+    --bg:#f3f1ea; --card:#ffffff; --ink:#16201a; --muted:#697069; --faint:#697069;
+    --line:#e8e7df; --green:#15643f; --green-2:#1c8b56; --green-d:#0d4a2d; --gold:#a9852b; --gold-soft:#d9b25a; --gold-ink:#876818;
     --navy:#243b4f;
     /* the app is about two people, so each one is a colour in the system */
     --west:#15643f; --west-2:#1c8b56; --west-soft:#e9f3ed;
     --rhod:#243b4f; --rhod-2:#3a5f7d; --rhod-soft:#e9eef4;
     --gap:#b9702c; --gap-soft:#fbf1e2;
-    --bad:#c75f43; --mid:#cf9a35; --good:#3f9a64; --great:#15643f;
+    --bad:#b35035; --mid:#cf9a35; --good:#3f9a64; --great:#15643f;
     --shadow:0 1px 2px rgba(20,35,25,.04); --shadow-lg:0 16px 44px rgba(20,35,25,.16);
     --hair:#f0f1ec;
+    /* --muted and --faint are the same value on purpose: no grey lighter than
+       this reaches 4.5:1 on white, so the second tier is carried by size,
+       weight and uppercase rather than by going paler. --gold is the mark
+       (stars, pins, rank numbers, 3:1); --gold-ink is gold TEXT (4.5:1). */
     --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -51,10 +55,12 @@
   .stat b{display:block;font-size:24px;line-height:1;font-family:"Fraunces",serif;font-weight:600}
   .stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px;display:block;font-weight:700}
   .section-h{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:800;margin:20px 18px 10px;display:flex;justify-content:space-between;align-items:center}
-  .section-h a{color:var(--green);text-decoration:none;font-weight:700;letter-spacing:.2px;text-transform:none;font-size:13px}
+  /* The hit area grows to 44px and the negative margin gives the height back,
+     so the header row sits exactly where it did. */
+  .section-h a{color:var(--green);text-decoration:none;font-weight:700;letter-spacing:.2px;text-transform:none;font-size:13px;display:inline-flex;align-items:center;min-height:44px;padding:0 2px 0 16px;margin:-14px 0}
   .filters{display:flex;gap:8px;overflow-x:auto;padding:2px 14px 2px;scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
-  .chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);padding:8px 15px;border-radius:99px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);padding:8px 15px;border-radius:99px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px;min-height:44px}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .chip .dot{width:9px;height:9px;border-radius:50%}
   /* memory card */
@@ -67,17 +73,24 @@
   .mcard .ph .av-over{position:absolute;left:12px;bottom:12px}
   .mcard .body{padding:15px}
   .mcard .top{display:flex;align-items:center;gap:12px}
+  /* Both of them rating the same course is the point of the logbook, so the
+     feed shows it as one card: two scores, and who came out higher. */
+  .mcard .duo{display:flex;align-items:center;gap:10px}
+  .mcard .duo .side{display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto}
+  .mcard .duo .side .who{font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .mcard .duo .gap{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:center;flex:0 0 auto;padding:0 1px}
+  .mcard .duo .gap b{display:block;font-family:"Fraunces",serif;font-size:15px;font-weight:600;letter-spacing:0;color:var(--ink);margin-top:1px}
   .mcard .badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px;flex:0 0 auto;font-family:"Fraunces",serif}
-  .mcard .nm{font-family:"Fraunces",serif;font-weight:600;font-size:18px;line-height:1.12;display:flex;align-items:center;gap:7px}
-  .mcard .nm .star{color:var(--gold);font-size:13px}
+  .mcard .nm{font-family:"Fraunces",serif;font-weight:600;font-size:18px;line-height:1.12}
+  .mcard .nm .star{color:var(--gold);font-size:13px;margin-left:6px;white-space:nowrap}
   .mcard .dt{color:var(--muted);font-size:12px;margin-top:3px;letter-spacing:.2px}
   .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
   .tag{font-size:12px;font-weight:700;padding:6px 11px;border-radius:10px;background:#f3f4f0;color:#46504a;display:flex;align-items:center}
   .tag em{font-style:normal;color:var(--faint);font-weight:800;text-transform:uppercase;letter-spacing:.6px;font-size:9.5px;margin-right:6px}
   .tag.win{background:#eef6f0;color:var(--green-d)}
   .tag.win em{color:var(--green-2)}
-  .tag.bet{background:#fbf3e0;color:#8a6a18}
-  .tag.bet em{color:var(--gold)}
+  .tag.bet{background:#fbf3e0;color:var(--gold-ink)}
+  .tag.bet em{color:var(--gold-ink)}
   .mcard .note{font-size:13.5px;color:#4b554d;margin-top:13px;line-height:1.5}
   /* avatars */
   .avgrp{display:flex;align-items:center}
@@ -89,23 +102,25 @@
   .av.g{background:linear-gradient(150deg,var(--gold-soft),var(--gold))}
   .av-over .av{border-color:rgba(255,255,255,.92)}
   /* list rows */
-  .search{margin:12px 14px 4px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px}
-  .search input{border:0;outline:0;background:transparent;font-size:15px;width:100%;color:var(--ink);font-family:inherit}
+  .search{margin:12px 14px 4px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:0 14px}
+  .search input{border:0;outline:0;background:transparent;font-size:15px;width:100%;min-height:45px;color:var(--ink);font-family:inherit}
   .list{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 14px 20px;overflow:hidden}
   .row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 10px;border-radius:16px;padding:11px;box-shadow:var(--shadow)}
   .list .row{border:0;border-radius:0;margin:0;box-shadow:none;padding:14px 15px}
   .list .row+.row{border-top:1px solid var(--hair)}
-  .rank-no{width:20px;text-align:center;font-weight:600;color:#c3c8be;font-size:13px;flex:0 0 auto;font-family:"Fraunces",serif}
+  .rank-no{width:20px;text-align:center;font-weight:600;color:var(--muted);font-size:13px;flex:0 0 auto;font-family:"Fraunces",serif}
   .badge-sm{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;font-family:"Fraunces",serif}
-  .badge-sm.un{background:#edece5;color:#9aa295;font-size:20px;font-family:"Inter"}
+  .badge-sm.un{background:#edece5;color:#6b7268;font-size:20px;font-family:"Inter"}
+  .thumb.mono{display:grid;place-items:center;color:#fff;font-family:"Fraunces",serif;font-weight:600;font-size:21px;letter-spacing:-.5px}
+  .thumb.mono.un{opacity:.55}
   .row .meta{flex:1;min-width:0}
-  .row .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16px;line-height:1.18;display:flex;align-items:center;gap:6px}
-  .row .nm .star{color:var(--gold);font-size:12px}
+  .row .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16px;line-height:1.18}
+  .row .nm .star{color:var(--gold);font-size:12px;margin-left:5px;white-space:nowrap}
   .row .sb{color:var(--muted);font-size:12.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .thumb{width:46px;height:46px;border-radius:13px;object-fit:cover;flex:0 0 auto}
   .thumb.terr{filter:saturate(.82)}           /* stand-in, not a photo from the round */
   .thumb.terr.un{opacity:.6;filter:saturate(.55)}   /* and quieter still before it's rated */
-  .chev{color:#d2d6cd;font-size:20px;flex:0 0 auto}
+  .chev{color:#8e9882;font-size:20px;flex:0 0 auto}
   .row .rt{display:flex;align-items:center;gap:8px;flex:0 0 auto}
   /* top100 */
   .cover{margin:14px;border-radius:20px;padding:20px;color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;background:#0d4a2d}
@@ -132,12 +147,12 @@
   .scrim.show{opacity:1;pointer-events:auto}
   .sheet{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--card);border-radius:26px 26px 0 0;z-index:901;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:94dvh;overflow-y:auto;padding:8px 18px calc(28px + var(--sab));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
   .sheet.show{transform:translateY(0)}
-  .grab{width:48px;height:5px;box-sizing:content-box;padding:13px 22px;margin:0 auto 2px;border-radius:99px;background:#dcded7;background-clip:content-box;cursor:grab;touch-action:none}
+  .grab{width:48px;height:5px;box-sizing:content-box;padding:13px 22px;margin:0 auto 2px;border-radius:99px;background:#888e77;background-clip:content-box;cursor:grab;touch-action:none}
   .grab:active{cursor:grabbing}
   .sheet h2{font-size:25px;margin:6px 0 2px;font-weight:600}
   .loc{color:var(--muted);font-size:13px;margin-bottom:14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
   .pill{font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;background:#f1f2ee;color:#5a645c;letter-spacing:.3px}
-  .pill.gold{background:#f7eed4;color:#8a6a18}
+  .pill.gold{background:#f7eed4;color:var(--gold-ink)}
   .pill.green{background:#e4f1ea;color:var(--green-d)}
   .scorehead{display:flex;align-items:center;gap:15px;margin:10px 0 16px}
   .scorehead .big{width:70px;height:70px;border-radius:18px;display:grid;place-items:center;color:#fff;font-weight:600;font-size:28px;flex:0 0 auto;font-family:"Fraunces",serif}
@@ -170,6 +185,10 @@
   .btn.primary{background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff}
   .btn.ghost{background:#eef0ea;color:var(--ink)}
   .btn.dark{background:var(--ink);color:#fff}
+  /* One filled action per group: the filled button is the thing you came to do,
+     the outline is its sibling, and a rare utility is a link, not a third bar. */
+  .btn.outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .btn.linky{background:transparent;border:0;color:var(--green);font-weight:700;font-size:13.5px;text-decoration:underline;min-height:44px;padding:0;margin-top:10px}
   .field{margin-top:18px}
   .field>label{font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:9px}
   /* who-played big toggles */
@@ -181,7 +200,7 @@
   .slabel .t{font-weight:700;font-size:15px}
   .slabel .d{font-size:11.5px;color:var(--muted);max-width:60%;text-align:right;text-wrap:balance}
   .slabel .v{font-weight:800;color:var(--green);font-size:16px;margin-left:8px;font-family:"Fraunces",serif;white-space:nowrap}
-  input[type=range]{-webkit-appearance:none;width:100%;height:30px;background:transparent}
+  input[type=range]{-webkit-appearance:none;width:100%;height:44px;background:transparent}
   input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) var(--p,70%),#e7e9e3 var(--p,70%))}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--green);margin-top:-9px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
   textarea,input.txt{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--ink)}
@@ -219,7 +238,7 @@
   .wipe-wrap{text-align:center;padding:14px 0 22px}
   .rank-note{font-size:12.5px;color:var(--muted);margin:2px 18px 12px;line-height:1.45}
   .row .pill.money{white-space:nowrap;font-family:"Fraunces",serif;font-size:13px;padding:5px 10px}
-  .wipe-link{background:transparent;border:0;color:var(--bad);font-size:12.5px;font-weight:700;text-decoration:underline;opacity:.75;font-family:inherit}
+  .wipe-link{background:transparent;border:0;color:var(--bad);font-size:12.5px;font-weight:700;text-decoration:underline;min-height:44px;padding:0 4px;font-family:inherit}
   .toast{position:fixed;left:50%;bottom:calc(180px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 19px;border-radius:12px;font-size:13.5px;z-index:980;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .leaflet-div-icon{background:transparent;border:0}
@@ -229,32 +248,41 @@
   .pin.dream{background:#fff!important;border:2px solid var(--gold)}
   .pin.dream span{color:var(--gold);font-size:13px}
   .pin.trip{background:var(--ink)!important;border-color:#fff}
-  .trip-dot{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;border:2px solid #fff;display:grid;place-items:center;font-weight:800;font-size:12px;font-family:"Inter";box-shadow:0 2px 8px rgba(15,30,20,.4)}
+  /* A course stop and a place you only pass through must differ at a glance.
+     Navy against dark green did not, at 26px. */
+  .trip-dot{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;border:2.5px solid #fff;display:grid;place-items:center;font-weight:800;font-size:12.5px;font-family:"Inter";box-shadow:0 2px 8px rgba(15,30,20,.4)}
   /* map controls */
   .map-fade{position:absolute;left:0;right:0;top:0;height:130px;z-index:450;pointer-events:none;background:linear-gradient(180deg,rgba(245,246,243,.85),rgba(245,246,243,0))}
   .map-ui{position:absolute;left:12px;top:calc(12px + var(--sat));z-index:500;display:flex;flex-direction:column;gap:9px;align-items:flex-start}
   .map-seg{display:flex;background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:13px;padding:4px;box-shadow:0 6px 22px rgba(20,35,25,.16)}
-  .map-seg button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:9px}
+  .map-seg button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:9px;min-height:44px}
   .map-seg button.on{background:var(--ink);color:#fff}
   .map-note{margin-top:8px;align-self:flex-start;background:rgba(255,255,255,.94);border:1px solid var(--line);
             border-radius:99px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--muted);
             box-shadow:0 1px 4px rgba(20,32,24,.08)}
   .map-layers{display:flex;gap:7px}
-  .map-layers button{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 4px 14px rgba(20,35,25,.12);display:flex;align-items:center;gap:7px;opacity:.62}
+  .map-layers button{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 4px 14px rgba(20,35,25,.12);display:flex;align-items:center;gap:7px;min-height:44px;opacity:.62}
   .map-layers button.on{opacity:1;color:var(--ink)}
   .map-layers .dot{width:9px;height:9px;border-radius:50%}
-  .map-trip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(112px + var(--sab));z-index:501;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:13px 22px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(15,30,20,.32);display:flex;align-items:center;gap:8px}
+  .map-trip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(112px + var(--sab));z-index:501;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:13px 22px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(15,30,20,.32);display:flex;align-items:center;gap:8px;min-height:44px;box-sizing:border-box}
   .map-trip .ic{font-size:15px}
   .trip-bar{position:absolute;left:12px;right:12px;bottom:calc(108px + var(--sab));z-index:501;background:var(--ink);color:#fff;border-radius:16px;padding:13px 16px;box-shadow:0 12px 34px rgba(15,30,20,.34);display:flex;align-items:center;gap:12px}
   .trip-bar .tb-info{flex:1;min-width:0}
   .trip-bar b{font-family:"Fraunces",serif;font-size:15px;display:block}
   .trip-bar span{font-size:12px;opacity:.8}
-  .trip-bar button{background:var(--green-2);color:#fff;border:0;border-radius:11px;padding:9px 15px;font-weight:800;font-size:13px}
+  .trip-bar button{background:var(--green);color:#fff;border:0;border-radius:11px;padding:9px 15px;font-weight:800;font-size:13px;min-height:44px}
   /* leaflet chrome */
-  .leaflet-control-attribution{background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:9.5px!important;color:#6f7872!important;padding:2px 7px!important;border-radius:8px 0 0 0;line-height:1.5}
+  /* The ODbL credit has to stay legible over any basemap. At 72% white it fell
+     to 2.3:1 over satellite imagery; .92 plus a darker grey clears 4.5:1 over
+     white, terrain and satellite alike. */
+  .leaflet-control-attribution{background:rgba(255,255,255,.92)!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:9.5px!important;color:#5c635f!important;padding:2px 7px!important;border-radius:8px 0 0 0;line-height:1.5}
   .leaflet-control-attribution a{color:var(--green)!important;text-decoration:none}
+  body.sheet-open .leaflet-control-container,
+  body.sheet-open .map-ui,
+  body.sheet-open .map-trip,
+  body.sheet-open .trip-bar{display:none!important}
   .leaflet-bar{border:0!important;box-shadow:0 4px 14px rgba(20,35,25,.16)!important;border-radius:11px!important;overflow:hidden}
-  .leaflet-bar a{background:rgba(255,255,255,.92)!important;color:var(--ink)!important;width:34px!important;height:34px!important;line-height:34px!important;font-size:18px!important;border-bottom:1px solid var(--line)!important}
+  .leaflet-bar a{background:rgba(255,255,255,.92)!important;color:var(--ink)!important;width:44px!important;height:44px!important;line-height:44px!important;font-size:19px!important;border-bottom:1px solid var(--line)!important}
   .leaflet-bar a:hover{background:#fff!important}
   .leaflet-touch .leaflet-bar a:last-child{border-bottom:0!important}
   /* dream */
@@ -274,38 +302,41 @@
   .drow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);margin:0 14px 9px;border-radius:15px;padding:11px 12px}
   .list .drow{border:0;border-radius:0;margin:0;padding:13px 15px}
   .list .drow+.drow{border-top:1px solid var(--hair)}
-  .drow .dr-rank{width:30px;text-align:center;font-family:"Fraunces",serif;font-weight:600;font-size:17px;color:var(--gold);flex:0 0 auto}
+  .drow .dr-rank{width:30px;text-align:center;font-family:"Fraunces",serif;font-weight:600;font-size:17px;color:var(--gold-ink);flex:0 0 auto}
   .drow.done .dr-rank{color:var(--green)}
   .drow .meta{flex:1;min-width:0}
   .drow .nm{font-family:"Fraunces",serif;font-weight:600;font-size:15.5px;line-height:1.15}
   .drow .sb{color:var(--muted);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .drow .tick{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:15px;font-weight:800;border:1.5px solid var(--line);color:var(--faint);background:var(--bg)}
   .drow.done .tick{background:var(--green);border-color:var(--green);color:#fff}
-  .drow .addtrip{flex:0 0 auto;background:var(--bg);border:1px solid var(--line);border-radius:9px;width:34px;height:34px;font-size:17px;color:var(--green);font-weight:800}
+  .drow .addtrip{flex:0 0 auto;background:var(--bg);border:1px solid var(--line);border-radius:11px;width:44px;height:44px;font-size:17px;color:var(--green);font-weight:800}
   .wish-add{display:flex;gap:9px;margin:4px 14px 14px}
   .wish-add input{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;background:var(--card);font-family:inherit}
   .wish-add button{background:var(--green);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:800}
   /* trip sheet */
   .tstop{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;margin-bottom:8px}
-  .tstop .tn{width:26px;height:26px;border-radius:50%;background:var(--green-d);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+  .tstop .tn{width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
   .tstop .meta{flex:1;min-width:0}
-  .tstop .leg{font-size:11.5px;color:var(--gold);font-weight:700;margin-top:2px}
-  .tstop .x{border:0;background:transparent;color:var(--faint);font-size:20px}
+  .tstop .leg{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
+  .tstop .x{border:0;background:transparent;color:var(--faint);font-size:20px;min-width:44px;min-height:44px;display:grid;place-items:center}
   .trip-row{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
   .trip-row .meta{flex:1}.trip-row .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16px}
   .trip-row .sb{font-size:12.5px;color:var(--muted);margin-top:2px}
   .gem{display:flex;align-items:center;gap:10px;background:#fbf6ea;border:1px solid #ecddb6;border-radius:13px;padding:10px 11px;margin-bottom:8px}
-  .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:#977a2f;margin-top:2px}
+  .gem .meta{flex:1;min-width:0}.gem .nm{font-weight:700;font-size:14px}.gem .sb{font-size:11.5px;color:var(--gold-ink);margin-top:2px}
   .gem button{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12.5px}
   /* a place you drive through rather than play */
-  .trip-dot{background:var(--green-d)}
-  .trip-dot.place{background:var(--navy)}
+  .trip-dot.place{background:#fff;color:var(--green);border-color:var(--green);box-shadow:0 2px 8px rgba(15,30,20,.26)}
   .tstop.place{background:#f7f9fb;border-color:#dde5ec}
-  .tstop.place .tn{background:var(--navy)}
+  .tstop.place .tn{background:#fff;color:var(--green);border:2px solid var(--green)}
   .tstop .tctl{display:flex;align-items:center;gap:0;flex:0 0 auto}
   .btn-row{display:flex;gap:8px}
   .btn-row .btn{flex:1;margin-top:10px}
-  .chiprow{display:flex;gap:6px;overflow-x:auto;padding:0 0 9px;scrollbar-width:none}
+  .chiplbl{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:2px 0 6px}
+  /* A chip cut off at the edge reads as broken; the fade says it scrolls. */
+  .chiprow{display:flex;gap:6px;overflow-x:auto;padding:0 0 9px;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}
   .chiprow::-webkit-scrollbar{display:none}
   .chiprow .chip{flex:0 0 auto;padding:7px 13px;font-size:12px}
   /* a course worth coming off the highway for */
@@ -314,10 +345,10 @@
   .cand .ch .meta{flex:1;min-width:0}
   .cand .nm{font-family:"Fraunces",serif;font-weight:600;font-size:15px;line-height:1.25}
   .cand .sb{font-size:11.5px;color:var(--muted);margin-top:2px}
-  .cand .addb{flex:0 0 auto;width:33px;height:33px;border-radius:10px;border:0;background:var(--green);color:#fff;font-size:18px;font-weight:700;line-height:1}
+  .cand .addb{flex:0 0 auto;width:44px;height:44px;border-radius:12px;border:0;background:var(--green);color:#fff;font-size:18px;font-weight:700;line-height:1}
   .inswrap{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
   .ins{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f1f2ee;color:#5a645c}
-  .ins.rank{background:#f7eed4;color:#8a6a18}
+  .ins.rank{background:#f7eed4;color:var(--gold-ink)}
   .ins.arch{background:#eee7f7;color:#5b4079}
   .ins.host{background:#e4f1ea;color:var(--green-d)}
   .ins.ours{background:var(--west-soft);color:var(--green-d)}
@@ -327,7 +358,7 @@
   .add-lbl{font-size:10px;font-weight:700;color:var(--green)}
   /* ranked course rows read like a leaderboard */
   .rank-no{font-family:"Fraunces",serif;font-variant-numeric:tabular-nums}
-  .row.top3 .rank-no{color:var(--gold);font-weight:700}
+  .row.top3 .rank-no{color:var(--gold-ink);font-weight:700}
   .row .score-chip{font-family:"Fraunces",serif;font-weight:600;font-size:19px;letter-spacing:-.4px;min-width:40px;text-align:right;font-variant-numeric:tabular-nums;flex:0 0 auto}
   .row .rated-by{display:flex;gap:3px;flex:0 0 auto}
   .row .rated-by i{width:6px;height:6px;border-radius:50%;display:block;opacity:.9}
@@ -340,7 +371,7 @@
   .mcard .stamp .dot.w{background:var(--west)} .mcard .stamp .dot.r{background:var(--rhod)} .mcard .stamp .dot.g{background:var(--gold)}
   /* the save button follows you down the rate sheet */
   .savebar{margin-top:6px}
-  .ibtn{border:1px solid var(--line);background:var(--bg);border-radius:9px;width:34px;height:34px;font-size:15px;display:grid;place-items:center;color:var(--muted);flex:0 0 auto;font-family:inherit}
+  .ibtn{border:1px solid var(--line);background:var(--bg);border-radius:11px;width:44px;height:44px;font-size:15px;display:grid;place-items:center;color:var(--muted);flex:0 0 auto;font-family:inherit}
   .ibtn.del{color:var(--bad)}
   .seg.stack button{flex:1 1 100%;text-align:left}
   .who.sm button{flex-direction:row;justify-content:center;gap:8px;padding:9px 10px;font-size:13px}
@@ -698,6 +729,17 @@
     "Florida":"coastal","Barbados":"coastal","Hawaii":"coastal","South Carolina":"coastal","Louisiana":"coastal"
   };
   var TERRAIN_DEFAULT="parkland";   // Virginia, Maryland, Texas, Georgia, the Carolinas, everywhere else
+  /* Eight terrain photos cover 276 courses, so in a list the same frame repeated
+     every few rows and read as broken. A real photo still wins; without one the
+     row gets a tile tinted by terrain and carrying the course's own initial,
+     which is distinct per course and still says where in the world it is. */
+  var TERRAIN_TINT={mountain:"#55606b",desert:"#a9752b",links:"#9a8c62",coastal:"#2f6b86",parkland:"#3f7a4e"};
+  function monoThumb(c,rated){
+    var t=terrainOf(c),letter=(c.n||"?").replace(/^(the|a)\s+/i,"").charAt(0).toUpperCase();
+    var el=h("div",{class:"thumb mono"+(rated?"":" un"),title:terrainLabel(c)});
+    el.style.background=TERRAIN_TINT[t]||TERRAIN_TINT.parkland;
+    el.textContent=letter;
+    return el; }
   function nameHash(str){ var hv=0; for(var i=0;i<str.length;i++)hv=(hv*31+str.charCodeAt(i))|0; return Math.abs(hv); }
   function terrainOf(c){
     for(var i=0;i<TERRAIN_NAME.length;i++) if(TERRAIN_NAME[i][1].test(c.n)) return TERRAIN_NAME[i][0];
@@ -782,7 +824,16 @@
       d=rounds(b).length-rounds(a).length; if(d)return d; return a<b?-1:1; }); }
   function rankOf(name){ return rankedNames().indexOf(name); }
   function isSnub(c){ return !!S.snub[c.n]; }
-  function scoreColor(v){ if(v==null)return"#cdd2c9"; if(v>=8.5)return"#15643f"; if(v>=7)return"#3f9a64"; if(v>=5.5)return"#cf9a35"; return"#c75f43"; }
+  /* The score ladder lives here, not in the CSS tokens, because the number is
+     drawn on it. A fill keeps its vivid hue and the numeral flips between white
+     and ink, whichever clears 4.5:1, so the scale stays readable without going
+     muddy. Only the low swatch had to move (#c75f43 cleared neither, at 4.08
+     white and 4.10 ink). scoreInk is the same ladder as TEXT on a light card,
+     where each step has to be dark enough on its own. */
+  function scoreColor(v){ if(v==null)return"#cdd2c9"; if(v>=8.5)return"#15643f"; if(v>=7)return"#3f9a64"; if(v>=5.5)return"#cf9a35"; return"#b35035"; }
+  function scoreOn(v){ return (v!=null&&(v>=8.5||v<5.5))?"#fff":"#16201a"; }
+  function scoreFill(v){ return "background:"+scoreColor(v)+";color:"+scoreOn(v); }
+  function scoreInk(v){ if(v==null)return"#697069"; if(v>=8.5)return"#15643f"; if(v>=7)return"#337b50"; if(v>=5.5)return"#8c6821"; return"#b35035"; }
   function fmt(v){ return (Math.round(v*10)/10).toFixed(1); }
   function payLabel(v){ return "$"+(Math.round(v)===v?v:v.toFixed(2)); }
 
@@ -798,6 +849,14 @@
 
   /* ---------- dream data + matching ---------- */
   var DREAM=window.DREAM||{world:[],usa:[],europe:[]};
+  /* "North Carolina" truncated in a list row; "NC" does not. Anything that is
+     not a US state keeps its own name. */
+  var STATE_ABBR=null;
+  function shortState(name){
+    if(!name)return "";
+    if(!STATE_ABBR){ STATE_ABBR={};
+      for(var code in US_STATES)STATE_ABBR[US_STATES[code].toLowerCase()]=code; }
+    return STATE_ABBR[String(name).toLowerCase()]||name; }
   function normKey(s){ return (s||"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g," ")
     .split(/\s+/).filter(function(w){return w&&["the","golf","club","course","gc","cc","links","national","country","at","resort"].indexOf(w)<0;}).sort().join(" "); }
   indexCourses();   // normKey and S both exist by here
@@ -1057,8 +1116,14 @@
     if(kids!=null){(Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });}
     return e; }
   function tag(label,val,cls){ return h("span",{class:"tag "+(cls||"")},[h("em",{},label),val]); }
-  function showScrim(s){ s.style.transform=""; s.scrollTop=0; document.getElementById("scrim").classList.add("show"); requestAnimationFrame(function(){s.classList.add("show");}); }
-  function closeSheet(){ document.getElementById("sheet").classList.remove("show"); document.getElementById("scrim").classList.remove("show"); }
+  /* Leaflet draws its attribution inside the map's own stacking context, so it
+     painted over the bottom of every sheet whatever z-index the sheet carried.
+     The credit is required by the tile and ODbL terms, so it is hidden only
+     while a sheet covers the map and comes straight back on close. */
+  function showScrim(s){ s.style.transform=""; s.scrollTop=0; document.body.classList.add("sheet-open");
+    document.getElementById("scrim").classList.add("show"); requestAnimationFrame(function(){s.classList.add("show");}); }
+  function closeSheet(){ document.body.classList.remove("sheet-open");
+    document.getElementById("sheet").classList.remove("show"); document.getElementById("scrim").classList.remove("show"); }
   document.getElementById("scrim").onclick=closeSheet;
   document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("scrim").classList.contains("show"))closeSheet(); });
   // swipe the sheet down (or tap the grab handle) to dismiss
@@ -1084,7 +1149,40 @@
       h("img",{class:"emimg",src:"img/terrain-mountain.jpg",onerror:"this.style.display='none'"}),
       h("div",{},feedFilter==="all"?"No ratings yet. Tap Rate after your next round to add scores, photos and the story.":"No ratings from "+(feedFilter==="west"?"West":"Rhod")+" yet.")
     ])); return; }
-    ar.slice(0,40).forEach(function(it){ feed.appendChild(memCard(it.course,it.rd)); });
+    /* One card per course when both of them have rated it and nothing is filtered,
+       so the two scores sit side by side instead of as two near-identical cards. */
+    var shown={},cards=[];
+    ar.forEach(function(it){
+      if(cards.length>=40)return;
+      if(shown[it.course])return;
+      if(feedFilter==="all"){
+        var w=latestBy(it.course,"West"),r=latestBy(it.course,"Rhod");
+        if(w&&r){ shown[it.course]=1; cards.push(duoCard(it.course,w,r)); return; }
+      }
+      shown[it.course]=1; cards.push(memCard(it.course,it.rd));
+    });
+    cards.forEach(function(c){ feed.appendChild(c); });
+  }
+  /** Both ratings of one course, with the gap between them called out. */
+  function duoCard(courseName,wRd,rRd){
+    var c=byName[courseName],t100=c&&isT100(c);
+    var card=h("div",{class:"mcard"+(t100?" t100":"")});
+    var body=h("div",{class:"body"});
+    var ws=roundScore(wRd),rs=roundScore(rRd),d=Math.round(Math.abs(ws-rs)*10)/10;
+    body.appendChild(h("div",{class:"stamp"},[h("span",{class:"dot g"}),"Both rated"]));
+    function side(who,sc){ return h("div",{class:"side"},[
+      h("div",{class:"badge",style:scoreFill(sc)},fmt(sc)),
+      h("div",{class:"who"},who)]); }
+    var gap=d===0?h("div",{class:"gap"},[ "Dead level" ])
+      : h("div",{class:"gap"},[ (ws>rs?"West by":"Rhod by"), h("b",{},fmt(d)) ]);
+    var nm=h("div",{class:"nm"},c?c.n:courseName); if(t100)nm.appendChild(h("span",{class:"star"},"★"));
+    body.appendChild(h("div",{class:"duo"},[
+      side("West",ws), gap, side("Rhod",rs),
+      h("div",{style:"flex:1;min-width:0;padding-left:2px"},[nm,h("div",{class:"dt"},c?c.s:"")])
+    ]));
+    card.appendChild(body);
+    card.onclick=function(){ openCourse(c||{n:courseName,s:"",lat:0,lng:0}); };
+    return card;
   }
   function memCard(courseName,rd){
     var c=byName[courseName]; var t100=c&&isT100(c);
@@ -1101,7 +1199,7 @@
       h("span",{class:"dot "+(who==="West"?"w":who==="Rhod"?"r":"g")}),
       who==="Together"?"Rated together":who+"’s rating"]));
     var topRow=h("div",{class:"top"},[
-      h("div",{class:"badge",style:"background:"+scoreColor(roundScore(rd))},fmt(roundScore(rd))),
+      h("div",{class:"badge",style:scoreFill(roundScore(rd))},fmt(roundScore(rd))),
       h("div",{style:"flex:1;min-width:0"},[nm,h("div",{class:"dt"},c?c.s:"")])
     ]);
     body.appendChild(topRow);
@@ -1140,7 +1238,7 @@
     host.appendChild(h("div",{class:"rank-note"},"Pay anything: you'd pay "+payLabel(hi)+" or more, or someone's verdict is ✈️ fly. Doesn't make sense: rated "+fmt(mid)+" or better — your own middle mark — but you'd pay "+payLabel(lo)+" or less, or someone said ➖ skip. Pay cut-offs are the top and bottom third of what you've said you'd pay."));
     function row(d){ var c=d.c; var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★")); if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
       var bits=[]; PRINCIPALS.concat(["Together"]).forEach(function(p){ var b=d.by[p]; if(!b)return; var ro=recoObj(b.reco); bits.push(p+" "+(b.pay!=null?payLabel(b.pay):"—")+(ro?" "+ro.e:"")); });
-      var r=h("div",{class:"row"},[ h("div",{class:"badge-sm",style:"background:"+scoreColor(d.score)},fmt(d.score)),
+      var r=h("div",{class:"row"},[ h("div",{class:"badge-sm",style:scoreFill(d.score)},fmt(d.score)),
         h("div",{class:"meta"},[nm,h("div",{class:"sb"},bits.join(" · "))]),
         h("div",{class:"rt"},[h("div",{class:"pill green money"},payLabel(Math.round(d.pay))),h("div",{class:"chev"},"›")]) ]);
       r.onclick=function(){openCourse(c);}; return r; }
@@ -1183,20 +1281,19 @@
   function rowFor(c,rankNo){ var sc=courseScore(c.n),rated=isRated(c.n),rs=rounds(c.n),firstPhoto=null;
     for(var i=0;i<rs.length;i++){ if(rs[i].photos&&rs[i].photos.length){firstPhoto=rs[i].photos[0];break;} }
     var lead; if(firstPhoto){lead=h("img",{class:"thumb",alt:""});loadPhoto(firstPhoto,lead);}
-      else lead=h("img",{class:"thumb terr"+(rated?"":" un"),src:courseThumb(c),alt:"",title:terrainLabel(c)+" — a stand-in until you add your own photos",loading:"lazy",decoding:"async",onerror:"this.style.display='none'"});
+      else lead=monoThumb(c,rated);
     var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
     if(isSnub(c))nm.appendChild(h("span",{class:"star",title:"Should be Top 100"},"↑"));
     var rtr=courseRaters(c.n),hasW=rtr.indexOf("West")>=0,hasR=rtr.indexOf("Rhod")>=0,bothIn=hasW&&hasR;
     var whoTxt=bothIn?"both rated":(rtr.length?rtr.join(" & ")+" only":rs.length+" rating"+(rs.length>1?"s":""));
-    var sub=rated?(whoTxt+" · "+c.s):c.s;
+    var sub=rated?(whoTxt+" · "+shortState(c.s)):shortState(c.s);
     var kids=[]; if(rankNo!=null)kids.push(h("div",{class:"rank-no"},""+rankNo));
     if(lead)kids.push(lead);
     kids.push(h("div",{class:"meta"},[nm,h("div",{class:"sb"},sub)]));
     var rt=h("div",{class:"rt"});
-    if(rated){ // two dots say at a glance whose ratings are in
-      rt.appendChild(h("div",{class:"rated-by",title:whoTxt},[
-        h("i",{class:hasW?"w":"off"}),h("i",{class:hasR?"r":"off"})]));
-      rt.appendChild(h("div",{class:"score-chip",style:"color:"+scoreColor(sc)},fmt(sc))); }
+    /* The dots that used to sit here said the same thing as "both rated" in the
+       line above, and said it in colour alone. The words carry it instead. */
+    if(rated)rt.appendChild(h("div",{class:"score-chip",style:"color:"+scoreInk(sc)},fmt(sc)));
     rt.appendChild(h("div",{class:"chev"},"›"));
     kids.push(rt);
     var row=h("div",{class:"row"+(rankNo!=null&&rankNo<=3?" top3":"")},kids);
@@ -1332,7 +1429,7 @@
       if(pays.length){ var lo=Math.min.apply(null,pays),hi=Math.max.apply(null,pays);
         subs.push(h("div",{class:"sub",style:"margin-top:3px"},["You'd pay ",h("b",{},payLabel(lo)+(hi>lo?"–"+payLabel(hi):""))])); }
       if(!hasTot(c.n))subs.push(h("div",{class:"sub",style:"margin-top:3px"},"Old scoring — adjust a rating to add Totality"));
-      var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:"background:"+scoreColor(sc)},fmt(sc)), h("div",{},subs) ]);
+      var hr=h("div",{class:"scorehead"},[ h("div",{class:"big",style:scoreFill(sc)},fmt(sc)), h("div",{},subs) ]);
       sheet.appendChild(hr);
       var cp=coursePlayers(c.n); if(cp.length){ var pl=h("div",{style:"display:flex;align-items:center;gap:8px;margin:-6px 0 12px"},[avatarsFor(cp),h("span",{style:"font-size:12.5px;color:var(--muted)"},"Played by "+cp.join(" & "))]); sheet.appendChild(pl); }
       var allPhotos=[]; rs.forEach(function(r){(r.photos||[]).forEach(function(p){allPhotos.push(p);});});
@@ -1357,7 +1454,7 @@
         var dl=h("button",{class:"ibtn del",title:"Delete this rating","aria-label":"Delete"},"🗑");
         dl.onclick=function(e){ e.stopPropagation(); deleteRound(c,r,function(){ if(isRated(c.n))openCourse(c); else closeSheet(); }); };
         var line=h("div",{class:"row",style:"margin:0 0 9px"},[
-          h("div",{class:"badge-sm",style:"background:"+scoreColor(roundScore(r))},fmt(roundScore(r))),
+          h("div",{class:"badge-sm",style:scoreFill(roundScore(r))},fmt(roundScore(r))),
           h("div",{class:"meta"},[h("div",{class:"nm",style:"font-size:14px"},raterLabel(r)),h("div",{class:"sb"},bits.join(" · "))]),
           h("div",{class:"rt"},[ed,dl])
         ]);
@@ -1504,7 +1601,7 @@
     var runBox=h("div",{class:"running"}),runScore=h("div",{class:"rs"}),runLine=h("div",{class:"rl"});
     runBox.appendChild(runScore); runBox.appendChild(runLine);
     function runTick(){ var v=scoreOf(vals); if(v==null)return;
-      runScore.textContent=fmt(v); runScore.style.background=scoreColor(v);
+      runScore.textContent=fmt(v); runScore.style.cssText=scoreFill(v);
       runLine.innerHTML=""; runLine.appendChild(h("b",{},"Rating so far"));
       // Memorable Holes starts at 0 and is scored out of 18 — easy to leave behind, costly if you do
       var hn=Math.round(vals.holes);
@@ -1565,7 +1662,7 @@
     else card.appendChild(h("div",{class:"rphoto rph-empty",style:"display:grid;place-items:center;font-size:46px"},"⛳"));
     card.appendChild(h("div",{class:"rgrad"}));
     card.appendChild(h("div",{class:"rkick"},"RHOD + WEST · GOLF ADVENTURES"));
-    card.appendChild(h("div",{class:"rscore",style:"background:"+scoreColor(rsc)},fmt(rsc)));
+    card.appendChild(h("div",{class:"rscore",style:scoreFill(rsc)},fmt(rsc)));
     card.appendChild(h("div",{class:"ravs"},avatarsFor(rd.players,true)));
     var body=h("div",{class:"rbody"});
     body.appendChild(h("h3",{},c.n+(isT100(c)?"  ★":"")));
@@ -1608,7 +1705,7 @@
     var lw=h("div",{class:"row-pick"}); sheet.appendChild(lw);
     function draw(){ var ql=inp.value.trim().toLowerCase(); lw.innerHTML="";
       COURSES.filter(function(c){return !ql||(c.n+" "+c.s).toLowerCase().indexOf(ql)>=0;}).slice(0,80).forEach(function(c){ var sc=courseScore(c.n);
-        var lead=isRated(c.n)?h("div",{class:"badge-sm",style:"background:"+scoreColor(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
+        var lead=isRated(c.n)?h("div",{class:"badge-sm",style:scoreFill(sc)},fmt(sc)):h("div",{class:"badge-sm un"},"＋");
         var nm=h("div",{class:"nm"},c.n); if(isT100(c))nm.appendChild(h("span",{class:"star"},"★"));
         var row=h("div",{class:"row",style:"margin:0 0 9px"},[lead,h("div",{class:"meta"},[nm,h("div",{class:"sb"},c.s)]),h("div",{class:"chev"},"›")]);
         row.onclick=function(){closeSheet();setTimeout(function(){openLog(c);},200);}; lw.appendChild(row); });
@@ -1748,10 +1845,10 @@
 
     /* add to the route */
     var addWrap=h("div",{class:"btn-row"});
-    var addp=h("button",{class:"btn dark"},"＋ Add a place"); addp.onclick=function(){ openPlacePicker(id); };
+    var addp=h("button",{class:"btn outline"},"＋ Add a place"); addp.onclick=function(){ openPlacePicker(id); };
     var addc=h("button",{class:"btn primary"},"＋ Add a course"); addc.onclick=function(){ tripPicker(id); };
     addWrap.appendChild(addp); addWrap.appendChild(addc); sheet.appendChild(addWrap);
-    if(t.stops.length>2){ var opt=h("button",{class:"btn ghost"},t.fixed||hasPlaces(t)?"Reorder into the shortest drive":"Put the order back the way I set it");
+    if(t.stops.length>2){ var opt=h("button",{class:"btn linky"},t.fixed||hasPlaces(t)?"Reorder into the shortest drive":"Put the order back the way I set it");
       opt.onclick=function(){ if(t.fixed||hasPlaces(t)){ t.stops=optimize(t.stops); t.fixed=false; if(hasPlaces(t))toast("Places hold the route in order"); }
         else t.fixed=true; save(); drawTrip(); updateTripBar(); openTripDetail(id); }; sheet.appendChild(opt); }
 
@@ -1759,10 +1856,12 @@
     if(ord.length>1){
       var hd=h("div",{class:"section-h",style:"margin:18px 0 8px"},[h("span",{},"Golf on the way")]);
       sheet.appendChild(hd);
+      sheet.appendChild(h("div",{class:"chiplbl"},"How far off the route"));
       var chips=h("div",{class:"chiprow"});
       DETOURS.forEach(function(d){ var c=h("button",{class:"chip"+(t.det===d?" on":"")},"within "+d+" mi");
         c.onclick=function(){ t.det=d; save(); drawTrip(); openTripDetail(id); }; chips.appendChild(c); });
       sheet.appendChild(chips);
+      sheet.appendChild(h("div",{class:"chiplbl"},"Order them by"));
       var sortRow=h("div",{class:"chiprow"});
       [["worth","Best first"],["det","Least detour"],["at","In driving order"]].forEach(function(p){
         var c=h("button",{class:"chip"+((t.sort||"worth")===p[0]?" on":"")},p[1]);
